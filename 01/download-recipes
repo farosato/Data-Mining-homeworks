@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#######################################################
+# author:   Giacomo Lanciano
+# date:	    22/10/2016
+#
+# descr:    
+#######################################################
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DEST="$DIR/recipes"
+URL="http://www.bbc.co.uk/food/recipes/chilliconcarnewithri_91064"
+ACC="html"
+REJ="share*,shopping-list*"
+TIMEOUT="1"
+
+wget -r -np -nH -nd -e robots=off -R $REJ -w $TIMEOUT -P $DEST $URL
