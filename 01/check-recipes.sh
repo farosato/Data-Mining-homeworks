@@ -9,8 +9,8 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SRC="$DIR/recipes.txt"
-#DEST="$DIR/recipes"
-DEST="$DIR/recipes_test"
+REC="$DIR/recipes"
+DEST="$DIR/recipes-missing.txt"
 URL_PREFIX_LENGTH=34
 TIMEOUT="1"
 
@@ -18,12 +18,10 @@ i=0
 while IFS='' read -r line || [[ -n "$line" ]]; do
     name=$(echo ${line:URL_PREFIX_LENGTH} | tr -d '\r')
     
-    if [ ! -f "$DEST/$name.html" ]; then
+    if [ ! -f "$REC/$name.html" ]; then
         printf "%s\n" $(echo ${line} | tr -d '\r')
+        printf "%s\n" $(echo ${line} | tr -d '\r') >> $DEST
         ((i += 1))
-    fi
-    if [ $i = 10 ]; then
-        exit 1
     fi
 done < $SRC
 
