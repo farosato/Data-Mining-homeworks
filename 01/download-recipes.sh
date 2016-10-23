@@ -16,7 +16,7 @@ TIMEOUT="1"
 
 # download pages
 while IFS='' read -r line || [[ -n "$line" ]]; do
-    wget -t10 --retry-connrefused -np -nH -nd -nc -e robots=off -w $TIMEOUT --waitretry=$TIMEOUT -P $DEST $(echo ${line} | tr -d '\r')
+    wget -t10 --retry-connrefused -np -nH -nd -nc -e robots=off -w $TIMEOUT --waitretry=$TIMEOUT --adjust-extension -P $DEST $(echo ${line} | tr -d '\r')
 done < $SRC
 
 exit 0
