@@ -4,19 +4,19 @@ import unicodecsv as csv
 from bs4 import BeautifulSoup
 from os import listdir
 
-#SRC = './recipes'
-SRC = './recipes_test'
+SRC = './recipes'
+#SRC = './recipes_test'
 DEST = './recipes.tsv'
 DEST_PREP = './recipes-prep.tsv'
 HEADERS_LINE = ['title','author','prep_time','cook_time','num_people','dietary_info','ingredients','method']
 
-# put recipes in a single .tsv file
+# parse recipes and put data in a single .tsv file
 with open(DEST, 'wb') as out:
     tsvWriter = csv.writer(out, delimiter='\t')
     tsvWriter.writerow(HEADERS_LINE)
     
     for f in listdir(SRC):
-        #print f
+        print f
         row = []
         fid = open(os.path.join(SRC, f), 'r')
         recipeSoup = BeautifulSoup(fid, 'html.parser')
@@ -71,15 +71,17 @@ with open(DEST_PREP, 'wb') as out:
     next(tsvReader)
     for row in tsvReader:
         outRow = []
+        
+        # do not pre-process title and author
         outRow.append(row[0])
         outRow.append(row[1])
         
         for field in row[2:]:
-            # TODO: ask if sent_tokenize is necessary for method field
-            #tokenizaton & stopwords removal
+            # TODO: ask if sent_tokenize is necessary for 'method' field
+            # tokenizaton & stopwords removal
             tokens = [word for word in nltk.word_tokenize(field) if word not in stops]
             
-            #stemming
+            # stemming
             tokens = [stemmer.stem(t) for t in tokens]
             
             #print tokens
@@ -89,13 +91,3 @@ with open(DEST_PREP, 'wb') as out:
             
 
     tsv.close()
-
-
-
-
-
-
-
-
-
-
