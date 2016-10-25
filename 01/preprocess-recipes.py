@@ -4,8 +4,8 @@ import unicodecsv as csv
 from bs4 import BeautifulSoup
 from os import listdir
 
-SRC = './recipes'
-#SRC = './recipes_test'
+#SRC = './recipes'
+SRC = './recipes_test'
 DEST = './recipes.tsv'
 DEST_PREP = './recipes-prep.tsv'
 HEADERS_LINE = ['title','author','prep_time','cook_time','num_people','dietary_info','ingredients','method']

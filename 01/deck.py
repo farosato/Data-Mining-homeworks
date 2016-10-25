@@ -4,6 +4,12 @@ import pydealer
 TRIALS = 100000
 FORMAT = '{0:.5f}'
 
+atLeast1Ace3Cards = 0
+allEquals3Cards = 0
+exactly1Ace5Cards = 0
+allDiamonds5Cards = 0
+full5Cards = 0
+
 def at_least_1_ace_3_cards(hand):
     return any(c.value == 'Ace' for c in hand[:3])
 
@@ -40,12 +46,6 @@ def print_results():
     print 'Full in first 5 cards:\t\t\t' + FORMAT.format(full5Cards / TRIALS)
 
 if __name__ == "__main__":
-    atLeast1Ace3Cards = 0
-    allEquals3Cards = 0
-    exactly1Ace5Cards = 0
-    allDiamonds5Cards = 0
-    full5Cards = 0
-    
     for i in range(0,TRIALS):
         deck = pydealer.Deck()
         deck.shuffle()
