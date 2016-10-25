@@ -17,8 +17,7 @@ def at_least_1_ace_3_cards(cards):
 
 
 def all_equals_3_cards(cards):
-    return cards[0].value == cards[1].value and cards[1].value == cards[2].value \
-           and cards[0].value == cards[2].value
+    return cards[0].value == cards[1].value == cards[2].value
 
 
 def exactly_1_ace_5_cards(cards):
@@ -32,28 +31,23 @@ def exactly_1_ace_5_cards(cards):
 
 
 def all_diamonds_5_cards(cards):
-    for c in cards:
-        if c.suit != 'Diamonds':
-            return False
-    return True
+    return all(c.suit == 'Diamonds' for c in cards)
 
 
 def full_5_cards(cards):
-    # NOTE: hand is passed by reference, sort() update original
+    # NOTE: hand is passed by reference, sort() updates original
     cards.sort()
-    return (cards[0].value == cards[1].value == cards[2].value and cards[3].value == cards[4].value \
-            and cards[0].value != cards[3].value) \
-           or (cards[0].value == cards[1].value and cards[2].value == cards[3].value == cards[4].value \
-               and cards[0].value != cards[2].value)
+    return (cards[0].value != cards[3].value and cards[0].value == cards[1].value == cards[2].value and cards[3].value == cards[4].value) \
+           or (cards[0].value != cards[2].value and cards[0].value == cards[1].value and cards[2].value == cards[3].value == cards[4].value)
 
 
 def print_results():
     print '##### Frequencies report on %d trials #####\n' % TRIALS
     print 'At least 1 Ace in first 3 cards:\t' + FORMAT.format(atLeast1Ace3Cards / TRIALS)
-    print 'First 3 cards all equals:\t\t' + FORMAT.format(allEquals3Cards / TRIALS)
+    print 'First 3 cards all equals:\t\t\t' + FORMAT.format(allEquals3Cards / TRIALS)
     print 'Exactly 1 Ace in first 5 cards:\t\t' + FORMAT.format(exactly1Ace5Cards / TRIALS)
     print 'All Diamonds in first 5 cards:\t\t' + FORMAT.format(allDiamonds5Cards / TRIALS)
-    print 'Full in first 5 cards:\t\t\t' + FORMAT.format(full5Cards / TRIALS)
+    print 'Full in first 5 cards:\t\t\t\t' + FORMAT.format(full5Cards / TRIALS)
 
 
 if __name__ == "__main__":
