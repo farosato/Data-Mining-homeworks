@@ -1,7 +1,8 @@
 from __future__ import division
 import pydealer
+import time
 
-TRIALS = 100000
+TRIALS = 1000000    # ~3 mins for a million trials
 FORMAT = '{0:.5f}'
 
 atLeast1Ace3Cards = 0
@@ -14,7 +15,8 @@ def at_least_1_ace_3_cards(hand):
     return any(c.value == 'Ace' for c in hand[:3])
 
 def all_equals_3_cards(hand):
-    return hand[0] == hand[1] and hand[1] == hand[2] and hand[0] == hand[2]
+    return hand[0].value == hand[1].value and hand[1].value == hand[2].value\
+            and hand[0].value == hand[2].value
 
 def exactly_1_ace_5_cards(hand):
     aceFound = False
@@ -34,8 +36,10 @@ def all_diamonds_5_cards(hand):
 def full_5_cards(hand):
     # NOTE: hand is passed by reference, sort() update original
     hand.sort()
-    return (hand[0] == hand[1] == hand[2] and hand[3] == hand[4] and hand[0] != hand[3])\
-             or (hand[0] == hand[1] and hand[2] == hand[3] == hand[4] and hand[0] != hand[2])
+    return (hand[0].value == hand[1].value == hand[2].value and hand[3].value == hand[4].value\
+                and hand[0].value != hand[3].value)\
+            or (hand[0].value == hand[1].value and hand[2].value == hand[3].value == hand[4].value\
+                and hand[0].value != hand[2].value)
 
 def print_results():
     print '##### Frequencies report on %d trials #####\n' % (TRIALS) 
@@ -46,6 +50,7 @@ def print_results():
     print 'Full in first 5 cards:\t\t\t' + FORMAT.format(full5Cards / TRIALS)
 
 if __name__ == "__main__":
+    start_time = time.time()
     for i in range(0,TRIALS):
         deck = pydealer.Deck()
         deck.shuffle()
@@ -61,3 +66,5 @@ if __name__ == "__main__":
         if full_5_cards(hand):
             full5Cards += 1
     print_results()
+    print("\n--- %s seconds ---" % (time.time() - start_time))
+
