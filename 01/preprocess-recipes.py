@@ -8,7 +8,7 @@ import preprocessing
 SRC = './recipes_test'
 DEST = './recipes.tsv'
 DEST_PREP = './recipes-prep.tsv'
-HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'ingredients', 'method']
+HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method']
 
 # parse recipes and put data in a single .tsv file
 with open(DEST, 'wb') as out:
@@ -37,6 +37,9 @@ with open(DEST, 'wb') as out:
         except AttributeError: row.append('')
 
         try: row.append(recipeSoup.find('p', class_='recipe-metadata__dietary-vegetarian-text').text.strip())
+        except AttributeError: row.append('')
+
+        try: row.append(recipeSoup.find('p', class_='recipe-description__text').text.strip())
         except AttributeError: row.append('')
 
         ingredients = []
