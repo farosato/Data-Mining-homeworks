@@ -328,6 +328,7 @@ $RECYCLE.BIN/
 .idea/misc.xml
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/homeworks.iml
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
