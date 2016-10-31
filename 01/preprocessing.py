@@ -1,9 +1,4 @@
-# coding: utf-8
-
-"""
-Module containing preprocessing functions.
-Non-ASCII characters are used. Be sure to set utf-8 encoding in your text editor.
-"""
+""" Module containing preprocessing functions. """
 import nltk
 from unidecode import unidecode
 import re
@@ -22,22 +17,16 @@ def preprocess(text, stem=False):
 
 
 def _tokenize(text):
-    text = re.sub(r'(\S*?)/(\S*?)', r'\1 / \2', text) # split all possible alternatives FIRST
-    text = re.sub(r'(\d+)\s?/\s?(\d+)', r'\1/\2', text) # THEN congeal only fractions
-    # finally word_tokenize splits off punctuation OTHER THAN PERIODS (note: trailing periods are still removed)
-    return nltk.word_tokenize(text)
+    text = re.sub(r'(\S*?)/(\S*?)', r'\1 / \2', text)    # split all possible alternatives FIRST
+    text = re.sub(r'(\d+)\s?/\s?(\d+)', r'\1/\2', text)  # THEN congeal only fractions
+    return nltk.word_tokenize(text)  # splits off punctuation OTHER THAN PERIODS (trailing periods are still removed)
 
 
 def _normalize(tokens):
-    # unidecode removes diacritics and converts special unicode characters (like fractions) into a
-    # somewhat "equivalent" ASCII representation (e.g. splits u'½' in '1/2')
+    """ unidecode removes diacritics and converts special unicode characters (like fractions) into a
+        somewhat "equivalent" ASCII representation """
     tokens = [unidecode(t.lower()) for t in tokens]
-    # tokens = _replace_fractions(tokens) # do we even care? disabled for now
     return tokens
-
-
-def _replace_fractions(tokens):
-    pass
 
 
 def _remove_non_alphanum(tokens):
@@ -47,9 +36,9 @@ def _remove_non_alphanum(tokens):
 def _isalnum(t):
     if t.isalnum():
         return True
-    elif (re.match(r'[+-]?[\d]+', t)  # signed number
+    elif (re.match(r'[+-]?[\d]+', t)              # signed number
             or re.match(r'[+-]?[\d]*\.[\d]+', t)  # decimal number
-            or re.match(r'[\d]+.[\d]+', t)):  # fraction, range, or any other symbol separated pair of numbers
+            or re.match(r'[\d]+.[\d]+', t)):      # fraction, range, or any other symbol separated pair of numbers
         return True
     else:
         return False
