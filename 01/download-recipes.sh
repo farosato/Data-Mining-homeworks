@@ -13,7 +13,7 @@ DEST="$DIR/recipes"
 TIMEOUT="1"
 
 # start python script to write urls in SRC
-#python list-recipes.py
+#python list_recipes.py
 
 # download pages
 while IFS='' read -r line || [[ -n "$line" ]]; do

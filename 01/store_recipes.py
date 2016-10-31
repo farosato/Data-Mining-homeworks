@@ -2,12 +2,10 @@ import os.path
 from os import listdir
 import unicodecsv as csv
 from bs4 import BeautifulSoup
-import preprocessing
 
 # SRC = './recipes'
 SRC = './recipes_test'
 DEST = './recipes.tsv'
-DEST_PREP = './recipes-prep.tsv'
 HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method']
 
 if __name__ == "__main__":
@@ -55,23 +53,3 @@ if __name__ == "__main__":
 
             tsvWriter.writerow(row)
             fid.close()
-
-    # pre-processing
-    with open(DEST_PREP, 'wb') as out:
-        tsvWriter = csv.writer(out, delimiter='\t')
-        tsvWriter.writerow(HEADER_LINE)
-
-        tsv = open(DEST, 'rb')
-        tsvReader = csv.reader(tsv, delimiter='\t')
-
-        next(tsvReader)  # skip header line
-        for row in tsvReader:
-            outRow = []
-
-            for field in row:
-                tokens = preprocessing.preprocess(field)
-                outRow.append(" ".join(tokens))
-
-            tsvWriter.writerow(outRow)
-
-        tsv.close()
