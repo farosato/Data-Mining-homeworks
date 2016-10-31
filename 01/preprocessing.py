@@ -22,18 +22,21 @@ def preprocess(text, stem=False):
 
 
 def _tokenize(text):
+    text = re.sub(r'(\S*?)/(\S*?)', r'\1 / \2', text) # split all possible alternatives FIRST
+    text = re.sub(r'(\d+)\s?/\s?(\d+)', r'\1/\2', text) # THEN congeal only fractions
+    # finally word_tokenize splits off punctuation OTHER THAN PERIODS (note: trailing periods are still removed)
     return nltk.word_tokenize(text)
 
 
 def _normalize(tokens):
     # unidecode removes diacritics and converts special unicode characters (like fractions) into a
     # somewhat "equivalent" ASCII representation (e.g. splits u'½' in '1/2')
-    return [unidecode(t.lower()) for t in tokens]
+    tokens = [unidecode(t.lower()) for t in tokens]
     # tokens = _replace_fractions(tokens) # do we even care? disabled for now
+    return tokens
 
 
 def _replace_fractions(tokens):
-    # return [t.replace(u'½', u'0.5') for t in tokens]
     pass
 
 
@@ -44,8 +47,10 @@ def _remove_non_alphanum(tokens):
 def _isalnum(t):
     if t.isalnum():
         return True
-    elif re.match(r'[0-9]*[./][0-9]+'): # decimal number or fraction
-        return True;
+    elif (re.match(r'[+-]?[\d]+', t)  # signed number
+            or re.match(r'[+-]?[\d]*\.[\d]+', t)  # decimal number
+            or re.match(r'[\d]+.[\d]+', t)):  # fraction, range, or any other symbol separated pair of numbers
+        return True
     else:
         return False
 
