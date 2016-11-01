@@ -1,5 +1,8 @@
+from __future__ import division
 import unicodecsv as csv
+import pickle
 from preprocess_recipes import DEST as SRC
+from math import log10, sqrt
 
 
 def _bsearch_posting(plist, doc_id):
@@ -19,12 +22,12 @@ def _bsearch_posting(plist, doc_id):
 
 
 if __name__ == "__main__":
+
+    # Scan each doc, and each term in it, building as you go both
+    # the doc-term (sparse) matrix and (its transpose) the index.
     with open(SRC, 'rb') as tsv_file:
         tsvReader = csv.reader(tsv_file, delimiter='\t')
         next(tsvReader)  # skip header line
-
-        # scan each doc, and each term in it, building as you go both
-        # the doc-term (sparse) matrix and (its transpose) the index
 
         # the index is represented as a dictionary of term -> list of postings pairs:
         # a posting is represented as a list [doc_id, tf]
@@ -45,7 +48,7 @@ if __name__ == "__main__":
                     try:
                         doc_term_matrix[doc_id][term][1] += 1  # increment tf
                     except KeyError:  # term is not in the dictionary
-                            doc_term_matrix[doc_id][term] = [doc_id, 1]
+                        doc_term_matrix[doc_id][term] = [doc_id, 1]
 
                     # share the memory for the postings/matrix cells
                     try:
@@ -57,7 +60,53 @@ if __name__ == "__main__":
 
         # note: by construction, the index contains, for each term, a posting list that is ORDERED wrt the doc_ids
 
-        print '### Doc-term matrix ###'
-        print doc_term_matrix
-        print '\n### Index ###'
-        print index
+        num_docs = doc_id + 1
+
+    # print '### {} docs indexed ###\n'.format(num_docs)
+    # print '### Doc-term matrix ###'
+    # print doc_term_matrix
+    # print '\n### Index ###'
+    # print index
+
+    # Pickle (serialize) the doc-term matrix and the index;
+    # we're pickling this "non-optimized" version of the index cause
+    # it can be extended simply should new recipes be added to the corpus
+    # (optimized version we're going to create really can't be extended)
+    # note: pickle supports "object sharing", preserving our memory sharing trick (JSON doesn't)
+    with open('doc_term_matrix_and_index.pickle', 'wb') as data_dump:
+        # need to pickle them together for the sharing to be preserved
+        pickle.dump([num_docs, doc_term_matrix, index], data_dump)
+
+    # Optimize index for query processing;
+    # for each posting in a term posting list, we want to have the complete (query-independent) factor
+    # (i.e. tf * idf^2 / ||doc||), instead of the simple tf.
+
+    # first we compute the idf for each term
+    idf = {}
+    for term in index:
+        doc_freq = len(index[term])
+        idf[term] = log10(num_docs/doc_freq)
+
+    # then we compute the document vectors lengths
+    doc_lengths = []
+    for doc_id, doc in enumerate(doc_term_matrix):
+        squared_sum = 0
+        for term in doc:
+            doc_term_matrix[doc_id][term][1] *= idf[term]
+            squared_sum += doc_term_matrix[doc_id][term][1]**2
+        doc_len = sqrt(squared_sum)
+
+        # remember the memory sharing?
+        # we computed the vector length, then we might as well exploit this loop
+        # to finish the computation of the query-independent factor
+        for term in doc:
+            try:
+                doc_term_matrix[doc_id][term][1] *= idf[term] / doc_len
+            except ZeroDivisionError:
+                # can only happen if the doc is made up of words present in ALL other docs
+                # in that case the tf-idf is zero, so nothing to do
+                pass
+
+    # Pickle (serialize) the optimized index
+    with open('optimized_index.pickle', 'wb') as data_dump:
+        pickle.dump(index, data_dump)
