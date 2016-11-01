@@ -5,6 +5,10 @@ from preprocess_recipes import DEST as SRC
 from math import log10, sqrt
 
 
+DEST = 'doc_term_matrix_and_index.pickle'
+DEST_OPT = 'optimized_index.pickle'
+
+
 def _bsearch_posting(plist, doc_id):
     """Performs binary search on the posting list, returning the posting whose doc_id is the one specified."""
     min_i = 0
@@ -67,13 +71,15 @@ if __name__ == "__main__":
     # print doc_term_matrix
     # print '\n### Index ###'
     # print index
+    # for k,v in index.items():
+    #     print k + ': ' + str(v)
 
     # Pickle (serialize) the doc-term matrix and the index;
-    # we're pickling this "non-optimized" version of the index cause
+    # we're pickling this "non-optimized" version of the index because
     # it can be extended simply should new recipes be added to the corpus
     # (optimized version we're going to create really can't be extended)
     # note: pickle supports "object sharing", preserving our memory sharing trick (JSON doesn't)
-    with open('doc_term_matrix_and_index.pickle', 'wb') as data_dump:
+    with open(DEST, 'wb') as data_dump:
         # need to pickle them together for the sharing to be preserved
         pickle.dump([num_docs, doc_term_matrix, index], data_dump)
 
@@ -108,5 +114,5 @@ if __name__ == "__main__":
                 pass
 
     # Pickle (serialize) the optimized index
-    with open('optimized_index.pickle', 'wb') as data_dump:
+    with open(DEST_OPT, 'wb') as data_dump:
         pickle.dump(index, data_dump)
