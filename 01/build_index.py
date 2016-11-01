@@ -1,7 +1,6 @@
 import unicodecsv as csv
+from preprocess_recipes import DEST as SRC
 
-SRC = './recipes-prep.tsv'
-HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method']
 
 def _bsearch_posting(plist, doc_id):
     """Performs binary search on the posting list, returning the posting whose doc_id is the one specified."""
@@ -17,6 +16,7 @@ def _bsearch_posting(plist, doc_id):
             max_i = mid - 1
         else:
             return mid
+
 
 if __name__ == "__main__":
     with open(SRC, 'rb') as tsv_file:
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         # the doc-term matrix is represented as a list of docs (rows):
         # each doc is a dictionary (sparse vector) of term -> tf pairs;
         # to decrease memory requirements, the matrix cells (instead of the single tf value)
-        #  actually contain (the reference to) the corresponding posting in the index (memory sharing)
+        # actually contain (the reference to) the corresponding posting in the index (memory sharing)
         # e.g. [ { 'apple': [0, 3], 'banana': [0, 5], ... }, { ... }, ... ]
         doc_term_matrix = []
 
