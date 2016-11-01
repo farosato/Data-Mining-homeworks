@@ -369,3 +369,4 @@ fabric.properties
 01/recipes*/
 01/sitemap.xml
 01/*.tsv
+01/*.pickle
