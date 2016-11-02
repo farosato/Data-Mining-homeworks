@@ -32,5 +32,13 @@ def process_query(text):
             pass
 
     # return the docs in descending order of the score
+    # TODO think about using the approach discussed in class (add items to a fixed-size heap) and return only first k docs
     sorted_results = sorted(scores.items(), key=itemgetter(1))
     return sorted_results
+
+if __name__ == "__main__":
+    """ dummy example """
+    query = 'butter apple'
+    result = process_query(query)
+    for k in result:
+        print k
