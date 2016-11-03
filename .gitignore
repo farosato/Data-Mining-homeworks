@@ -371,3 +371,6 @@ fabric.properties
 01/sitemap.xml
 01/*.tsv
 01/*.pickle
+
+# reports .pdf
+*/latex_files/*.pdf
