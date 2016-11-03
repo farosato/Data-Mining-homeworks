@@ -16,19 +16,9 @@ REC_PEOPLE_NUM = 4
 REC_DIET_INFO = 5
 REC_DESCR = 6
 REC_INGR = 7
-REC_METH = 8
+REC_METHOD = 8
+SEPARATOR = 30
 PROMPT = 'Type your query: '
-
-
-"""
-def add_score(h, entry):
-    # entry has to be a tuple (score, doc_id)
-    if len(h) < RESULT_SIZE:
-        heapq.heappush(h, entry)
-    else:
-        # Equivalent to a push, then a pop, but faster
-        heapq.heappushpop(h, entry)
-"""
 
 
 def process_query(index, text):
@@ -55,10 +45,6 @@ def process_query(index, text):
         except KeyError:  # term is not in the index
             pass
 
-    # TODO evaluate implementation with heap, after checking performances with complete corpus
-    #sorted_results = sorted(scores.items(), key=itemgetter(1))
-    #return sorted_results
-
     # return the unsorted set of docs
     return scores.items()
 
@@ -68,28 +54,29 @@ def retrieve_docs_contents(processing_result):
     with open(SRC, 'r') as corpus:
         next(corpus)  # skip header line
 
-        docs = []
+        # sort processing result by doc_id
+        result_ids = []
         sorted_result_by_id = sorted(processing_result, key=itemgetter(0))
         for doc_id, _ in sorted_result_by_id:
-            docs.append(doc_id)
+            result_ids.append(doc_id)
 
+        # retrieve docs contents and sort them by score
         i = 0
-        last = docs[len(docs) - 1]
+        last = result_ids[len(result_ids) - 1]
         sorted_result_by_score = []
         for doc_id, line in enumerate(corpus):
             if doc_id > last:
                 break
-            if doc_id == docs[i]:
+            if doc_id == result_ids[i]:
                 sorted_result_by_score.append((line, sorted_result_by_id[i][1]))
                 i += 1
         sorted_result_by_score = sorted(sorted_result_by_score, key=itemgetter(1))
 
-        j = 0
-        for e in sorted_result_by_score:
+        # present first K contents
+        for j, e in enumerate(sorted_result_by_score):
             if j >= RESULT_SIZE:
                 break
             present_recipe(e[0].split('\t'))
-            j += 1
 
 
 def present_recipe(row):
@@ -97,7 +84,7 @@ def present_recipe(row):
     print '\n\"' + row[REC_NAME] + '\" by ' + row[REC_AUTHOR]
     print 'Preparation time: ' + row[REC_PREP_TIME]
     print 'Cooking time: ' + row[REC_COOK_TIME]
-    print 'Serves: ' + row[REC_PEOPLE_NUM]
+    print row[REC_PEOPLE_NUM]
 
     if row[REC_DIET_INFO] != '':
         print 'Dietary: ' + row[REC_DIET_INFO]
@@ -110,10 +97,10 @@ def present_recipe(row):
         print '- ' + i.strip()
 
     print '\nMethod:'
-    for i in row[REC_METH].split('|'):
+    for i in row[REC_METHOD].split('|'):
         print '- ' + i.strip()
 
-    print '\n'+('#'*30)
+    print '\n'+('#'*SEPARATOR)
 
 
 if __name__ == "__main__":
