@@ -1,10 +1,11 @@
 import preprocessing
 import pickle
-import unicodecsv as csv
 from store_recipes import DEST as SRC
 from build_index import DEST_OPT as IDX_SRC
 from collections import defaultdict
 from operator import itemgetter
+import time
+import heapq
 
 RESULT_SIZE = 20
 REC_NAME = 0
@@ -16,6 +17,18 @@ REC_DIET_INFO = 5
 REC_DESCR = 6
 REC_INGR = 7
 REC_METH = 8
+PROMPT = 'Type your query: '
+
+
+"""
+def add_score(h, entry):
+    # entry has to be a tuple (score, doc_id)
+    if len(h) < RESULT_SIZE:
+        heapq.heappush(h, entry)
+    else:
+        # Equivalent to a push, then a pop, but faster
+        heapq.heappushpop(h, entry)
+"""
 
 
 def process_query(index, text):
@@ -42,10 +55,41 @@ def process_query(index, text):
         except KeyError:  # term is not in the index
             pass
 
-    # return the docs in descending order of the score
-    # TODO think about using the approach discussed in class (add items to a fixed-size heap) and return only first k docs
-    sorted_results = sorted(scores.items(), key=itemgetter(1))
-    return sorted_results
+    # TODO evaluate implementation with heap, after checking performances with complete corpus
+    #sorted_results = sorted(scores.items(), key=itemgetter(1))
+    #return sorted_results
+
+    # return the unsorted set of docs
+    return scores.items()
+
+
+def retrieve_docs_contents(processing_result):
+    """ Present to user the contents of the K most related documents """
+    with open(SRC, 'r') as corpus:
+        next(corpus)  # skip header line
+
+        docs = []
+        sorted_result_by_id = sorted(processing_result, key=itemgetter(0))
+        for doc_id, _ in sorted_result_by_id:
+            docs.append(doc_id)
+
+        i = 0
+        last = docs[len(docs) - 1]
+        sorted_result_by_score = []
+        for doc_id, line in enumerate(corpus):
+            if doc_id > last:
+                break
+            if doc_id == docs[i]:
+                sorted_result_by_score.append((line, sorted_result_by_id[i][1]))
+                i += 1
+        sorted_result_by_score = sorted(sorted_result_by_score, key=itemgetter(1))
+
+        j = 0
+        for e in sorted_result_by_score:
+            if j >= RESULT_SIZE:
+                break
+            present_recipe(e[0].split('\t'))
+            j += 1
 
 
 def present_recipe(row):
@@ -75,23 +119,15 @@ def present_recipe(row):
 if __name__ == "__main__":
 
     with open(IDX_SRC, 'rb') as pickled_index:
-        print 'loading index...'
+        print 'Loading index...'
+        start_time = time.time()
         index = pickle.load(pickled_index)
+        print("Index loaded in %s seconds." % (time.time() - start_time))
 
-    with open(SRC, 'rb') as tsv_file:
-        # TODO could be too costly to load all corpus in a list, think about accessing directly .html files and rescrap them
-        print 'loading corpus...'
-        tsvReader = csv.reader(tsv_file, delimiter='\t')
-        next(tsvReader)  # skip header line
-        corpus = list(tsvReader)
+    query = raw_input('\n' + PROMPT)
+    while query != '':
+        start_time = time.time()
+        retrieve_docs_contents(process_query(index, query))
 
-
-    # TODO create while loop to allow user to retype queries
-    #query = raw_input('\nType your query: ')
-
-    # dummy example
-    query = 'butter apple'
-
-    result = process_query(index, query)
-    for k in result:
-        present_recipe(corpus[k[0]])
+        print("Query answered in %s seconds." % (time.time() - start_time))
+        query = raw_input('\n' + PROMPT)
