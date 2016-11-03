@@ -4,7 +4,6 @@ import pickle
 from preprocess_recipes import DEST as SRC
 from math import log10, sqrt
 
-
 DEST = 'doc_term_matrix_and_index.pickle'
 DEST_OPT = 'optimized_index.pickle'
 

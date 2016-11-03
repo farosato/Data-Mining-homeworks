@@ -44,12 +44,12 @@ if __name__ == "__main__":
             ingredients = []
             for i in recipeSoup.find_all('li', class_='recipe-ingredients__list-item'):
                 ingredients.append(i.text.strip())
-            row.append(" ".join(ingredients))
+            row.append(" | ".join(ingredients))
 
             method = []
             for m in recipeSoup.find_all('p', class_='recipe-method__list-item-text'):
                 method.append(m.text.strip())
-            row.append(" ".join(method))
+            row.append(" | ".join(method))
 
             tsvWriter.writerow(row)
             fid.close()
