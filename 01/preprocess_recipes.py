@@ -2,10 +2,13 @@ import unicodecsv as csv
 import preprocessing
 from store_recipes import HEADER_LINE
 from store_recipes import DEST as SRC
+import time
 
 DEST = './recipes-prep.tsv'
 
 if __name__ == "__main__":
+    start_time = time.time()
+
     with open(DEST, 'wb') as out:
         tsvWriter = csv.writer(out, delimiter='\t')
         tsvWriter.writerow(HEADER_LINE)
@@ -24,3 +27,5 @@ if __name__ == "__main__":
             tsvWriter.writerow(outRow)
 
         tsv.close()
+
+    print("\n--- %s seconds ---" % (time.time() - start_time))

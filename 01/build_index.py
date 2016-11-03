@@ -3,6 +3,7 @@ import unicodecsv as csv
 import pickle
 from preprocess_recipes import DEST as SRC
 from math import log10, sqrt
+import time
 
 DEST = 'doc_term_matrix_and_index.pickle'
 DEST_OPT = 'optimized_index.pickle'
@@ -25,6 +26,7 @@ def _bsearch_posting(plist, doc_id):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
 
     # Scan each doc, and each term in it, building as you go both
     # the doc-term (sparse) matrix and (its transpose) the index.
@@ -115,3 +117,5 @@ if __name__ == "__main__":
     # Pickle (serialize) the optimized index
     with open(DEST_OPT, 'wb') as data_dump:
         pickle.dump(index, data_dump)
+
+    print("\n--- %s seconds ---" % (time.time() - start_time))

@@ -2,13 +2,16 @@ import os.path
 from os import listdir
 import unicodecsv as csv
 from bs4 import BeautifulSoup
+import time
 
-# SRC = './recipes'
-SRC = './recipes_test'
+SRC = './recipes'
+#SRC = './recipes_test'
 DEST = './recipes.tsv'
 HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method']
 
 if __name__ == "__main__":
+    start_time = time.time()
+
     # parse recipes and put data in a single .tsv file
     with open(DEST, 'wb') as out:
         tsvWriter = csv.writer(out, delimiter='\t')
@@ -53,3 +56,5 @@ if __name__ == "__main__":
 
             tsvWriter.writerow(row)
             fid.close()
+
+    print("\n--- %s seconds ---" % (time.time() - start_time))
