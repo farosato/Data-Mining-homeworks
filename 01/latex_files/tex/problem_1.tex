@@ -38,11 +38,11 @@ TODO, formalize $\Omega$
 	\end{itemize}
 	
 	Let $A \in \Omega$ be the event related to drawing at least 1 ace in the first 3 cards. Therefore,
-	\begin{align*}
-		\Pr(A) = \Pr(A_{13} \cup A_{23} \cup A_{33}) = \Pr(A_{13}) + \Pr(A_{23}) + \Pr(A_{33})
-	\end{align*}
+	\begin{align}
+		\Pr(A) = \Pr(A_{13} \cup A_{23} \cup A_{33}) = \Pr(A_{13}) + \Pr(A_{23}) + \Pr(A_{33}) \label{disj1}
+	\end{align}
 	
-	since the events $A_{13}, A_{23}$ and $A_{33}$ are disjoint each other. Using (\ref{aij}), we can easily compute the single probabilities and conclude that
+	Note that we can write \ref{disj1} since the events $A_{13}, A_{23}$ and $A_{33}$ are disjoint each other. Using (\ref{aij}), we can easily compute the single probabilities and conclude that
 	\begin{align*}
 		\Pr(A) \simeq 0.217
 	\end{align*}
@@ -85,7 +85,7 @@ TODO, formalize $\Omega$
 	\end{align*}
 	since there are:
 	\begin{itemize}
-		\item $13 \cdot 12$ different combination of ranks.
+		\item $13 \cdot 12$ different dispositions of 2 (out of 13) ranks.
 		\item $\binom{4}{2}$ ways to choose $2$ cards among those with same rank.
 		\item $\binom{4}{3}$ ways to choose $3$ cards among those with same rank.
 		\item $5!$ permutations of the first $5$ cards.
