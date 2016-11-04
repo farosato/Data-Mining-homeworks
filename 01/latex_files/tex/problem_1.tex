@@ -1,0 +1,105 @@
+% !TeX spellcheck = en_GB
+
+\section{Problem 1}
+
+We shuffle a standard deck of cards, obtaining a permutation that is uniform over all
+52! possible permutations.
+\begin{itemize}
+	\item[1.] Define a proper probability space $\Omega$ for the above random process. What is the probability of each element in $\Omega$?
+	\item[2.] Find the probability of the following events:
+	\begin{itemize}
+		\item[(a)] The first three cards include at least one ace.
+		\item[(b)] The first five cards include exactly one ace.
+		\item[(c)] The first three cards are a pair of the same rank (they are the same number or both are J, or both are Q, etc.)
+		\item[(d)] The first five cards are all diamonds.
+		\item[(e)] The first five cards form a full house (three of one rank and two of another rank).		
+	\end{itemize}
+	\item[3.] (Optional) Develop some small programs in Python to perform simulations to check your answers.
+\end{itemize}
+
+
+\subsection{Probability space definition}
+TODO, formalize $\Omega$
+
+
+\subsection{Events probabilities}
+\begin{itemize}
+	\item[(a)] Let $A_{ij} \in \Omega$ be the event related to drawing exactly $i$ aces in the first $j$ cards of the deck $(j \geq i)$. Therefore,
+	\begin{align}
+		\Pr(A_{ij}) = \dfrac{\binom{4}{i} \cdot \binom{48}{j-i} \cdot j! \cdot (52-j)!}{52!} \label{aij}
+	\end{align}
+	
+	since there are:
+	\begin{itemize}
+		\item $\binom{4}{i}$ ways to choose $i$ aces.
+		\item $\binom{48}{j-i}$ ways to chose the remaining $j-i$ cards.
+		\item $j!$ permutations of the first $j$ cards.
+		\item $52-j!$ permutations of the remaining cards.
+	\end{itemize}
+	
+	Let $A \in \Omega$ be the event related to drawing at least 1 ace in the first 3 cards. Therefore,
+	\begin{align*}
+		\Pr(A) = \Pr(A_{13} \cup A_{23} \cup A_{33}) = \Pr(A_{13}) + \Pr(A_{23}) + \Pr(A_{33})
+	\end{align*}
+	
+	since the events $A_{13}, A_{23}$ and $A_{33}$ are disjoint each other. Using (\ref{aij}), we can easily compute the single probabilities and conclude that
+	\begin{align*}
+		\Pr(A) \simeq 0.217
+	\end{align*}
+	
+	\item[(b)] Let $B \in \Omega$ be the event related to drawing exactly 1 ace in the first 5 cards. Therefore,
+	\begin{align*}
+		\Pr(B) = \Pr(A_{15}) \simeq= 0.299
+	\end{align*}
+	
+	exploiting (\ref{aij}).
+	
+	\item[(c)] Let $C \in \Omega$ be the event related to drawing a "tris" in the first 3 cards. Therefore,
+	\begin{align*}
+		\Pr(C) = \dfrac{13 \cdot \binom{4}{3} \cdot 3! \cdot 49!}{52!} \simeq 0.0023
+	\end{align*}
+	
+	since there are:
+	\begin{itemize}
+		\item 13 different ranks.
+		\item $\binom{4}{3}$ ways to choose 3 cards among those with the same rank.
+		\item $3!$ permutations of the first $3$ cards.
+		\item $49!$ permutations of the remaining cards.
+	\end{itemize}
+	
+	\item[(d)] Let $D \in \Omega$ be the event related to drawing only Diamonds in the first 5 cards. Therefore,
+	\begin{align*}
+		\Pr(D) = \dfrac{\binom{13}{5} \cdot 5! \cdot 47!}{52!} \simeq 0.0005
+	\end{align*}
+	
+	since there are:
+	\begin{itemize}
+		\item $\binom{13}{5}$ ways to choose $5$ cards among the Diamonds.
+		\item $5!$ permutations of the first $5$ cards.
+		\item $47!$ permutations of the remaining cards.
+	\end{itemize}
+	
+	\item[(e)] Let $E \in \Omega$ be the event related to drawing a "full" in the first 5 cards. Therefore,
+	\begin{align*}
+		\Pr(E) = \dfrac{13 \cdot 12 \cdot \binom{4}{2} \cdot \binom{4}{3} \cdot 5! \cdot 47!}{52!} \simeq 0.0014
+	\end{align*}
+	since there are:
+	\begin{itemize}
+		\item $13 \cdot 12$ different combination of ranks.
+		\item $\binom{4}{2}$ ways to choose $2$ cards among those with same rank.
+		\item $\binom{4}{3}$ ways to choose $3$ cards among those with same rank.
+		\item $5!$ permutations of the first $5$ cards.
+		\item $47!$ permutations of the remaining cards.
+	\end{itemize}		
+\end{itemize}
+
+
+\subsection{Events simulation in Python}
+We developed a simple Python script that performs drawing simulations to check our previous answers. You can find the source code in \textit{deck.py} (see attachments).
+We used the Python module \textit{pydealer}\cite{pydealer} to simulate the drawing of 5 cards from a deck of French cards. Basically, we repeated the process for a huge amount of times (e.g. a million of trials) and, for each one of the events, we counted how many times it happened.
+In the end, for each one of the events, we computed its frequency by dividing the occurrences for the total number of trials.
+In the pictures below, you can see the results in case of a million of trials. In that case, our script takes $\sim4$ minutes to terminate.
+
+\begin{center}
+	\includegraphics[]{img/deck.jpg}
+\end{center}
