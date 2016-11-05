@@ -38,20 +38,19 @@ Let $E$, $E_i \in \Omega$ be two events such that
 Therefore,
 \begin{align}
 	\Pr(E) &= \Pr\left(\bigcup_{i = 0}^{\infty} E_i \right) \nonumber\\
-		&= \sum_{i = 0}^{\infty}\Pr(E_i) \label{disj2.1}
+	&= \sum_{i = 0}^{\infty}\Pr(E_i) \label{sum_pr_ei}
 \end{align}
-Note that we can write (\ref{disj2.1}) since the events are disjoint each other.\\
+Note that we can write (\ref{sum_pr_ei}) since the events are disjoint each other.\\
 Therefore, we only need to compute $\Pr(E_i)$ in order to get the desired result. Since, by definition of the problem, every throw is independent from all the others
 \begin{align}
 	\Pr(E_i) &= \Pr( X \ne 11 \ \cap \ X \ne 16 )^i \cdot \Pr(X = 16) \nonumber\\
-			&= [1 - \Pr( X = 11 \ \cup \ X = 16)]^i \cdot \Pr(X = 16) \nonumber\\
-			&= [1 - (\Pr(X = 11) + \Pr( X = 16))]^i \cdot \Pr(X = 16) \label{disj2.2}
+	&= [1 - \Pr( X = 11 \ \cup \ X = 16)]^i \cdot \Pr(X = 16) \nonumber\\
+	&= [1 - (\Pr(X = 11) + \Pr( X = 16))]^i \cdot \Pr(X = 16) \label{pr_x11_pr_x16}
 \end{align}
-Note that we can write (\ref{disj2.2}) since $X = 11$ and $X = 16$ are two disjoint events, because it is not possible to have a triplet (as we defined it in (\ref{triplet})) whose sum is both 11 and 16.\\
+Note that we can write (\ref{pr_x11_pr_x16}) since $X = 11$ and $X = 16$ are two disjoint events, because it is not possible to have a triplet (as we defined it in (\ref{triplet})) whose sum is both 11 and 16.\\
 Therefore, we need to compute $\Pr(X = 11)$ and $\Pr( X = 16)$ in order to get $\Pr(E_i)$. We can trivially do it by enumerating all the triplets whose sum is 11 and 16, respectively, and then dividing by $|\Omega|$. Hence,
 
 \begin{itemize}
-
 	\item $X = 11$
 	\begin{align*}
 		\underbrace{
@@ -61,17 +60,18 @@ Therefore, we need to compute $\Pr(X = 11)$ and $\Pr( X = 16)$ in order to get $
 				\langle 2,4,5 \rangle
 			\end{aligned}
 		}_{\text{3! permutations each}}
-		&&\underbrace{
+		\hspace{10mm}
+		\underbrace{
 			\begin{aligned}
 				\langle 1,5,5 \rangle\\
 				\langle 3,3,5 \rangle\\
 				\langle 3,4,4 \rangle
 			\end{aligned}
-		}_{\text{3 permutations each}}\\
+		}_{\text{3 permutations each}}
 	\end{align*}
-	\begin{align*}
-		\Pr(X = 11) &= \dfrac{3 \cdot 3! + 3 \cdot 3}{216} = \dfrac{1}{8}
-	\end{align*}
+	\begin{align}
+		\Pr(X = 11) = \dfrac{3 \cdot 3! + 3 \cdot 3}{216} = \dfrac{1}{8} \label{pr_x11}
+	\end{align}
 	
 	\item $X = 16$
 	\begin{align*}
@@ -81,13 +81,14 @@ Therefore, we need to compute $\Pr(X = 11)$ and $\Pr( X = 16)$ in order to get $
 				\langle 5,5,6 \rangle
 			\end{aligned}
 		}_{\text{3 permutations each}}
-		&&\Pr(X = 16) = \dfrac{2 \cdot 3}{216} = \dfrac{1}{36}
 	\end{align*}
-
+	\begin{align}
+		\Pr(X = 16) = \dfrac{2 \cdot 3}{216} = \dfrac{1}{36} \label{pr_x16}
+	\end{align}
 \end{itemize}
-Therefore, from (\ref{disj2.2}), we can conclude that
+Therefore, substituting (\ref{pr_x11}) and (\ref{pr_x16}) into (\ref{pr_x11_pr_x16}), we can conclude that
 \begin{align}
-	\Pr(E_i) &= \left( 1 - \dfrac{1}{8} - \dfrac{1}{36} \right)^i \cdot \dfrac{1}{36} = \left( \dfrac{61}{72} \right)^i \cdot \dfrac{1}{36} \label{pr_ei}
+	\Pr(E_i) = \left( 1 - \dfrac{1}{8} - \dfrac{1}{36} \right)^i \cdot \dfrac{1}{36} = \left( \dfrac{61}{72} \right)^i \cdot \dfrac{1}{36} \label{pr_ei}
 \end{align}
 and, because of (\ref{pr_ei}), that
 \begin{align}

@@ -40,7 +40,7 @@ In addition, we have that $\Omega$ is an equiprobable space, since every permuta
 \begin{itemize}
 	\item[(a)] Let $A_{ij} \in \Omega$ be the event related to drawing exactly $i$ aces in the first $j$ cards of the deck $(j \geq i)$. Therefore,
 	\begin{align}
-		\Pr(A_{ij}) = \dfrac{\binom{4}{i} \cdot \binom{48}{j-i} \cdot j! \cdot (52-j)!}{52!} \label{aij}
+		\Pr(A_{ij}) = \dfrac{\binom{4}{i} \cdot \binom{48}{j-i} \cdot j! \cdot (52-j)!}{52!} \label{pr_aij}
 	\end{align}
 	
 	since there are:
@@ -53,10 +53,10 @@ In addition, we have that $\Omega$ is an equiprobable space, since every permuta
 	
 	Let $A \in \Omega$ be the event related to drawing at least 1 ace in the first 3 cards. Therefore,
 	\begin{align}
-		\Pr(A) = \Pr(A_{13} \cup A_{23} \cup A_{33}) = \Pr(A_{13}) + \Pr(A_{23}) + \Pr(A_{33}) \label{disj1}
+		\Pr(A) = \Pr(A_{13} \cup A_{23} \cup A_{33}) = \Pr(A_{13}) + \Pr(A_{23}) + \Pr(A_{33}) \label{pr_a}
 	\end{align}
 	
-	Note that we can write \ref{disj1} since the events $A_{13}, A_{23}$ and $A_{33}$ are disjoint each other. Using (\ref{aij}), we can easily compute the single probabilities and conclude that
+	Note that we can write \ref{pr_a} since the events $A_{13}, A_{23}$ and $A_{33}$ are disjoint each other. Using (\ref{pr_aij}), we can easily compute the single probabilities and conclude that
 	\begin{align*}
 		\Pr(A) \simeq 0.217
 	\end{align*}
@@ -66,7 +66,7 @@ In addition, we have that $\Omega$ is an equiprobable space, since every permuta
 		\Pr(B) = \Pr(A_{15}) \simeq= 0.299
 	\end{align*}
 	
-	exploiting (\ref{aij}).
+	exploiting (\ref{pr_aij}).
 	
 	\item[(c)] Let $C \in \Omega$ be the event related to drawing a "tris" in the first 3 cards. Therefore,
 	\begin{align*}

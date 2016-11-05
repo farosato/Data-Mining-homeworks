@@ -37,16 +37,16 @@ Let $X_i$ be a Bernoulli random variable representing whether the $i \textendash
 \end{align*}
 Therefore, we have that
 \begin{align}
-	X = \sum_{i = 1}^{n}X_i \quad\Rightarrow\quad E\left[ X \right] = \sum_{i = 1}^{n} E\left[ X_i \right] \label{lin_rv}
+	X = \sum_{i = 1}^{n}X_i \quad\Rightarrow\quad E\left[ X \right] = \sum_{i = 1}^{n} E\left[ X_i \right] \label{lin_expect}
 \end{align}
-Note that we can write (\ref{lin_rv}) because of the linearity of expectation.\\
+Note that we can write (\ref{lin_expect}) because of the linearity of expectation.\\
 Therefore, we need to compute $E\left[ X_i \right]$ in order to get the desired expected value.
 \begin{align}
 	E\left[ X_i \right] &= \sum_{k \in \mathrm{range}(X_i)} k \cdot \Pr(X_i = k)\nonumber\\
 	&= \Pr(X_i = 1)\nonumber\\
 	&= 1 - \Pr(X_i = 0)\nonumber\\
 	&= 1 - \dfrac{(n+m) \cdot \binom{n-1}{2} \cdot 2 \cdot (n+m-3)!}{(n+m)!} \label{pr_xi0}\\
-	&= 1 - \dfrac{(n-1) \cdot (n-2)}{(n+m-1) \cdot (n+m-2)} \label{e_xi}
+	&= 1 - \dfrac{(n-1) \cdot (n-2)}{(n+m-1) \cdot (n+m-2)} \label{expect_xi}
 \end{align}
 Let us focus on result (\ref{pr_xi0}). We trivially computed $\Pr(X_i = 0)$, i.e. the probability that a man is not seated next to a woman, by enumerating all cases in which the $i \textendash th$ man is sitted next to other two men. Indeed, there are:
 \begin{itemize}
@@ -55,10 +55,10 @@ Let us focus on result (\ref{pr_xi0}). We trivially computed $\Pr(X_i = 0)$, i.e
 	\item 2 ways to arrange other two men ("around" the $i \textendash th$ man).
 	\item $(n+m-3)!$ permutations of the remaining people.
 \end{itemize}
-Hence, substituting (\ref{e_xi}) into (\ref{lin_rv}), we have that
-\begin{align}
+Hence, substituting (\ref{expect_xi}) into (\ref{lin_expect}), we have that
+\begin{align*}
 	E\left[ X \right] = \left( 1 - \dfrac{(n-1) \cdot (n-2)}{(n+m-1) \cdot (n+m-2)} \right) \cdot n
-\end{align}
+\end{align*}
 
 
 
