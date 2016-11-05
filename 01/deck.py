@@ -42,12 +42,12 @@ def full_5_cards(cards):
 
 
 def print_results():
-    print '##### Frequencies report on %d trials #####\n' % TRIALS
-    print 'At least 1 Ace in first 3 cards:\t' + FORMAT.format(atLeast1Ace3Cards / TRIALS)
-    print 'First 3 cards all equals:\t\t\t' + FORMAT.format(allEquals3Cards / TRIALS)
-    print 'Exactly 1 Ace in first 5 cards:\t\t' + FORMAT.format(exactly1Ace5Cards / TRIALS)
-    print 'All Diamonds in first 5 cards:\t\t' + FORMAT.format(allDiamonds5Cards / TRIALS)
-    print 'Full in first 5 cards:\t\t\t\t' + FORMAT.format(full5Cards / TRIALS)
+    print '##### Frequencies report for %d trials #####\n' % TRIALS
+    print '(a) At least 1 Ace in first 3 cards:\t' + FORMAT.format(atLeast1Ace3Cards / TRIALS)
+    print '(b) Exactly 1 Ace in first 5 cards:\t\t' + FORMAT.format(exactly1Ace5Cards / TRIALS)
+    print '(c) First 3 cards all equals:\t\t\t' + FORMAT.format(allEquals3Cards / TRIALS)
+    print '(d) All Diamonds in first 5 cards:\t\t' + FORMAT.format(allDiamonds5Cards / TRIALS)
+    print '(e) Full house in first 5 cards:\t\t' + FORMAT.format(full5Cards / TRIALS)
 
 
 if __name__ == "__main__":
