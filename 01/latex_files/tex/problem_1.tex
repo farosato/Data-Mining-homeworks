@@ -20,7 +20,7 @@ We shuffle a standard deck of cards, obtaining a permutation that is uniform ove
 
 \subsection{Probability space definition}
 
-Let $S = \{c, d, h, s\}$ be the set of card suites. Let $R = \{2, \ldots, 10, J, Q, K, A\}$ be the set of card ranks. Hence, $C = S \times R$ is the set of cards contained in a French deck. Let $\Omega$ be the probability space of this process. Therefore,
+Let $S = \{h, d, c, s\}$ be the set of card suits. Let $R = \{A, 2, \ldots, 10, J, Q, K\}$ be the set of card ranks. Hence, $C = S \times R$ is the set of cards contained in a French deck. Let $\Omega$ be the probability space of this process. Therefore,
 \begin{align*}
 	\Omega &= Sym(C)\\
 		&= \text{symmetric group of C}\\
@@ -47,7 +47,7 @@ In addition, we have that $\Omega$ is an equiprobable space, since every permuta
 	\begin{itemize}
 		\item $\binom{4}{i}$ ways to choose $i$ aces.
 		\item $\binom{48}{j-i}$ ways to chose the remaining $j-i$ cards.
-		\item $j!$ permutations of the first $j$ cards.
+		\item $j!$ permutations for each of the first $j$ cards combination.
 		\item $52-j!$ permutations of the remaining cards.
 	\end{itemize}
 	
@@ -56,7 +56,7 @@ In addition, we have that $\Omega$ is an equiprobable space, since every permuta
 		\Pr(A) = \Pr(A_{13} \cup A_{23} \cup A_{33}) = \Pr(A_{13}) + \Pr(A_{23}) + \Pr(A_{33}) \label{pr_a}
 	\end{align}
 	
-	Note that we can write \ref{pr_a} since the events $A_{13}, A_{23}$ and $A_{33}$ are disjoint each other. Using (\ref{pr_aij}), we can easily compute the single probabilities and conclude that
+	Note that we can write (\ref{pr_a}) since the events $A_{13}, A_{23}$ and $A_{33}$ are pairwise disjoint. Using (\ref{pr_aij}), we can easily compute the single probabilities and conclude that
 	\begin{align*}
 		\Pr(A) \simeq 0.217
 	\end{align*}
@@ -66,7 +66,7 @@ In addition, we have that $\Omega$ is an equiprobable space, since every permuta
 		\Pr(B) = \Pr(A_{15}) \simeq= 0.299
 	\end{align*}
 	
-	exploiting (\ref{pr_aij}).
+	reusing (\ref{pr_aij}).
 	
 	\item[(c)] Let $C \in \Omega$ be the event related to drawing a "tris" in the first 3 cards. Therefore,
 	\begin{align*}
@@ -77,7 +77,7 @@ In addition, we have that $\Omega$ is an equiprobable space, since every permuta
 	\begin{itemize}
 		\item 13 different ranks.
 		\item $\binom{4}{3}$ ways to choose 3 cards among those with the same rank.
-		\item $3!$ permutations of the first $3$ cards.
+		\item $3!$ permutations for each of the first $3$ cards combination.
 		\item $49!$ permutations of the remaining cards.
 	\end{itemize}
 	
@@ -89,30 +89,30 @@ In addition, we have that $\Omega$ is an equiprobable space, since every permuta
 	since there are:
 	\begin{itemize}
 		\item $\binom{13}{5}$ ways to choose $5$ cards among the Diamonds.
-		\item $5!$ permutations of the first $5$ cards.
+		\item $5!$ permutations for each of the first $5$ cards combination.
 		\item $47!$ permutations of the remaining cards.
 	\end{itemize}
 	
-	\item[(e)] Let $E \in \Omega$ be the event related to drawing a "full" in the first 5 cards. Therefore,
+	\item[(e)] Let $E \in \Omega$ be the event related to drawing a "full house" in the first 5 cards. Therefore,
 	\begin{align*}
 		\Pr(E) = \dfrac{13 \cdot 12 \cdot \binom{4}{2} \cdot \binom{4}{3} \cdot 5! \cdot 47!}{52!} \simeq 0.0014
 	\end{align*}
 	since there are:
 	\begin{itemize}
 		\item $13 \cdot 12$ different dispositions of 2 (out of 13) ranks.
-		\item $\binom{4}{2}$ ways to choose $2$ cards among those with same rank.
-		\item $\binom{4}{3}$ ways to choose $3$ cards among those with same rank.
-		\item $5!$ permutations of the first $5$ cards.
+		\item $\binom{4}{2}$ ways to choose the suits of the pair.
+		\item $\binom{4}{3}$ ways to choose the suits of the tris.
+		\item $5!$ permutations for each of the first $5$ cards combination.
 		\item $47!$ permutations of the remaining cards.
 	\end{itemize}		
 \end{itemize}
 
 
-\subsection{Events simulation in Python}
+\subsection{Event simulation in Python}
 We developed a simple Python script that performs drawing simulations to check our previous answers. You can find the source code in \textit{deck.py} (see attachments).
-We used the Python module \textit{pydealer}\cite{pydealer} to simulate the drawing of 5 cards from a deck of French cards. Basically, we repeated the process for a huge amount of times (e.g. a million of trials) and, for each one of the events, we counted how many times it happened.
-In the end, for each one of the events, we computed its frequency by dividing the occurrences for the total number of trials.
-In the pictures below, you can see the results in case of a million of trials. In that case, our script takes $\sim4$ minutes to terminate.
+We used the Python module \textit{pydealer}\cite{pydealer} to simulate the drawing of 5 cards from a deck of French cards. Basically, we repeated the drawing process many times (e.g. a million trials), keeping track of how many times each event occurred.
+In the end we computed the frequency of each event, dividing its occurrences by the total number of trials.
+Results for a million trials are shown below.
 
 \begin{center}
 	\includegraphics[]{img/deck.jpg}
