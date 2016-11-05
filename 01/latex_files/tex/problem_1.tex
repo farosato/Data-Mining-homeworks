@@ -19,7 +19,20 @@ We shuffle a standard deck of cards, obtaining a permutation that is uniform ove
 
 
 \subsection{Probability space definition}
-TODO, formalize $\Omega$
+Let $S = \{c, d, h, s\}$ be the set of card suites. Let $R = \{2, \ldots, 9, J, Q, K, A\}$ be the set of card ranks. Hence, $C = S \times R$ is the set of cards contained in a French deck. Let $\Omega$ be the probability space of this process. Therefore,
+\begin{align*}
+	\Omega &= Sym(C)\\
+		&= symmetric \ group \ of \ C\\
+		&= collection \ of \ all \ permutations \ of \ the \ elements \ in \ C
+\end{align*}
+By definition of symmetric group\cite{sym_group}, we have that
+\begin{align*}
+	|\Omega| = |C|! = (|S| \cdot |R|)! = 52!
+\end{align*}
+In addition, we have that $\Omega$ is an equiprobable space, since every permutation of $C$ has the same probability to be the result of a shuffle. Hence,
+\begin{align*}
+	\Pr(\omega) = \dfrac{1}{|\Omega|} = \dfrac{1}{52!} \qquad \forall \ \omega\in\Omega
+\end{align*}
 
 
 \subsection{Events probabilities}
