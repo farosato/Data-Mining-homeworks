@@ -11,26 +11,40 @@ sum of 11 or a sum of 16.
 
 \subsection{Probability space definition}
 
-Let $D = \{1, \ldots, 6\}$ be the set of all values that can be a result of a die throw. Let $\Omega$ be the probability space of this process. Therefore,
+Let $D = \{1, \ldots, 6\}$ be the set of all values that can be a result of a die throw. Let $\Omega$ be the probability space of this process. We define
 \begin{align*}
-	\Omega = D \times D \times D
+	D^3 = D \times D \times D
 \end{align*}
-since it is composed by all possible combinations of the values of 3 dice. In addition, $\Omega$ is an equiprobable space. Indeed,
+as the set of all possible tuples representing the outcome of the throw of 3 dice. Note that $\Delta$ is an equiprobable space. Indeed,
 \begin{align*}
-	\Pr(\omega) = \dfrac{1}{|\Omega|} = \dfrac{1}{6^3} = \dfrac{1}{216} \qquad \forall \ \omega\in\Omega
+	\Pr(\delta) = \dfrac{1}{|D^3|} = \dfrac{1}{6^3} = \dfrac{1}{216} \qquad \forall \ \delta\in D^3
 \end{align*}
+Let
+\begin{align*}
+	\mathrm{sum}(\delta) \ = \ \mathrm{sum}(\ \langle y,w,z \rangle \ ) \ = \ y + w + z \qquad \forall \ \delta\in D^3
+\end{align*}
+We define
+\begin{align*}
+	G_i = \left \{ \ \varprod_{j = 1}^{i} D^3 \quad \big| \quad \mathrm{sum}(\ \langle y,w,z \rangle_j \ ) \ \not\in \ \{11, 16\} \ \forall \ j < i \ \wedge \ \mathrm{sum}(\ \langle y,w,z \rangle_i \ ) \ \in \ \{11, 16\} \right \}
+\end{align*}
+i.e. the set of all games ending at the $i \textendash th$ throw.
+Finally we define
+\begin{align*}
+	\Omega \ = \ \bigcup_{i = 1}^{\infty} G_i
+\end{align*}
+
 
 \subsection{Event probability}
 
-Let $X$ be a discrete random variable representing the sum of the values of 3 dice, defined as
+Let $X$ be a discrete random variable representing the sum of the values of a single throw of 3 dice, defined as
 \begin{align*}
-	X: \Omega \rightarrow \{ x \in \mathbb{N} \ | \ 3 \leq x \leq 18 \}
+	X: D^3 \rightarrow \{ x \in \mathbb{N} \ | \ 3 \leq x \leq 18 \}
 \end{align*}
-and such that
+We have
 \begin{align}
-	\Pr(X = x) = \dfrac{|\{ \langle y,w,z \rangle \ | \ y,w,z \in D \ \wedge \ y+w+z = x \}|}{|\Omega|} \label{triplet}
+	\Pr(X = x) = \dfrac{\left | \ \left \{ \ \langle y,w,z \rangle \ \in \ D^3 \ : \ \mathrm{sum}(\ \langle y,w,z \rangle \ ) \ = \ x \ \right \} \ \right |}{\left | D^3 \right |} \label{triplet}
 \end{align}
-Let $E$, $E_i \in \Omega$ be two events such that
+Let $E$, $E_i \subset \Omega$ be the two events
 \begin{align*}
 	E &= \text{"stop because you get a sum of 16"}\\
 	E_i &= \text{"you get a sum of 16 only at $(i+1) \textendash th$ throw"}
@@ -40,14 +54,14 @@ Therefore,
 	\Pr(E) &= \Pr\left(\bigcup_{i = 0}^{\infty} E_i \right) \nonumber\\
 	&= \sum_{i = 0}^{\infty}\Pr(E_i) \label{sum_pr_ei}
 \end{align}
-Note that we can write (\ref{sum_pr_ei}) since the events are disjoint each other.\\
+Note that we can write (\ref{sum_pr_ei}) since the events are pairwise disjoint.\\
 Therefore, we only need to compute $\Pr(E_i)$ in order to get the desired result. Since, by definition of the problem, every throw is independent from all the others
 \begin{align}
-	\Pr(E_i) &= \Pr( X \ne 11 \ \cap \ X \ne 16 )^i \cdot \Pr(X = 16) \nonumber\\
-	&= [1 - \Pr( X = 11 \ \cup \ X = 16)]^i \cdot \Pr(X = 16) \nonumber\\
+	\Pr(E_i) &= \Pr( X \ne 11 \ \land \ X \ne 16 )^i \cdot \Pr(X = 16) \nonumber\\
+	&= [1 - \Pr( X = 11 \ \lor \ X = 16)]^i \cdot \Pr(X = 16) \nonumber\\
 	&= [1 - (\Pr(X = 11) + \Pr( X = 16))]^i \cdot \Pr(X = 16) \label{pr_x11_pr_x16}
 \end{align}
-Note that we can write (\ref{pr_x11_pr_x16}) since $X = 11$ and $X = 16$ are two disjoint events, because it is not possible to have a triplet (as we defined it in (\ref{triplet})) whose sum is both 11 and 16.\\
+Note that we can write (\ref{pr_x11_pr_x16}) since $X = 11$ and $X = 16$ are two disjoint events (clearly it is not possible to have a throw whose sum is both 11 and 16).\\
 Therefore, we need to compute $\Pr(X = 11)$ and $\Pr( X = 16)$ in order to get $\Pr(E_i)$. We can trivially do it by enumerating all the triplets whose sum is 11 and 16, respectively, and then dividing by $|\Omega|$. Hence,
 
 \begin{itemize}
@@ -90,7 +104,7 @@ Therefore, substituting (\ref{pr_x11}) and (\ref{pr_x16}) into (\ref{pr_x11_pr_x
 \begin{align}
 	\Pr(E_i) = \left( 1 - \dfrac{1}{8} - \dfrac{1}{36} \right)^i \cdot \dfrac{1}{36} = \left( \dfrac{61}{72} \right)^i \cdot \dfrac{1}{36} \label{pr_ei}
 \end{align}
-and, because of (\ref{pr_ei}), that
+and, because of (\ref{sum_pr_ei}), that
 \begin{align}
 	\Pr(E) = \dfrac{1}{36} \cdot \sum_{i = 0}^{\infty}\left( \dfrac{61}{72} \right)^i = \dfrac{1}{36} \cdot \dfrac{1}{1 - \dfrac{61}{72}} \simeq 0.18 \label{pr_e}
 \end{align}
