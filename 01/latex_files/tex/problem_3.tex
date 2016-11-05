@@ -12,10 +12,17 @@ such that each person has to other person next to him/her.
 
 \subsection{Probability space definition}
 
-Let $\Omega$ be the probability space of this process. It consists in all possible permutations of the people sitting around the table (assuming, without loss of generality, an order among the seats). In addition, we have that $\Omega$ is an equiprobable space, since every permutation of the people has the same probability to be chosen (at random). Therefore,
+Let $S = \{1, \ldots, n+m\}$ be the set of people sitted at the table. Let $\Omega$ be the probability space of this process. Therefore,
+\begin{align*}
+	\Omega &= Sym(S)\\
+	&= \text{symmetric group of S}\\
+	&= \text{collection of all permutations of the elements in S}
+\end{align*}
+By definition of symmetric group\cite{sym_group}, we have that
 \begin{align*}
 	|\Omega| = (n+m)!
 \end{align*}
+In addition, we have that $\Omega$ is an equiprobable space, since every permutation of the people has the same probability to be chosen (at random). Therefore,
 \begin{align*}
 	\Pr(\omega) = \dfrac{1}{|\Omega|} = \dfrac{1}{(n+m)!} \qquad \forall \ \omega\in\Omega
 \end{align*}
