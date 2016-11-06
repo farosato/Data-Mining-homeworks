@@ -8,6 +8,7 @@ import time
 import heapq
 
 RESULT_SIZE = 20
+DOC_ID_OFFSET = 1
 REC_NAME = 0
 REC_AUTHOR = 1
 REC_PREP_TIME = 2
@@ -52,13 +53,11 @@ def process_query(index, text):
 def retrieve_docs_contents(processing_result):
     """ Present to user the contents of the K most related documents """
     with open(SRC, 'r') as corpus:
-        next(corpus)  # skip header line
-
         # sort processing result by doc_id
         result_ids = []
         sorted_result_by_id = sorted(processing_result, key=itemgetter(0))
         for doc_id, _ in sorted_result_by_id:
-            result_ids.append(doc_id)
+            result_ids.append(doc_id + DOC_ID_OFFSET)
 
         # retrieve docs contents and sort them by score
         i = 0
@@ -70,12 +69,13 @@ def retrieve_docs_contents(processing_result):
             if doc_id == result_ids[i]:
                 sorted_result_by_score.append((line, sorted_result_by_id[i][1]))
                 i += 1
-        sorted_result_by_score = sorted(sorted_result_by_score, key=itemgetter(1))
+        sorted_result_by_score = sorted(sorted_result_by_score, key=itemgetter(1), reverse=True)
 
         # present first K contents
         for j, e in enumerate(sorted_result_by_score):
             if j >= RESULT_SIZE:
                 break
+            print '\nResult #' + str(j+1)
             present_recipe(e[0].split('\t'))
 
 
@@ -115,6 +115,5 @@ if __name__ == "__main__":
     while query != '':
         start_time = time.time()
         retrieve_docs_contents(process_query(index, query))
-
         print("Query answered in %s seconds." % (time.time() - start_time))
         query = raw_input('\n' + PROMPT)

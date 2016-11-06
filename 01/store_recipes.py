@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 import time
 
 SRC = './recipes'
-#SRC = './recipes_test'
 DEST = './recipes.tsv'
 HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method']
 
@@ -23,35 +22,35 @@ if __name__ == "__main__":
             fid = open(os.path.join(SRC, f), 'r')
             recipeSoup = BeautifulSoup(fid, 'html.parser')
 
-            try: row.append(recipeSoup.find('h1', class_='content-title__text').text.strip())
+            try: row.append(recipeSoup.find('h1', class_='content-title__text').text.strip().replace('\n', ' '))
             except AttributeError: row.append('')
 
-            try: row.append(recipeSoup.find('a', class_='chef__link', itemprop='author').text.strip())
+            try: row.append(recipeSoup.find('a', class_='chef__link', itemprop='author').text.strip().replace('\n', ' '))
             except AttributeError: row.append('')
 
-            try: row.append(recipeSoup.find('p', class_='recipe-metadata__prep-time').text.strip())
+            try: row.append(recipeSoup.find('p', class_='recipe-metadata__prep-time').text.strip().replace('\n', ' '))
             except AttributeError: row.append('')
 
-            try: row.append(recipeSoup.find('p', class_='recipe-metadata__cook-time').text.strip())
+            try: row.append(recipeSoup.find('p', class_='recipe-metadata__cook-time').text.strip().replace('\n', ' '))
             except AttributeError: row.append('')
 
-            try: row.append(recipeSoup.find('p', class_='recipe-metadata__serving').text.strip())
+            try: row.append(recipeSoup.find('p', class_='recipe-metadata__serving').text.strip().replace('\n', ' '))
             except AttributeError: row.append('')
 
-            try: row.append(recipeSoup.find('p', class_='recipe-metadata__dietary-vegetarian-text').text.strip())
+            try: row.append(recipeSoup.find('p', class_='recipe-metadata__dietary-vegetarian-text').text.strip().replace('\n', ' '))
             except AttributeError: row.append('')
 
-            try: row.append(recipeSoup.find('p', class_='recipe-description__text').text.strip())
+            try: row.append(recipeSoup.find('p', class_='recipe-description__text').text.strip().replace('\n', ' '))
             except AttributeError: row.append('')
 
             ingredients = []
             for i in recipeSoup.find_all('li', class_='recipe-ingredients__list-item'):
-                ingredients.append(i.text.strip())
+                ingredients.append(i.text.strip().replace('\n', ' '))
             row.append(" | ".join(ingredients))
 
             method = []
             for m in recipeSoup.find_all('p', class_='recipe-method__list-item-text'):
-                method.append(m.text.strip())
+                method.append(m.text.strip().replace('\n', ' '))
             row.append(" | ".join(method))
 
             tsvWriter.writerow(row)
