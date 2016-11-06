@@ -7,6 +7,20 @@
 \usepackage{hyperref}
 \usepackage{verbatim}
 \usepackage{kpfonts}
+\usepackage{listings}
+
+\lstset{frame=tb,
+	language=Bash,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=4
+}
 
 \title{Data Mining, Homework \#1}
 \author{Giacomo Lanciano (1487019) \and Fabio Rosato (1565173)}
@@ -16,8 +30,10 @@
 
 \maketitle
 \tableofcontents
+\pagenumbering{roman}
 
 \newpage
+\pagenumbering{arabic}
 \input{tex/problem_1.tex}
 
 \newpage
@@ -37,6 +53,15 @@
 	
 	\bibitem{pydealer}
 	\url{https://pypi.python.org/pypi/pydealer/}
+	
+	\bibitem{bbc}
+	\url{http://www.bbc.co.uk/food/recipes/}
+	
+	\bibitem{urllib2}
+	\url{https://docs.python.org/2/library/urllib2.html}
+	
+	\bibitem{beaut_soup}
+	\url{https://pypi.python.org/pypi/beautifulsoup4}
 	
 \end{thebibliography}
 

@@ -1,3 +1,38 @@
 % !TeX spellcheck = en_GB
 
 \section{Problem 4}
+
+In what follows, we present the development process of our recipes search engine. We will focus on techniques and technologies we used to implement it, giving to the reader some brief explanations of key Information Retrieval (IR) concepts. You can find the source code in the material attached with this documentation.
+
+
+\subsection{Recipes gathering}
+
+Our initial approach was to implement a crawler (in Python) to gather all the 11300 recipes that BBC site\cite{bbc} provides. We decided to use \textit{urllib2}\cite{urllib2} module to download .html pages containing recipes info and \textit{BeautifulSoup}\cite{beaut_soup} module to parse them and get links to other recipes.\\
+Even though we succeeded in building a quite good crawler, we soon realized that this approach gave us no guarantees of downloading all recipes in the site and that it would take a lot of time to check which were the missing ones. Therefore, we looked for a better approach and found out that BBC exposes an .xml sitemap that gathers all the links to web pages of the site. At that point we were able to extract from that file all the relevant links, using \textit{BeautifulSoup}\cite{beaut_soup} utilities and regexes. You can find the code we used for this purpose in \textit{list\_recipes.py}.\\
+The Python script we used was made to write recipes links to a .txt file. Then, we wrote a simple Bash script (\textit{download\_recipes.sh}) to process this file and download the recipes using \textit{wget} command. The real strength of this approach was that we were able to decide whether all recipes had been downloaded or not (due, for instance, to network issues) by checking downloaded files against the list of recipes urls (see \textit{check\_recipes.sh}).\\
+To run our scripts, be sure to be on a Linux machine and to have Python 2.7 installed. Then, type
+\begin{lstlisting}
+	$ python list_recipes.py
+	$ ./download_recipes.sh
+\end{lstlisting}
+Note that the entire download process could take more or less 4 hours to terminate. To check the result, type
+\begin{lstlisting}
+	$ ./check_recipes.sh
+\end{lstlisting}
+In case any recipe had not be downloaded, the script will output the list of related urls and you can restart the download script (only for the missing ones).
+
+
+\subsection{Preprocessing}
+
+
+
+
+\subsection{Inverted index building}
+
+
+
+\subsection{Query processing}
+
+
+
+\subsection{Extra features}
