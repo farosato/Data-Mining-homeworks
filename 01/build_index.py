@@ -7,6 +7,7 @@ import time
 
 DEST = 'doc_term_matrix_and_index.pickle'
 DEST_OPT = 'optimized_index.pickle'
+FIELDS_WEIGHTS = [4, 1, 1, 1, 1, 1, 3, 3, 2]  # sorted according to header line
 
 
 def _bsearch_posting(plist, doc_id):
@@ -48,12 +49,15 @@ if __name__ == "__main__":
 
         for doc_id, doc in enumerate(tsvReader):
             doc_term_matrix.append({})
-            for field in doc:
+            for field_id, field in enumerate(doc):
                 for term in field.split():
                     try:
-                        doc_term_matrix[doc_id][term][1] += 1  # increment tf
+                        # increment tf taking into account the weight of the field in which term occurs.
+                        # e.g. if term occurs in title, then it is more relevant than the same term occurring in method.
+                        # therefore, in the first case tf is increased more (it also makes total score increase).
+                        doc_term_matrix[doc_id][term][1] += FIELDS_WEIGHTS[field_id]
                     except KeyError:  # term is not in the dictionary
-                        doc_term_matrix[doc_id][term] = [doc_id, 1]
+                        doc_term_matrix[doc_id][term] = [doc_id, FIELDS_WEIGHTS[field_id]]
 
                     # share the memory for the postings/matrix cells
                     try:
@@ -66,14 +70,6 @@ if __name__ == "__main__":
         # note: by construction, the index contains, for each term, a posting list that is ORDERED wrt the doc_ids
 
         num_docs = doc_id + 1
-
-    # print '### {} docs indexed ###\n'.format(num_docs)
-    # print '### Doc-term matrix ###'
-    # print doc_term_matrix
-    # print '\n### Index ###'
-    # print index
-    # for k,v in index.items():
-    #     print k + ': ' + str(v)
 
     # Pickle (serialize) the doc-term matrix and the index;
     # we're pickling this "non-optimized" version of the index because
