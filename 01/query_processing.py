@@ -73,14 +73,13 @@ def retrieve_docs_contents(processing_result):
         for result_num, (recipe, score) in enumerate(result_recipes_sorted_by_score):
             if result_num >= RESULT_SIZE:
                 break
-            print '\nResult #' + str(result_num + 1)
-            present_recipe(recipe.split('\t'), score)
+            print '\nResult #%d (score: %f)' % (result_num + 1, score)
+            present_recipe(recipe.split('\t'))
 
 
-def present_recipe(recipe, score):
+def present_recipe(recipe):
     # print recipe in a structured way
     print '\n\"' + recipe[REC_NAME] + '\" by ' + recipe[REC_AUTHOR]
-    print 'Query processing score: ' + score
     print 'Preparation time: ' + recipe[REC_PREP_TIME]
     print 'Cooking time: ' + recipe[REC_COOK_TIME]
     print recipe[REC_PEOPLE_NUM]
