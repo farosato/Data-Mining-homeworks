@@ -50,54 +50,53 @@ def process_query(index, text):
 
 
 def retrieve_docs_contents(processing_result):
-    """ Present to user the contents of the K most related documents """
+    """Present to the user the contents of the K most related documents."""
     with open(SRC, 'r') as corpus:
         next(corpus)  # skip header line
 
-        # sort processing result by doc_id
-        result_ids = []
-        sorted_result_by_id = sorted(processing_result, key=itemgetter(0))
-        for doc_id, _ in sorted_result_by_id:
-            result_ids.append(doc_id)
+        # get a sorted list of the doc-ids in the query processing result
+        result_sorted_by_docid = sorted(processing_result, key=itemgetter(0))
+        result_ids = [doc_id for doc_id, _ in result_sorted_by_docid]
 
         # retrieve docs contents and sort them by score
         i = 0
-        last = result_ids[len(result_ids) - 1]
-        sorted_result_by_score = []
-        for doc_id, line in enumerate(corpus):
-            if doc_id > last:
+        result_recipes = []
+        for doc_id, recipe in enumerate(corpus):
+            if doc_id > result_ids[-1]:
                 break
             if doc_id == result_ids[i]:
-                sorted_result_by_score.append((line, sorted_result_by_id[i][1]))
+                score = result_sorted_by_docid[i][1]
+                result_recipes.append((recipe, score))
                 i += 1
-        sorted_result_by_score = sorted(sorted_result_by_score, key=itemgetter(1))
+        result_recipes_sorted_by_score = sorted(result_recipes, key=itemgetter(1), reverse=True)
 
         # present first K contents
-        for j, e in enumerate(sorted_result_by_score):
-            if j >= RESULT_SIZE:
+        for result_num, (recipe, score) in enumerate(result_recipes_sorted_by_score):
+            if result_num >= RESULT_SIZE:
                 break
-            present_recipe(e[0].split('\t'))
+            present_recipe(recipe.split('\t'), score)
 
 
-def present_recipe(row):
+def present_recipe(recipe, score):
     # print recipe in a structured way
-    print '\n\"' + row[REC_NAME] + '\" by ' + row[REC_AUTHOR]
-    print 'Preparation time: ' + row[REC_PREP_TIME]
-    print 'Cooking time: ' + row[REC_COOK_TIME]
-    print row[REC_PEOPLE_NUM]
+    print '\n\"' + recipe[REC_NAME] + '\" by ' + recipe[REC_AUTHOR]
+    print 'Query processing score: ' + score
+    print 'Preparation time: ' + recipe[REC_PREP_TIME]
+    print 'Cooking time: ' + recipe[REC_COOK_TIME]
+    print recipe[REC_PEOPLE_NUM]
 
-    if row[REC_DIET_INFO] != '':
-        print 'Dietary: ' + row[REC_DIET_INFO]
+    if recipe[REC_DIET_INFO] != '':
+        print 'Dietary: ' + recipe[REC_DIET_INFO]
 
-    if row[REC_DESCR] != '':
-        print '\nDescription:\n' + row[REC_DESCR]
+    if recipe[REC_DESCR] != '':
+        print '\nDescription:\n' + recipe[REC_DESCR]
 
     print '\nIngredients:'
-    for i in row[REC_INGR].split('|'):
+    for i in recipe[REC_INGR].split('|'):
         print '- ' + i.strip()
 
     print '\nMethod:'
-    for i in row[REC_METHOD].split('|'):
+    for i in recipe[REC_METHOD].split('|'):
         print '- ' + i.strip()
 
     print '\n'+('#'*SEPARATOR)
