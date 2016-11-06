@@ -1,12 +1,5 @@
 #!/bin/bash
 
-#######################################################
-# author:	Giacomo Lanciano
-# date:		23/10/2016
-#
-# descr:	
-#######################################################
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SRC="$DIR/recipes.txt"
 REC="$DIR/recipes"
