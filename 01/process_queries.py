@@ -22,29 +22,30 @@ PROMPT = 'Type your query: '
 
 def retrieve_docs_contents(processing_result):
     """Present to the user the contents of the K most related documents."""
-    with open(SRC, 'r') as corpus:
-        # get a sorted list of the doc-ids in the query processing result
-        result_sorted_by_docid = sorted(processing_result, key=itemgetter(0))
-        result_ids = [doc_id + DOC_ID_OFFSET for doc_id, _ in result_sorted_by_docid]
+    if len(processing_result) > 0:
+        with open(SRC, 'r') as corpus:
+            # get a sorted list of the doc-ids in the query processing result
+            result_sorted_by_docid = sorted(processing_result, key=itemgetter(0))
+            result_ids = [doc_id + DOC_ID_OFFSET for doc_id, _ in result_sorted_by_docid]
 
-        # retrieve docs contents and sort them by score
-        i = 0
-        result_recipes = []
-        for doc_id, recipe in enumerate(corpus):
-            if doc_id > result_ids[-1]:
-                break
-            if doc_id == result_ids[i]:
-                score = result_sorted_by_docid[i][1]
-                result_recipes.append((recipe, score))
-                i += 1
-        result_recipes_sorted_by_score = sorted(result_recipes, key=itemgetter(1), reverse=True)
+            # retrieve docs contents and sort them by score
+            i = 0
+            result_recipes = []
+            for doc_id, recipe in enumerate(corpus):
+                if doc_id > result_ids[-1]:
+                    break
+                if doc_id == result_ids[i]:
+                    score = result_sorted_by_docid[i][1]
+                    result_recipes.append((recipe, score))
+                    i += 1
+            result_recipes_sorted_by_score = sorted(result_recipes, key=itemgetter(1), reverse=True)
 
-        # present first K contents
-        for result_num, (recipe, score) in enumerate(result_recipes_sorted_by_score):
-            if result_num >= RESULT_SIZE:
-                break
-            print '\nResult #%d (score: %f)' % (result_num + 1, score)
-            present_recipe(recipe.split('\t'))
+            # present first K contents
+            for result_num, (recipe, score) in enumerate(result_recipes_sorted_by_score):
+                if result_num >= RESULT_SIZE:
+                    break
+                print '\nResult #%d (score: %f)' % (result_num + 1, score)
+                present_recipe(recipe.split('\t'))
 
 
 def present_recipe(recipe):

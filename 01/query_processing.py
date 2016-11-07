@@ -20,7 +20,9 @@ def process_query(index, text):
     group_scores = []
     for group_vec in conj_groups:
         # score the docs that contain all terms in the conjunctive group
-        group_scores.append(_compute_scores(index, group_vec))
+        partial_scores = _compute_scores(index, group_vec)
+        if len(partial_scores) > 0:
+            group_scores.append(partial_scores)
 
     # compute the overall scores ("merging" the group scores)
     overall_scores = _compute_overall_scores(group_scores)
@@ -64,28 +66,46 @@ def _compute_scores(index, query_vec):
     # the running intersection score is a vector identical to a posting list that keeps a running score
     # for each doc in the partial intersection thus far (instead of the term weight of a simple posting).
     query_terms = query_vec.keys()  # need to fix the "ordering" of the terms in the query
-    # initialize the running intersection score using the first term posting list
-    first_tf = query_vec[query_terms[0]]
-    running_intersection_scores = [[doc_id, first_tf * qif] for (doc_id, qif) in index[query_terms[0]]]
 
-    for term in query_terms[1:]:
-        query_term_tf = query_vec[term]
-        p_list = index[term]
-        r_idx, p_idx = 0
-        new_running_intersection_scores = []
-        while r_idx < len(running_intersection_scores) and p_idx < len(p_list):
-            r_doc_id, r_score = running_intersection_scores[r_idx]
-            p_doc_id, p_qif = p_list[p_idx]
-            if r_doc_id == p_doc_id:  # term present in (running) intersection
-                # add the doc contribution for this term to the running score
-                new_running_intersection_scores.append([r_doc_id, r_score + query_term_tf * p_qif])
-                r_idx += 1
-                p_idx += 1
-            elif r_doc_id < p_doc_id:
-                r_idx += 1
-            else:
-                p_idx += 1
-        running_intersection_scores = new_running_intersection_scores
+    # test query terms against index
+    terms_to_del = []
+    for i, term in enumerate(query_terms):
+        try:
+            index[term]
+        except KeyError:
+            terms_to_del.append(i)
+
+    # remove non-existing terms from query
+    for i in terms_to_del:
+        query_terms.pop(i)
+
+    running_intersection_scores = []
+
+    if len(query_terms) > 0:
+        # initialize the running intersection score using the first term posting list
+        first_tf = query_vec[query_terms[0]]
+
+        running_intersection_scores = [[doc_id, first_tf * qif] for (doc_id, qif) in index[query_terms[0]]]
+
+        for term in query_terms[1:]:
+            query_term_tf = query_vec[term]
+            p_list = index[term]
+            r_idx, p_idx = 0, 0  # TypeError if only one zero
+            new_running_intersection_scores = []
+            while r_idx < len(running_intersection_scores) and p_idx < len(p_list):
+                r_doc_id, r_score = running_intersection_scores[r_idx]
+                p_doc_id, p_qif = p_list[p_idx]
+                if r_doc_id == p_doc_id:  # term present in (running) intersection
+                    # add the doc contribution for this term to the running score
+                    new_running_intersection_scores.append([r_doc_id, r_score + query_term_tf * p_qif])
+                    r_idx += 1
+                    p_idx += 1
+                elif r_doc_id < p_doc_id:
+                    r_idx += 1
+                else:
+                    p_idx += 1
+            running_intersection_scores = new_running_intersection_scores
+
     return running_intersection_scores
 
 
@@ -94,7 +114,7 @@ def _compute_overall_scores(group_scores):
     # "merging union algorithm"
     running_merger = group_scores[0]
     for scores in group_scores[1:]:
-        r_idx, s_idx = 0
+        r_idx, s_idx = 0, 0  # TypeError if only one zero
         new_running_merger = []
         while r_idx < len(running_merger) and s_idx < len(scores):
             r_doc_id, r_score = running_merger[r_idx]
@@ -119,7 +139,7 @@ def _remove_docs_with_not_terms(index, scores, not_terms):
     running_pruner = scores
     for term in not_terms:
         p_list = index[term]
-        r_idx, p_idx = 0
+        r_idx, p_idx = 0, 0  # TypeError if only one zero
         new_running_pruner = []
         while r_idx < len(running_pruner) and p_idx < len(p_list):
             r_doc_id, r_score = running_pruner[r_idx]
