@@ -52,7 +52,12 @@ def present_recipe(recipe):
     print '\n\"' + recipe[REC_NAME] + '\" by ' + recipe[REC_AUTHOR]
     print 'Preparation time: ' + recipe[REC_PREP_TIME]
     print 'Cooking time: ' + recipe[REC_COOK_TIME]
-    print recipe[REC_PEOPLE_NUM]
+
+    people_num = recipe[REC_PEOPLE_NUM].split()
+    if len(people_num) == 1:
+        print 'Serves ' + people_num[0]
+    else:
+        print recipe[REC_PEOPLE_NUM]
 
     if recipe[REC_DIET_INFO] != '':
         print 'Dietary: ' + recipe[REC_DIET_INFO]
