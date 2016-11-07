@@ -7,10 +7,10 @@ stopwords = set(nltk.corpus.stopwords.words('english'))
 stemmer = nltk.stem.porter.PorterStemmer()
 
 
-def preprocess(text, stem=False):
+def preprocess(text, nonalnum_removal=False, stem=False):
     tokens = _tokenize(text)
     tokens = _normalize(tokens)
-    tokens = _remove_non_alphanum(tokens)
+    if nonalnum_removal: tokens = _remove_non_alphanum(tokens)
     tokens = _remove_stopwords(tokens)
     if stem: tokens = _stem(tokens)
     return tokens
