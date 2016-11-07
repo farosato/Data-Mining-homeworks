@@ -366,6 +366,9 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# PyCharm config
+*/.idea
+
 # datasets
 01/recipes*/
 01/sitemap.xml
