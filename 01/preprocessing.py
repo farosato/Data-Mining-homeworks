@@ -53,7 +53,7 @@ def _isalnum(t):
 
 def _isalnum_in_query(t):
     # save reserved special characters in query
-    if t == '||' or t[0] == '-':
+    if t == '||' or t[0] == '-' or t[0] == '*':
         return True
     return _isalnum(t)
 

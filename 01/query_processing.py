@@ -2,6 +2,12 @@
 import preprocessing
 from collections import defaultdict
 
+VEGETARIAN_KEYWORD = 'vegetarian'
+VEGAN_KEYWORD = 'vegan'
+
+VEGETARIAN_NOT_GROUP = ['meat', 'steak', 'beef', 'pork', 'chicken']
+VEGAN_NOT_GROUP = ['cheese', 'milk', 'egg']  # list only terms that are not in VEGETARIAN
+
 
 def process_query(index, text):
     conj_groups, not_group = _parse_query(text)
@@ -55,12 +61,23 @@ def _parse_query(text):
             group_idx += 1
         elif len(t) > 1 and t[0] == '-':
             not_group.append(t[1:])
+        elif len(t) > 1 and t[0] == '*':
+            not_group.extend(get_special_not_group(t[1:]))
         else:
             try:
                 conj_groups[group_idx].append(t)
             except IndexError:  # the conj-group doesn't exist yet
                 conj_groups.append([t])
     return conj_groups, not_group
+
+
+def get_special_not_group(keyword):
+    result = []
+    if keyword == VEGETARIAN_KEYWORD:
+        result = VEGETARIAN_NOT_GROUP
+    elif keyword == VEGAN_KEYWORD:
+        result = VEGETARIAN_NOT_GROUP+VEGAN_NOT_GROUP
+    return list(result)
 
 
 def _compute_scores(index, query_vec):
