@@ -3,7 +3,7 @@
 \section{Problem 4}
 
 In what follows, we present the development process of our recipes search engine. We will focus on techniques and technologies we used to implement it, giving to the reader some brief explanations of key Information Retrieval (IR) concepts. You can find the source code in the material attached with this documentation.\\\\
-\textbf{Disclaimer}: to run our code, be sure to be on a Linux machine (or any other that allows you to run Bash scripts) and have Python 2.7 installed. 
+\textbf{Disclaimer}: to run our code, be sure to be on a Linux machine (or any other that allows you to run Bash scripts) and have Python 2.7 installed. Note that some additional Python modules are required (see following sections).
 
 
 \subsection{Recipes gathering}
@@ -90,10 +90,30 @@ The result a dump of both the doc-term matrix and the index to separated .pickle
 
 \subsection{Query processing}
 
+To make queries against our corpus of recipes we built a Python module (named \textit{query\_processing.py}) encapsulating all the logic and algorithms needed to process them. Then, we created a simple command line interface (\textit{process\_queries.py} module) through which we are able to submit a query and get the related recipes, presented in a structured way.\\
+Our initial approach consisted in providing only disjunctive queries. Indeed, for instance, a query like \textit{"butter apple banana"} returned the (at most) 20 most related recipes (according to cosine-similarity) that contained \textit{at least one} of the words in the query. It was trivially achieved by selecting the posting lists related to each of the terms, computing their union, computing the score for each document (using the related query-independent factor stored in the index) in it and getting the ids of the (at most) 20 documents with the highest scores. Note that queries are first preprocessed using the same techniques we used for recipes. Documents contents retrieval is performed by scanning \textit{recipes.tsv} files, collecting as you go the rows of interest (using resulting documents ids).\\
+At that point, we were satisfied about the performances of the system, since in average a query was answered in the order of the tenth of second. Therefore, we decided not to perform further optimizations and proceed implementing some extra features.
+
+
+\subsubsection{Advanced features}
+
+We decided to extend the set of provided query types, by also allowing terms conjunctions and negation. In order to do that, we introduced some operators, denoted by sequences of special characters, and a precise syntax rule to use them. In the end, the following was the prototype of query admitted by our system
+\begin{align*}
+	\text{t1 t2 t3 }\ldots \ [ \ || \text{ t4 t5 } \ldots \ || \ \ldots \ || \text{ t6 }\ldots \ ] \ [ \text{ *vegetarian } | \text{ *vegan }] \ [ \text{ -t7 -t8 }\ldots \ ]
+\end{align*}
+Terms separated only by a blank space are assumed to be in conjunction. Note that blocks surrounded by square brackets are optional. The operators we introduced are:
+\begin{itemize}
+	\item $||$ , disjunction operator. Sequences of terms separated by this operator are assumed to be in disjunction.
+	
+	\item $-$ , negation operator. Terms preceded by this operator should not appear in resulting documents.
+	
+	\item $*$ , keyword operator. Terms preceded by this operator represents keywords of our systems. The result of a keyword evaluation is its substitution with a sequence of predefined negated terms. It is a shortcut to exclude from resulting documents those which are not compliant with the given dietary habits.
+\end{itemize}
+In order to accept this type of queries, we added before preprocessing a preliminary phase of query parsing. In this way, we could extract the negated terms and the conjunctive groups, and process them individually, merging the results at the end. To process a conjunctive group, we iteratively applied the "merging intersect algorithm" described in \cite{iir} (ch. 1, pag. 11). Then, to compute the disjunction of all groups, we applied "merging union algorithm" described in \cite{iir} (). In the end, we discarded the documents that contained negated terms.\\
+In addition, we gave different weights depending on in which "field" of the recipe it occurs. For instance, a term appearing in the title is much more relevant than the same term occurring in the method.
 
 
 
-\subsection{Extra features}
 
 
 
@@ -111,3 +131,10 @@ The result a dump of both the doc-term matrix and the index to separated .pickle
 
 
 
+\subsubsection{Instructions to run}
+
+To run the command line interface, open a terminal and type
+\begin{lstlisting}
+	$ python process_queries.py
+\end{lstlisting}
+Note that the system takes some seconds at the beginning to load the index in memory from storage. Then, follow instructions to write a legal query. You can exit the program by simply pressing Enter without inserting text (or forcing process termination as well).
