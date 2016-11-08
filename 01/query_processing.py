@@ -5,8 +5,8 @@ from collections import defaultdict
 VEGETARIAN_KEYWORD = 'vegetarian'
 VEGAN_KEYWORD = 'vegan'
 
-VEGETARIAN_NOT_GROUP = ['meat', 'steak', 'beef', 'pork', 'chicken']
-VEGAN_NOT_GROUP = ['cheese', 'milk', 'egg']  # list only terms that are not in VEGETARIAN
+VEGETARIAN_NOT_GROUP = ['meat', 'steak', 'beef', 'pork', 'chicken', 'ragu', 'fillet', 'scallops', 'prosciutto', 'fish', 'tuna', 'mussels', 'clams', 'lobster', 'squid', 'sardine', 'prawns']
+VEGAN_NOT_GROUP = ['cheese', 'milk', 'egg', 'butter', 'parmesan']  # list only terms that are not in VEGETARIAN
 
 
 def process_query(index, text):
@@ -77,7 +77,7 @@ def get_special_not_group(keyword):
         result = VEGETARIAN_NOT_GROUP
     elif keyword == VEGAN_KEYWORD:
         result = VEGETARIAN_NOT_GROUP+VEGAN_NOT_GROUP
-    return list(result)
+    return result
 
 
 def _compute_scores(index, query_vec):
