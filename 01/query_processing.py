@@ -46,7 +46,7 @@ def _parse_query(text):
     if text == '':
         return None
 
-    tokens = preprocessing.preprocess(text.decode())  # need the query to be unicode
+    tokens = preprocessing.preprocess(text.decode(), query=True)  # need the query to be unicode
     conj_groups = []
     not_group = []
     group_idx = 0
