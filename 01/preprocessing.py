@@ -7,7 +7,7 @@ stopwords = set(nltk.corpus.stopwords.words('english'))
 stemmer = nltk.stem.porter.PorterStemmer()
 
 
-def preprocess(text, nonalnum_removal=False, stem=False):
+def preprocess(text, nonalnum_removal=True, stem=False):
     tokens = _tokenize(text)
     tokens = _normalize(tokens)
     if nonalnum_removal: tokens = _remove_non_alphanum(tokens)
@@ -34,12 +34,12 @@ def _remove_non_alphanum(tokens):
 
 
 def _isalnum(t):
-    if t.isalnum():
+    if t.isalnum() or len(t) > 1:
         return True
-    elif (re.match(r'[+-]?[\d]+', t)              # signed number
-            or re.match(r'[+-]?[\d]*\.[\d]+', t)  # decimal number
-            or re.match(r'[\d]+.[\d]+', t)):      # fraction, range, or any other symbol separated pair of numbers
-        return True
+    # elif (re.match(r'[+-]?[\d]+', t)              # signed number
+    #         or re.match(r'[+-]?[\d]*\.[\d]+', t)  # decimal number
+    #         or re.match(r'[\S]+\S[\S]+', t)):     # fraction, range, or any other symbol separated composite word
+    #     return True
     return False
 
 
