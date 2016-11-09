@@ -167,5 +167,9 @@ def _remove_docs_with_not_terms(index, scores, not_terms):
                 r_idx += 1
             else:
                 p_idx += 1
+        # manage leftovers
+        if r_idx < len(running_pruner):
+            # running_pruner still contains other docs
+            new_running_pruner.extend(running_pruner[r_idx:])
         running_pruner = new_running_pruner
     return running_pruner
