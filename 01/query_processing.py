@@ -3,9 +3,12 @@ import preprocessing
 
 VEGETARIAN_KEYWORD = 'vegetarian'
 VEGAN_KEYWORD = 'vegan'
+LACTOSE_INT_KEYWORD = 'lactose-int'
 
-VEGETARIAN_NOT_GROUP = ['meat', 'steak', 'beef', 'pork', 'chicken', 'ragu', 'fillet', 'scallops', 'prosciutto', 'fish', 'tuna', 'mussels', 'clams', 'lobster', 'squid', 'sardine', 'prawns']
+VEGETARIAN_NOT_GROUP = ['meat', 'steak', 'beef', 'pork', 'chicken', 'ragu', 'fillet', 'scallops', 'prosciutto', 'fish',
+                        'tuna', 'mussels', 'clams', 'lobster', 'squid', 'sardine', 'prawns']
 VEGAN_NOT_GROUP = ['cheese', 'milk', 'egg', 'butter', 'parmesan']  # list only terms that are not in VEGETARIAN
+LACTOSE_INT_NOT_GROUP = ['cheese', 'milk', 'butter', 'parmesan', 'cream']
 
 
 def process_query(index, text):
@@ -66,6 +69,8 @@ def get_special_not_group(keyword):
         result = VEGETARIAN_NOT_GROUP
     elif keyword == VEGAN_KEYWORD:
         result = VEGETARIAN_NOT_GROUP+VEGAN_NOT_GROUP
+    elif keyword == LACTOSE_INT_KEYWORD:
+        result = LACTOSE_INT_NOT_GROUP
     return result
 
 
