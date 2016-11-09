@@ -1,6 +1,5 @@
 """ Module containing query processing functions. """
 import preprocessing
-from collections import defaultdict
 
 VEGETARIAN_KEYWORD = 'vegetarian'
 VEGAN_KEYWORD = 'vegan'
@@ -11,9 +10,6 @@ VEGAN_NOT_GROUP = ['cheese', 'milk', 'egg', 'butter', 'parmesan']  # list only t
 
 def process_query(index, text):
     conj_groups, not_group = _parse_query(text)
-
-    if conj_groups is None or not_group is None:
-        return None
 
     # represent each group as a term: tf vector
     for group_idx, group in enumerate(conj_groups):
@@ -29,9 +25,7 @@ def process_query(index, text):
     group_scores = []
     for group_vec in conj_groups:
         # score the docs that contain all terms in the conjunctive group
-        partial_scores = _compute_scores(index, group_vec)
-        if partial_scores is not None:
-            group_scores.append(partial_scores)
+        group_scores.append(_compute_scores(index, group_vec))
 
     # compute the overall scores ("merging" the group scores)
     overall_scores = _compute_overall_scores(group_scores)
@@ -49,25 +43,20 @@ def _parse_query(text):
     (a, b, ...), (c, d, ...) are conjunctive groups (i.e. terms in and)
     (-e, -f, ...) is the not-group (i.e. terms we don't want in the result)
     """
-    if text == '':
-        return None
-
-    tokens = preprocessing.preprocess(text.decode(), query=True)  # need the query to be unicode
-    conj_groups = []
+    tokens = preprocessing.preprocess(text.decode())  # need the query to be unicode
+    conj_groups = [[]]
     not_group = []
     group_idx = 0
     for t in tokens:
         if t == '||':
             group_idx += 1
+            conj_groups.append([])
         elif len(t) > 1 and t[0] == '-':
             not_group.append(t[1:])
         elif len(t) > 1 and t[0] == '*':
             not_group.extend(get_special_not_group(t[1:]))
         else:
-            try:
-                conj_groups[group_idx].append(t)
-            except IndexError:  # the conj-group doesn't exist yet
-                conj_groups.append([t])
+            conj_groups[group_idx].append(t)
     return conj_groups, not_group
 
 
@@ -88,32 +77,21 @@ def _compute_scores(index, query_vec):
     # intersection is computed iteratively: i.e. A ^ B ^ C is computed as (A ^ B) ^ C;
     # the running intersection score is a vector identical to a posting list that keeps a running score
     # for each doc in the partial intersection thus far (instead of the term weight of a simple posting).
-    query_terms = query_vec.keys()  # need to fix the "ordering" of the terms in the query
 
-    # test query terms against index
-    terms_to_del = []
-    for i, term in enumerate(query_terms):
-        try:
-            index[term]
-        except KeyError:
-            terms_to_del.append(i)
-
-    # remove non-existing terms from query
-    for i in terms_to_del:
-        query_terms.pop(i)
+    # get a list of the query terms actually present in the index
+    query_terms = [term for term in query_vec.keys() if term in index]
 
     if len(query_terms) <= 0:
-        return None
+        return []
 
     # initialize the running intersection score using the first term posting list
     first_tf = query_vec[query_terms[0]]
-
     running_intersection_scores = [[doc_id, first_tf * qif] for (doc_id, qif) in index[query_terms[0]]]
 
     for term in query_terms[1:]:
         query_term_tf = query_vec[term]
         p_list = index[term]
-        r_idx, p_idx = 0, 0  # TypeError if only one zero
+        r_idx = p_idx = 0
         new_running_intersection_scores = []
         while r_idx < len(running_intersection_scores) and p_idx < len(p_list):
             r_doc_id, r_score = running_intersection_scores[r_idx]
@@ -136,11 +114,11 @@ def _compute_overall_scores(group_scores):
     # merge doc scores, selecting the max score should the doc be present in more groups
     # "merging union algorithm"
     if len(group_scores) <= 0:
-        return None
+        return []
 
     running_merger = group_scores[0]
     for scores in group_scores[1:]:
-        r_idx, s_idx = 0, 0  # TypeError if only one zero
+        r_idx = s_idx = 0
         new_running_merger = []
         while r_idx < len(running_merger) and s_idx < len(scores):
             r_doc_id, r_score = running_merger[r_idx]
@@ -162,13 +140,13 @@ def _compute_overall_scores(group_scores):
 def _remove_docs_with_not_terms(index, scores, not_terms):
     # prune from scores the docs containing terms in the not_terms list
     # "merging subtraction algorithm"
-    if scores is None:
-        return None
+    if len(scores) <= 0:
+        return []
 
     running_pruner = scores
     for term in not_terms:
         p_list = index[term]
-        r_idx, p_idx = 0, 0  # TypeError if only one zero
+        r_idx = p_idx = 0
         new_running_pruner = []
         while r_idx < len(running_pruner) and p_idx < len(p_list):
             r_doc_id, r_score = running_pruner[r_idx]

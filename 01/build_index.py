@@ -7,7 +7,7 @@ import time
 
 DEST = 'doc_term_matrix_and_index.pickle'
 DEST_OPT = 'optimized_index.pickle'
-FIELDS_WEIGHTS = [4, 1, 1, 1, 1, 1, 3, 3, 2]  # sorted according to header line
+FIELD_WEIGHTS = [4, 1, 1, 1, 1, 1, 3, 3, 2]  # sorted according to header line
 
 
 def _bsearch_posting(plist, doc_id):
@@ -55,9 +55,9 @@ if __name__ == "__main__":
                         # increment tf taking into account the weight of the field in which term occurs.
                         # e.g. if term occurs in title, then it is more relevant than the same term occurring in method.
                         # therefore, in the first case tf is increased more (it also makes total score increase).
-                        doc_term_matrix[doc_id][term][1] += FIELDS_WEIGHTS[field_id]
+                        doc_term_matrix[doc_id][term][1] += FIELD_WEIGHTS[field_id]
                     except KeyError:  # term is not in the dictionary
-                        doc_term_matrix[doc_id][term] = [doc_id, FIELDS_WEIGHTS[field_id]]
+                        doc_term_matrix[doc_id][term] = [doc_id, FIELD_WEIGHTS[field_id]]
 
                     # share the memory for the postings/matrix cells
                     try:
