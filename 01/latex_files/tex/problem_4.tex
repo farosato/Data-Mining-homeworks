@@ -40,12 +40,12 @@ On that result, we applied pre-processing techniques using \textit{NLTK}\cite{nl
 	\item Normalization
 	\begin{itemize}
 		\item remove diacritics.
-		\item remove non-alphanumeric characters.
+		\item remove non-alphanumeric characters (optional).
 		\item convert text to lowercase.
 		\item convert special unicode characters (e.g. fractions) into a somewhat "equivalent" ASCII representation.
 	\end{itemize}
 	\item Stopwords removal
-	\item Stemming
+	\item Stemming (optional)
 \end{itemize}
 Then, we made another script to store pre-processing result into another big .tsv file. You can find the code we used for this purpose in \textit{preprocess\_recipes.py}. To run the script, open a terminal and type
 \begin{lstlisting}
@@ -107,28 +107,10 @@ Terms separated only by a blank space are assumed to be in conjunction. Note tha
 	
 	\item $-$ , negation operator. Terms preceded by this operator should not appear in resulting documents.
 	
-	\item $*$ , keyword operator. Terms preceded by this operator represents keywords of our systems. The result of a keyword evaluation is its substitution with a sequence of predefined negated terms. It is a shortcut to exclude from resulting documents those which are not compliant with the given dietary habits.
+	\item $*$ , keyword operator. This operator introduces keywords of our systems. The result of a keyword evaluation is its substitution with a sequence of predefined negated terms. It is a shortcut to exclude from resulting documents those which are not compliant with the given dietary habits.
 \end{itemize}
-In order to accept this type of queries, we added before preprocessing a preliminary phase of query parsing. In this way, we could extract the negated terms and the conjunctive groups, and process them individually, merging the results at the end. To process a conjunctive group, we iteratively applied the "merging intersect algorithm" described in \cite{iir} (ch. 1, pag. 11). Then, to compute the disjunction of all groups, we applied "merging union algorithm" described in \cite{iir} (). In the end, we discarded the documents that contained negated terms.\\
+In order to accept this type of queries, we added before preprocessing a preliminary phase of query parsing. In this way, we could extract the negated terms and the conjunctive groups, and process them individually, merging the results at the end. To process a conjunctive group, we iteratively applied the "merging intersect algorithm" described in \cite{iir} (ch. 1, pag. 11). Then, to compute the disjunction of all groups, we applied "merging union algorithm". In the end, we discarded the documents that contained negated terms.\\
 In addition, we gave different weights depending on in which "field" of the recipe it occurs. For instance, a term appearing in the title is much more relevant than the same term occurring in the method.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 \subsubsection{Instructions to run}
