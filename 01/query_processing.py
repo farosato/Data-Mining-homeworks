@@ -133,6 +133,13 @@ def _compute_overall_scores(group_scores):
             else:
                 new_running_merger.append([s_doc_id, s_score])
                 s_idx += 1
+        # manage leftovers
+        if r_idx < len(running_merger):
+            # running_merger still contains other docs
+            new_running_merger.extend(running_merger[r_idx:])
+        elif s_idx < len(scores):
+            # scores still contains other docs
+            new_running_merger.extend(scores[s_idx:])
         running_merger = new_running_merger
     return running_merger
 
