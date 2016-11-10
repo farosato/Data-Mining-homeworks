@@ -50,7 +50,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 
 # Flask stuff:
@@ -183,9 +182,6 @@ acs-*.bib
 *.gaux
 *.gtex
 
-# hyperref
-*.brf
-
 # knitr
 *-concordance.tex
 # TODO Comment the next line if you want to keep your tikz graphics files
@@ -215,9 +211,6 @@ _minted*
 
 # morewrites
 *.mw
-
-# mylatexformat
-*.fmt
 
 # nomencl
 *.nlo
@@ -371,9 +364,10 @@ fabric.properties
 
 # datasets
 01/recipes*/
-01/sitemap.xml
-01/*.tsv
+
+# easily computable output files
+01/recipes-prep.tsv
 01/*.pickle
 
 # reports .pdf
-*/latex_files/*.pdf
+*/report/*.pdf

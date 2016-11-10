@@ -1,0 +1,110 @@
+% !TeX spellcheck = en_GB
+
+\section{Problem 2}
+
+You throw a set of 3 regular dice again and again, until for the first time you see a
+sum of 11 or a sum of 16.
+\begin{itemize}
+	\item[1.] Design an appropriate probability space for the above process.
+	\item[2.] What is the probability that you stop because you see a sum of 16?
+\end{itemize}
+
+\subsection{Probability space definition}
+
+Let $D = \{1, \ldots, 6\}$ be the set of all values that can be a result of a die throw. Let $\Omega$ be the probability space of this process. We define
+\begin{align*}
+	D^3 = D \times D \times D
+\end{align*}
+as the set of all possible tuples representing the outcome of the throw of 3 dice. Note that $D^3$ is an equiprobable space. Indeed,
+\begin{align*}
+	\Pr(\delta) = \dfrac{1}{|D^3|} = \dfrac{1}{6^3} = \dfrac{1}{216} \qquad \forall \ \delta\in D^3
+\end{align*}
+Let
+\begin{align*}
+	\mathrm{sum}(\delta) \ = \ \mathrm{sum}(\ \langle y,w,z \rangle \ ) \ = \ y + w + z \qquad \forall \ \delta\in D^3
+\end{align*}
+We define
+\begin{align*}
+	G_i = \left \{ \ \varprod_{j = 1}^{i} D^3 \ \big| \ \mathrm{sum}(\ \langle y,w,z \rangle_j \ ) \ \not\in \ \{11, 16\} \ \forall \ j < i \ \wedge \ \mathrm{sum}(\ \langle y,w,z \rangle_i \ ) \ \in \ \{11, 16\} \right \}
+\end{align*}
+i.e. the set of all games ending at the $i \textendash th$ throw. Hence, we define
+\begin{align*}
+	\Omega \ = \ \bigcup_{i = 1}^{\infty} G_i
+\end{align*}
+
+
+\subsection{Event probability}
+
+Let $X$ be a discrete random variable representing the sum of the values of a single throw of 3 dice, defined as
+\begin{align*}
+	X: D^3 \rightarrow \{ x \in \mathbb{N} \ | \ 3 \leq x \leq 18 \}
+\end{align*}
+We have
+\begin{align}
+	\Pr(X = x) = \dfrac{\left | \ \left \{ \ \langle y,w,z \rangle \ \in \ D^3 \ \big| \ \mathrm{sum}(\ \langle y,w,z \rangle \ ) \ = \ x \ \right \} \ \right |}{\left | D^3 \right |} \label{triplet}
+\end{align}
+Let $E$, $E_i \subset \Omega$ be the two events
+\begin{align*}
+	E &= \text{"stop because you get a sum of 16"}\\
+	E_i &= \text{"you get a sum of 16 only at $(i+1) \textendash th$ throw"}
+\end{align*}
+Therefore,
+\begin{align}
+	\Pr(E) &= \Pr\left(\bigcup_{i = 0}^{\infty} E_i \right) \nonumber\\
+	&= \sum_{i = 0}^{\infty}\Pr(E_i) \label{sum_pr_ei}
+\end{align}
+Note that we can write (\ref{sum_pr_ei}) since the events are pairwise disjoint.\\
+Therefore, we only need to compute $\Pr(E_i)$ in order to get the desired result. Since, by definition of the problem, every throw is independent from all the others
+\begin{align}
+	\Pr(E_i) &= \Pr( X \ne 11 \ \land \ X \ne 16 )^i \cdot \Pr(X = 16) \nonumber\\
+	&= [1 - \Pr( X = 11 \ \lor \ X = 16)]^i \cdot \Pr(X = 16) \nonumber\\
+	&= [1 - (\Pr(X = 11) + \Pr( X = 16))]^i \cdot \Pr(X = 16) \label{pr_x11_pr_x16}
+\end{align}
+Note that we can write (\ref{pr_x11_pr_x16}) since $X = 11$ and $X = 16$ are two disjoint events (clearly it is not possible to have a throw whose sum is both 11 and 16).\\
+Therefore, we need to compute $\Pr(X = 11)$ and $\Pr( X = 16)$ in order to get $\Pr(E_i)$. We can trivially do it by enumerating all the triplets whose sum is 11 and 16, respectively, and then dividing by $|\Omega|$. Hence,
+
+\begin{itemize}
+	\item $X = 11$
+	\begin{align*}
+		\underbrace{
+			\begin{aligned}
+				\langle 1,4,6 \rangle\\
+				\langle 2,3,6 \rangle\\
+				\langle 2,4,5 \rangle
+			\end{aligned}
+		}_{\text{3! permutations each}}
+		\hspace{10mm}
+		\underbrace{
+			\begin{aligned}
+				\langle 1,5,5 \rangle\\
+				\langle 3,3,5 \rangle\\
+				\langle 3,4,4 \rangle
+			\end{aligned}
+		}_{\text{3 permutations each}}
+	\end{align*}
+	\begin{align}
+		\Pr(X = 11) = \dfrac{3 \cdot 3! + 3 \cdot 3}{216} = \dfrac{1}{8} \label{pr_x11}
+	\end{align}
+	
+	\item $X = 16$
+	\begin{align*}
+		\underbrace{
+			\begin{aligned}
+				\langle 4,6,6 \rangle\\
+				\langle 5,5,6 \rangle
+			\end{aligned}
+		}_{\text{3 permutations each}}
+	\end{align*}
+	\begin{align}
+		\Pr(X = 16) = \dfrac{2 \cdot 3}{216} = \dfrac{1}{36} \label{pr_x16}
+	\end{align}
+\end{itemize}
+Therefore, substituting (\ref{pr_x11}) and (\ref{pr_x16}) into (\ref{pr_x11_pr_x16}), we can conclude that
+\begin{align}
+	\Pr(E_i) = \left( 1 - \dfrac{1}{8} - \dfrac{1}{36} \right)^i \cdot \dfrac{1}{36} = \left( \dfrac{61}{72} \right)^i \cdot \dfrac{1}{36} \label{pr_ei}
+\end{align}
+and, because of (\ref{sum_pr_ei}), that
+\begin{align}
+	\Pr(E) = \dfrac{1}{36} \cdot \sum_{i = 0}^{\infty}\left( \dfrac{61}{72} \right)^i = \dfrac{1}{36} \cdot \dfrac{1}{1 - \dfrac{61}{72}} \simeq 0.18 \label{pr_e}
+\end{align}
+Note that we can write (\ref{pr_e}) since we obtained a convergent geometric series.\\
