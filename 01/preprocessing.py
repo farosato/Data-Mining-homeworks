@@ -3,7 +3,8 @@ import nltk
 from unidecode import unidecode
 import re
 
-stopwords = set(nltk.corpus.stopwords.words('english'))
+eng_stopwords = set(nltk.corpus.stopwords.words('english'))
+ita_stopwords = set(nltk.corpus.stopwords.words('italian'))
 stemmer = nltk.stem.porter.PorterStemmer()
 
 
@@ -44,7 +45,7 @@ def _isalnum(t):
 
 
 def _remove_stopwords(tokens):
-    return [t for t in tokens if t not in stopwords]
+    return [t for t in tokens if t not in eng_stopwords and t not in ita_stopwords]
 
 
 def _stem(tokens):
