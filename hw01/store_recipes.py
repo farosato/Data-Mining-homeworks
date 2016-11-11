@@ -4,7 +4,7 @@ import unicodecsv as csv
 from bs4 import BeautifulSoup
 import time
 
-SRC = './recipes'
+SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recipes')
 DEST = './recipes.tsv'
 HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method']
 

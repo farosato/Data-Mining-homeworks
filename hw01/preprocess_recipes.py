@@ -3,8 +3,9 @@ import preprocessing
 from store_recipes import HEADER_LINE
 from store_recipes import DEST as SRC
 import time
+import os.path
 
-DEST = './recipes-prep.tsv'
+DEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recipes-prep.tsv')
 
 if __name__ == "__main__":
     start_time = time.time()

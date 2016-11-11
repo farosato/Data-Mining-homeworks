@@ -1,8 +1,9 @@
 import re
 import urllib2
 from bs4 import BeautifulSoup
+import os.path
 
-DEST = './recipes.txt'
+DEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recipes.txt')
 SITEMAP_URL = 'http://www.bbc.co.uk/food/sitemap.xml'
 RECIPE_REGEX = 'recipes\/'
 

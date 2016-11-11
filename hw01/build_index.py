@@ -4,9 +4,10 @@ import pickle
 from preprocess_recipes import DEST as SRC
 from math import log10, sqrt
 import time
+import os.path
 
-DEST = 'doc_term_matrix_and_index.pickle'
-DEST_OPT = 'optimized_index.pickle'
+DEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'doc_term_matrix_and_index.pickle')
+DEST_OPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'optimized_index.pickle')
 FIELD_WEIGHTS = [4, 1, 1, 1, 1, 1, 3, 3, 2]  # sorted according to header line
 
 
