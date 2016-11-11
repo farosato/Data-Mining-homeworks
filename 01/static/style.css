@@ -1,15 +1,41 @@
 body {
-  background-color: blue;
   font-family: "Source Sans Pro", "Roboto", "Open Sans", Arial, sans-serif;
   font-size: 15px;
   max-width: 1132px;
   margin: auto;
 }
 
+.splash {
+  margin-top: 20vh;
+}
+
 h1 {
-  color: blue;
+  text-align: center;
+/*  font-family: 'Courgette', cursive;*/
+  font-family: 'Pacifico', cursive;
+  font-weight: 500;
+  font-size: 50px;
 }
 
 #search_bar_homepage {
+  margin: 40px auto;
   max-width: 590px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #d0d0d0;;
+  border-radius: 5px;
+}
+
+#search_button_homepage {
+  border: none;
+  color: #aaa;
+}
+
+#search_form_input_homepage {
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  font-size: 20px;
 }
