@@ -1,21 +1,31 @@
 <html>
 
-<head>
-  <link rel="stylesheet" href='/static/style.css' />
-</head>
+  <head>
+    <meta charset="utf-8">
+    <!-- Set viewport_width = device_width and reset scaling (responsive design) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCC Portfolio Challenge</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="static/style.css">
+  </head>
 
-<body>
-  <h1>Hello from a template!</h1>
-  <form id="search_form_homepage" class="search--home  js-search-form search--adv search--focus" name="x" method="GET" action="/">
-    <input id="search_form_input_homepage" class="js-search-input search__input--adv" type="text" autocomplete="off" name="q" tabindex="1" value="" autocapitalize="off" autocorrect="off">
-    <input id="search_button_homepage" class="search__button  js-search-button" type="submit" tabindex="2" value="S">
-    <input id="search_form_input_clear" class="search__clear  empty  js-search-clear" type="button" tabindex="3" value="X">
-    <div id="search_elements_hidden" class="search__hidden  js-search-hidden"><input type="hidden" name="t" value="hu" class="js-search-hidden-field"></div>
-    <div class="search__autocomplete" style="position: absolute; display: none;">
-      <div class="acp-wrap"></div>
-      <div class="acp-footer is-hidden"><span class="acp-footer__instructions">Select a !bang for a direct site search</span><span class="acp-footer__link"><a class="no-visited" href="/bang">View all !bangs</a></span></div>
-    </div>
-  </form>
-</body>
+  <body>
+  <div class="container-fluid">
+
+    <h1>Hello from a template!</h1>
+      <form id="search_form_homepage" name="x" method="GET" action="/">
+        <div id="search_bar_homepage" class="form-inline text-center">
+          <input id="search_form_input_homepage" type="text" class="form-control" autocomplete="off" autocapitalize="off" autocorrect="off">
+          <button id="search_button_homepage" class="btn btn-default" type="submit">
+            <i class="fa fa-search fa-2x"></i>
+          </button>
+        </div>
+      </form>
+
+  </div>
+  </body>
 
 </html>

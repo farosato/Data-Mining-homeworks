@@ -1,3 +1,15 @@
-#search_form_homepage {
-    margin: auto;
+body {
+  background-color: blue;
+  font-family: "Source Sans Pro", "Roboto", "Open Sans", Arial, sans-serif;
+  font-size: 15px;
+  max-width: 1132px;
+  margin: auto;
+}
+
+h1 {
+  color: blue;
+}
+
+#search_bar_homepage {
+  max-width: 590px;
 }
