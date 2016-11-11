@@ -359,9 +359,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# PyCharm config
-*/.idea
-
 # datasets
 hw01/recipes*/
 
