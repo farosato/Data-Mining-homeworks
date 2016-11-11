@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from hw01 import process_queries
 
 app = Flask(__name__)
 

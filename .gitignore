@@ -363,11 +363,11 @@ fabric.properties
 */.idea
 
 # datasets
-01/recipes*/
+hw01/recipes*/
 
 # easily computable output files
-01/recipes-prep.tsv
-01/*.pickle
+hw01/recipes-prep.tsv
+hw01/*.pickle
 
 # reports .pdf
 */report/*.pdf

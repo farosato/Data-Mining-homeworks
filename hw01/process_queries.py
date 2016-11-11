@@ -79,13 +79,18 @@ def present_recipe(recipe):
     print '\n'+('#'*SEPARATOR)
 
 
-if __name__ == "__main__":
-
+def load_index():
     with open(IDX_SRC, 'rb') as pickled_index:
         print 'Loading index...'
         start_time = time.time()
         index = pickle.load(pickled_index)
         print("Index loaded in %s seconds." % (time.time() - start_time))
+        return index
+
+
+if __name__ == "__main__":
+
+    index = load_index()
 
     query = raw_input('\n' + PROMPT)
     while query != '':
