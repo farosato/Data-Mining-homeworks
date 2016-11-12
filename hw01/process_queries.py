@@ -3,6 +3,7 @@ from query_processing import process_query
 from store_recipes import DEST as SRC, HEADER
 from build_index import DEST_OPT as IDX_SRC
 from operator import itemgetter
+import unicodecsv as csv
 import time
 
 RESULT_SIZE = 20
@@ -33,7 +34,15 @@ def retrieve_docs_contents(processing_result):
             if doc_id == result_ids[i]:
                 score = result_sorted_by_docid[i][1]
                 # convert the recipe from a list to a dictionary of prop_name -> prop_value pairs
-                recipe = dict(zip(HEADER, recipe.decode('utf-8').split('\t')))  # always decode as early as possible
+
+                # splitting on '\t' is not returning all recipes fields correctly
+                # (probably because unicodecsv separates fields in some strange way)
+                # So... Let the motherfucker deal with it!
+                # recipe = dict(zip(HEADER, recipe.decode('utf-8').split('\t')))  # always decode as early as possible
+
+                tsv_reader = csv.reader([recipe], delimiter='\t', encoding='utf-8')
+                recipe = [field for row in tsv_reader for field in row]
+                recipe = dict(zip(HEADER, recipe))
                 result_recipes.append((recipe, score))
                 i += 1
         result_recipes_sorted_by_score = sorted(result_recipes, key=itemgetter(1), reverse=True)
