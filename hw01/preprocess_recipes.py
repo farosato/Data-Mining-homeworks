@@ -1,6 +1,6 @@
 import unicodecsv as csv
 import preprocessing
-from store_recipes import HEADER_LINE
+from store_recipes import HEADER
 from store_recipes import DEST as SRC
 import time
 import os.path
@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     with open(DEST, 'wb') as out:
         tsvWriter = csv.writer(out, delimiter='\t')
-        tsvWriter.writerow(HEADER_LINE)
+        tsvWriter.writerow(HEADER)
 
         tsv = open(SRC, 'rb')
         tsvReader = csv.reader(tsv, delimiter='\t')

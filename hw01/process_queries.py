@@ -1,27 +1,20 @@
 import pickle
 from query_processing import process_query
-from store_recipes import DEST as SRC
+from store_recipes import DEST as SRC, HEADER
 from build_index import DEST_OPT as IDX_SRC
 from operator import itemgetter
 import time
 
 RESULT_SIZE = 20
 DOC_ID_OFFSET = 1
-REC_NAME = 0
-REC_AUTHOR = 1
-REC_PREP_TIME = 2
-REC_COOK_TIME = 3
-REC_PEOPLE_NUM = 4
-REC_DIET_INFO = 5
-REC_DESCR = 6
-REC_INGR = 7
-REC_METHOD = 8
 SEPARATOR = 30
 PROMPT = 'Type your query: '
 
 
-def retrieve_docs_contents(processing_result, to_console=True):
-    """Present to the user the contents of the K most related documents, either to console or to webapp"""
+def retrieve_docs_contents(processing_result):
+    """Returns a list of the query processing results.\n
+    Each result is a tuple (recipe, score).\n
+    The recipe is a dictionary containing for each recipe property the corresponding content."""
     if processing_result is None or len(processing_result) <= 0:
         # returns empty list to prevent webapp to crash
         return []
@@ -39,48 +32,47 @@ def retrieve_docs_contents(processing_result, to_console=True):
                 break
             if doc_id == result_ids[i]:
                 score = result_sorted_by_docid[i][1]
+                # convert the recipe from a list to a dictionary of prop_name -> prop_value pairs
+                recipe = dict(zip(HEADER, recipe))
                 result_recipes.append((recipe, score))
                 i += 1
         result_recipes_sorted_by_score = sorted(result_recipes, key=itemgetter(1), reverse=True)
 
-        # present first K results contents
-        # if to_console is True, then simply prints recipes on screen one after the other
-        # otherwise, returns a list of dictionaries containing first K results
-        if to_console:
-            for result_num, (recipe, score) in enumerate(result_recipes_sorted_by_score):
-                if result_num >= RESULT_SIZE:
-                    break
-                print '\nResult #%d (score: %f)' % (result_num + 1, score)
-                present_recipe(recipe.split('\t'))
-        else:
-            # TODO return a list of dictionaries representing recipes and related contents
-            return result_recipes_sorted_by_score[:RESULT_SIZE]
+        return result_recipes_sorted_by_score
+
+
+def print_to_console(scored_recipes, max_num=RESULT_SIZE):
+    for result_num, (recipe, score) in enumerate(scored_recipes):
+        if result_num >= max_num:
+            break
+        print '\nResult #%d (score: %f)' % (result_num + 1, score)
+        present_recipe(recipe.split('\t'))
 
 
 def present_recipe(recipe):
     # print recipe in a structured way
-    print '\n\"' + recipe[REC_NAME] + '\" by ' + recipe[REC_AUTHOR]
-    print 'Preparation time: ' + recipe[REC_PREP_TIME]
-    print 'Cooking time: ' + recipe[REC_COOK_TIME]
+    print '\n\"' + recipe['title'] + '\" by ' + recipe['author']
+    print 'Preparation time: ' + recipe['prep_time']
+    print 'Cooking time: ' + recipe['cook_time']
 
-    people_num = recipe[REC_PEOPLE_NUM].split()
+    people_num = recipe['serves'].split()
     if len(people_num) == 1:
         print 'Serves ' + people_num[0]
     else:
-        print recipe[REC_PEOPLE_NUM]
+        print recipe['serves']
 
-    if recipe[REC_DIET_INFO] != '':
-        print 'Dietary: ' + recipe[REC_DIET_INFO]
+    if recipe['dietary_info'] != '':
+        print 'Dietary: ' + recipe['dietary_info']
 
-    if recipe[REC_DESCR] != '':
-        print '\nDescription:\n' + recipe[REC_DESCR]
+    if recipe['description'] != '':
+        print '\nDescription:\n' + recipe['description']
 
     print '\nIngredients:'
-    for i in recipe[REC_INGR].split('|'):
+    for i in recipe['ingredients'].split('|'):
         print '- ' + i.strip()
 
     print '\nMethod:'
-    for i in recipe[REC_METHOD].split('|'):
+    for i in recipe['method'].split('|'):
         print '- ' + i.strip()
 
     print '\n'+('#'*SEPARATOR)
@@ -102,6 +94,7 @@ if __name__ == "__main__":
     query = raw_input('\n' + PROMPT)
     while query != '':
         start_time = time.time()
-        retrieve_docs_contents(process_query(index, query))
+        scored_recipes = retrieve_docs_contents(process_query(index, query))
+        print_to_console(scored_recipes)
         print("Query answered in %s seconds." % (time.time() - start_time))
         query = raw_input('\n' + PROMPT)

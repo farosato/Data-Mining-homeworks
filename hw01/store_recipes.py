@@ -7,7 +7,8 @@ import re
 
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recipes')
 DEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recipes.tsv')
-HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method', 'url_id']
+HEADER = ['title', 'author', 'prep_time', 'cook_time', 'serves',
+               'dietary_info', 'description', 'ingredients', 'method', 'url_id']
 
 if __name__ == "__main__":
     start_time = time.time()
@@ -15,7 +16,7 @@ if __name__ == "__main__":
     # parse recipes and put data in a single .tsv file
     with open(DEST, 'wb') as out:
         tsvWriter = csv.writer(out, delimiter='\t')
-        tsvWriter.writerow(HEADER_LINE)
+        tsvWriter.writerow(HEADER)
 
         for f in listdir(SRC):
             print f
