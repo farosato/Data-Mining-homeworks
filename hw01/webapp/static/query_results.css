@@ -69,9 +69,30 @@ body {
   margin-bottom: 25px;
 }
 
-h3 {
-  font-size: 22px;
-  margin-bottom: 3px;
+.r_title, .r_author, .r_url, .r_description {
+  white-space: nowrap;
 }
 
-span {}
+.r_title {
+  font-size: 22px;
+  margin-bottom: 0px;
+}
+
+.r_author {
+  font-size: 0.7em;
+}
+
+.r_url, .r_description {
+  display: block;
+  overflow: hidden;
+}
+
+.r_url {
+  color: #006642;
+  font-style: normal;
+}
+
+.r_description {
+  line-height: 1.3em;
+  max-height: 2.6em;
+}
