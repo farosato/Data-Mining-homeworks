@@ -61,19 +61,19 @@ def _parse_query(text):
             not_group.extend(get_special_not_group(t[1:]))
         else:
             conj_groups[group_idx].append(t)
-    conj_groups = [preprocessing._stem(group) for group in conj_groups]
-    not_group = preprocessing._stem(not_group)
+    conj_groups = [preprocessing.stem(group) for group in conj_groups]
+    not_group = preprocessing.stem(not_group)
     return conj_groups, not_group
 
 
 def get_special_not_group(keyword):
     result = []
     if keyword == VEGETARIAN_KEYWORD:
-        result = preprocessing.stem(VEGETARIAN_NOT_GROUP)
+        result = VEGETARIAN_NOT_GROUP
     elif keyword == VEGAN_KEYWORD:
-        result = preprocessing.stem(VEGETARIAN_NOT_GROUP + VEGAN_NOT_GROUP)
+        result = VEGETARIAN_NOT_GROUP + VEGAN_NOT_GROUP
     elif keyword == LACTOSE_INT_KEYWORD:
-        result = preprocessing.stem(LACTOSE_INT_NOT_GROUP)
+        result = LACTOSE_INT_NOT_GROUP
     return result
 
 
@@ -157,6 +157,9 @@ def _remove_docs_with_not_terms(index, scores, not_terms):
     # "merging subtraction algorithm"
     if len(scores) <= 0:
         return []
+
+    # get a list of the not terms actually present in the index
+    not_terms = [term for term in not_terms if term in index]
 
     running_pruner = scores
     for term in not_terms:
