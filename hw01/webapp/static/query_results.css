@@ -69,7 +69,7 @@ body {
   margin-bottom: 25px;
 }
 
-.r_title, .r_author, .r_url, .r_description {
+.r_title, .r_author, .r_url {
   white-space: nowrap;
 }
 
