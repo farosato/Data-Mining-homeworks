@@ -11,11 +11,11 @@ if __name__ == "__main__":
     start_time = time.time()
 
     with open(DEST, 'wb') as out:
-        tsvWriter = csv.writer(out, delimiter='\t')
+        tsvWriter = csv.writer(out, delimiter='\t', encoding='utf-8')
         tsvWriter.writerow(HEADER)
 
         tsv = open(SRC, 'rb')
-        tsvReader = csv.reader(tsv, delimiter='\t')
+        tsvReader = csv.reader(tsv, delimiter='\t', encoding='utf-8')
 
         next(tsvReader)  # skip header line
         for row in tsvReader:

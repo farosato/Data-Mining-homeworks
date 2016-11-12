@@ -33,7 +33,7 @@ def retrieve_docs_contents(processing_result):
             if doc_id == result_ids[i]:
                 score = result_sorted_by_docid[i][1]
                 # convert the recipe from a list to a dictionary of prop_name -> prop_value pairs
-                recipe = dict(zip(HEADER, recipe.split('\t')))
+                recipe = dict(zip(HEADER, recipe.decode('utf-8').split('\t')))  # always decode as early as possible
                 result_recipes.append((recipe, score))
                 i += 1
         result_recipes_sorted_by_score = sorted(result_recipes, key=itemgetter(1), reverse=True)

@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # Scan each doc, and each term in it, building as you go both
     # the doc-term (sparse) matrix and (its transpose) the index.
     with open(SRC, 'rb') as tsv_file:
-        tsvReader = csv.reader(tsv_file, delimiter='\t')
+        tsvReader = csv.reader(tsv_file, delimiter='\t', encoding='utf-8')
         next(tsvReader)  # skip header line
 
         # the index is represented as a dictionary of term -> list of postings pairs:

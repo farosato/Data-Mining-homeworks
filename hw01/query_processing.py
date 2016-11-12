@@ -47,7 +47,7 @@ def _parse_query(text):
     (a, b, ...), (c, d, ...) are conjunctive groups (i.e. terms in and)
     (-e, -f, ...) is the not-group (i.e. terms we don't want in the result)
     """
-    tokens = preprocessing.preprocess(text.decode())  # need the query to be unicode
+    tokens = preprocessing.preprocess(text.decode(), stemming=False)  # need the query to be unicode
     conj_groups = [[]]
     not_group = []
     group_idx = 0
@@ -61,6 +61,8 @@ def _parse_query(text):
             not_group.extend(get_special_not_group(t[1:]))
         else:
             conj_groups[group_idx].append(t)
+    conj_groups = [preprocessing._stem(group) for group in conj_groups]
+    not_group = preprocessing._stem(not_group)
     return conj_groups, not_group
 
 
