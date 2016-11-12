@@ -38,7 +38,6 @@ body {
 
 #search_bar {
   background-color: white;
-  max-width: 590px;
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
@@ -85,6 +84,7 @@ body {
 .r_url, .r_description {
   display: block;
   overflow: hidden;
+  margin-top: 0px;
 }
 
 .r_url {
