@@ -28,14 +28,16 @@
     </div>
     
     <div class="results-container">
+      {% for r in results %}
       <div class="result">
-        <h3><a href="#">Recipe Title</a></h3>
-        <span>Recipe description extract - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+        <h3><a href="#">Recipes title (access dictionary entry from here)</a></h3>
+        <span>Recipes description (access dictionary entry from here)</span>
       </div>
+      {% else %}
       <div class="result">
-        <h3><a href="#">Recipe Title</a></h3>
-        <span>Recipe description extract - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+        <h3>Unbelievable.  No recipes matching your query.</h3>
       </div>
+      {% endfor %}
     </div>
   </div>
   </body>

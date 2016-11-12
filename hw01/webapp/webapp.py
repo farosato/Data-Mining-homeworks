@@ -9,20 +9,17 @@ import process_queries
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def index():
     query = request.args.get('query')
     if query:
-        #
-        # Insert query processing here
-        #
-        return render_template('query_results.html', query=query)  # expand me
+        results = process_queries.retrieve_docs_contents(process_queries.process_query(inv_index, str(query)), False)
+        return render_template('query_results.html', query=query, results=results)
     else:
         return send_file('index.html')
 
 
 if __name__ == '__main__':
-    #
-    # Insert index loading here
-    #
+    inv_index = process_queries.load_index()
     app.run(debug=True, host='0.0.0.0')

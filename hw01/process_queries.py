@@ -20,10 +20,11 @@ SEPARATOR = 30
 PROMPT = 'Type your query: '
 
 
-def retrieve_docs_contents(processing_result):
-    """Present to the user the contents of the K most related documents."""
+def retrieve_docs_contents(processing_result, to_console=True):
+    """Present to the user the contents of the K most related documents, either to console or to webapp"""
     if processing_result is None or len(processing_result) <= 0:
-        return
+        # returns empty list to prevent webapp to crash
+        return []
 
     with open(SRC, 'r') as corpus:
         # get a sorted list of the doc-ids in the query processing result
@@ -42,12 +43,18 @@ def retrieve_docs_contents(processing_result):
                 i += 1
         result_recipes_sorted_by_score = sorted(result_recipes, key=itemgetter(1), reverse=True)
 
-        # present first K contents
-        for result_num, (recipe, score) in enumerate(result_recipes_sorted_by_score):
-            if result_num >= RESULT_SIZE:
-                break
-            print '\nResult #%d (score: %f)' % (result_num + 1, score)
-            present_recipe(recipe.split('\t'))
+        # present first K results contents
+        # if to_console is True, then simply prints recipes on screen one after the other
+        # otherwise, returns a list of dictionaries containing first K results
+        if to_console:
+            for result_num, (recipe, score) in enumerate(result_recipes_sorted_by_score):
+                if result_num >= RESULT_SIZE:
+                    break
+                print '\nResult #%d (score: %f)' % (result_num + 1, score)
+                present_recipe(recipe.split('\t'))
+        else:
+            # TODO return a list of dictionaries representing recipes and related contents
+            return result_recipes_sorted_by_score[:RESULT_SIZE]
 
 
 def present_recipe(recipe):
