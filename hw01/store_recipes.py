@@ -3,10 +3,11 @@ from os import listdir
 import unicodecsv as csv
 from bs4 import BeautifulSoup
 import time
+import re
 
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recipes')
 DEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'recipes.tsv')
-HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method']
+HEADER_LINE = ['title', 'author', 'prep_time', 'cook_time', 'num_people', 'dietary_info', 'description', 'ingredients', 'method', 'url_id']
 
 if __name__ == "__main__":
     start_time = time.time()
@@ -52,6 +53,8 @@ if __name__ == "__main__":
             for m in recipeSoup.find_all('p', class_='recipe-method__list-item-text'):
                 method.append(m.text.strip().replace('\n', ' '))
             row.append(" | ".join(method))
+
+            row.append(re.sub(r'\.html', '', f))
 
             tsvWriter.writerow(row)
             fid.close()

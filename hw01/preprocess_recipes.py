@@ -21,7 +21,7 @@ if __name__ == "__main__":
         for row in tsvReader:
             outRow = []
 
-            for field in row:
+            for field in row[:-1]:  # ignore the url field
                 tokens = preprocessing.preprocess(field)
                 outRow.append(" ".join(tokens))
 
