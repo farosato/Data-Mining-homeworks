@@ -8,12 +8,12 @@ ita_stopwords = set(nltk.corpus.stopwords.words('italian'))
 stemmer = nltk.stem.porter.PorterStemmer()
 
 
-def preprocess(text, nonalnum_removal=True, stem=True):
+def preprocess(text, nonalnum_removal=True, stemming=True):
     tokens = _tokenize(text)
     tokens = _normalize(tokens)
     if nonalnum_removal: tokens = _remove_non_alphanum(tokens)
     tokens = _remove_stopwords(tokens)
-    if stem: tokens = _stem(tokens)
+    if stemming: tokens = stem(tokens)
     return tokens
 
 
@@ -48,5 +48,5 @@ def _remove_stopwords(tokens):
     return [t for t in tokens if t not in eng_stopwords and t not in ita_stopwords]
 
 
-def _stem(tokens):
+def stem(tokens):
     return [stemmer.stem(t) for t in tokens]

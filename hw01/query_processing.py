@@ -1,6 +1,7 @@
 """ Module containing query processing functions. """
 import preprocessing
 
+# Be careful that keywords are words s.t. stemming leaves them unchanged
 VEGETARIAN_KEYWORD = 'vegetarian'
 VEGAN_KEYWORD = 'vegan'
 LACTOSE_INT_KEYWORD = 'lactose-int'
@@ -66,11 +67,11 @@ def _parse_query(text):
 def get_special_not_group(keyword):
     result = []
     if keyword == VEGETARIAN_KEYWORD:
-        result = VEGETARIAN_NOT_GROUP
+        result = preprocessing.stem(VEGETARIAN_NOT_GROUP)
     elif keyword == VEGAN_KEYWORD:
-        result = VEGETARIAN_NOT_GROUP+VEGAN_NOT_GROUP
+        result = preprocessing.stem(VEGETARIAN_NOT_GROUP + VEGAN_NOT_GROUP)
     elif keyword == LACTOSE_INT_KEYWORD:
-        result = LACTOSE_INT_NOT_GROUP
+        result = preprocessing.stem(LACTOSE_INT_NOT_GROUP)
     return result
 
 
