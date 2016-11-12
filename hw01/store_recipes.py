@@ -15,8 +15,8 @@ if __name__ == "__main__":
 
     # parse recipes and put data in a single .tsv file
     with open(DEST, 'wb') as out:
-        tsvWriter = csv.writer(out, delimiter='\t', encoding='utf-8')
-        tsvWriter.writerow(HEADER)
+        tsv_writer = csv.writer(out, delimiter='\t', encoding='utf-8')
+        tsv_writer.writerow(HEADER)
 
         for f in listdir(SRC):
             print f
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
             row.append(re.sub(r'\.html', '', f))
 
-            tsvWriter.writerow(row)
+            tsv_writer.writerow(row)
             fid.close()
 
     print("\n--- %s seconds ---" % (time.time() - start_time))

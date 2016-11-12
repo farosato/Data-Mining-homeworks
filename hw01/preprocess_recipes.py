@@ -11,21 +11,21 @@ if __name__ == "__main__":
     start_time = time.time()
 
     with open(DEST, 'wb') as out:
-        tsvWriter = csv.writer(out, delimiter='\t', encoding='utf-8')
-        tsvWriter.writerow(HEADER)
+        tsv_writer = csv.writer(out, delimiter='\t', encoding='utf-8')
+        tsv_writer.writerow(HEADER)
 
         tsv = open(SRC, 'rb')
-        tsvReader = csv.reader(tsv, delimiter='\t', encoding='utf-8')
+        tsv_reader = csv.reader(tsv, delimiter='\t', encoding='utf-8')
 
-        next(tsvReader)  # skip header line
-        for row in tsvReader:
+        next(tsv_reader)  # skip header line
+        for row in tsv_reader:
             outRow = []
 
             for field in row[:-1]:  # ignore the url field
                 tokens = preprocessing.preprocess(field)
                 outRow.append(" ".join(tokens))
 
-            tsvWriter.writerow(outRow)
+            tsv_writer.writerow(outRow)
 
         tsv.close()
 

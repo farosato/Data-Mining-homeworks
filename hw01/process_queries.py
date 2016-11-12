@@ -35,11 +35,10 @@ def retrieve_docs_contents(processing_result):
                 score = result_sorted_by_docid[i][1]
                 # convert the recipe from a list to a dictionary of prop_name -> prop_value pairs
 
-                # splitting on '\t' is not returning all recipes fields correctly
-                # (probably because unicodecsv separates fields in some strange way)
-                # So... Let the motherfucker deal with it!
                 # recipe = dict(zip(HEADER, recipe.decode('utf-8').split('\t')))  # always decode as early as possible
-
+                # Splitting on '\t' is not returning all recipes fields correctly,
+                # probably because unicodecsv separates fields in some strange way.
+                # So... Let the motherfucker deal with it!
                 tsv_reader = csv.reader([recipe], delimiter='\t', encoding='utf-8')
                 recipe = [field for row in tsv_reader for field in row]
                 recipe = dict(zip(HEADER, recipe))

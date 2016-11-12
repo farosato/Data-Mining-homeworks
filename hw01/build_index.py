@@ -33,8 +33,8 @@ if __name__ == "__main__":
     # Scan each doc, and each term in it, building as you go both
     # the doc-term (sparse) matrix and (its transpose) the index.
     with open(SRC, 'rb') as tsv_file:
-        tsvReader = csv.reader(tsv_file, delimiter='\t', encoding='utf-8')
-        next(tsvReader)  # skip header line
+        tsv_reader = csv.reader(tsv_file, delimiter='\t', encoding='utf-8')
+        next(tsv_reader)  # skip header line
 
         # the index is represented as a dictionary of term -> list of postings pairs:
         # a posting is represented as a list [doc_id, tf]
@@ -48,7 +48,7 @@ if __name__ == "__main__":
         # e.g. [ { 'apple': [0, 3], 'banana': [0, 5], ... }, { ... }, ... ]
         doc_term_matrix = []
 
-        for doc_id, doc in enumerate(tsvReader):
+        for doc_id, doc in enumerate(tsv_reader):
             doc_term_matrix.append({})
             for field_id, field in enumerate(doc):
                 for term in field.split():
