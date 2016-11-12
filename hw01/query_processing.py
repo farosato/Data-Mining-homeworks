@@ -7,7 +7,7 @@ VEGAN_KEYWORD = 'vegan'
 LACTOSE_INT_KEYWORD = 'lactose-int'
 
 VEGETARIAN_NOT_GROUP = ['meat', 'steak', 'beef', 'pork', 'chicken', 'ragu', 'fillet', 'scallops', 'prosciutto', 'fish',
-                        'tuna', 'mussels', 'clams', 'lobster', 'squid', 'sardine', 'prawns']
+                        'tuna', 'mussels', 'clams', 'lobster', 'squid', 'sardine', 'prawns', 'bacon', 'ham']
 VEGAN_NOT_GROUP = ['cheese', 'milk', 'egg', 'butter', 'parmesan']  # list only terms that are not in VEGETARIAN
 LACTOSE_INT_NOT_GROUP = ['cheese', 'milk', 'butter', 'parmesan', 'cream']
 
@@ -87,9 +87,9 @@ def _compute_scores(index, query_vec):
     # for each doc in the partial intersection thus far (instead of the term weight of a simple posting).
 
     # get a list of the query terms actually present in the index
-    query_terms = [term for term in query_vec.keys() if term in index]
+    query_terms = query_vec.keys()
 
-    if len(query_terms) <= 0:
+    if len(query_terms) <= 0 or [term for term in query_terms if term not in index]:
         return []
 
     # initialize the running intersection score using the first term posting list
