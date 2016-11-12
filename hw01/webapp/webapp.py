@@ -13,10 +13,16 @@ app = Flask(__name__)
 def index():
     query = request.args.get('query')
     if query:
-        return "Query: " + query
+        #
+        # Insert query processing here
+        #
+        return render_template('query_results.html', query=query)  # expand me
     else:
         return send_file('index.html')
 
 
 if __name__ == '__main__':
+    #
+    # Insert index loading here
+    #
     app.run(debug=True, host='0.0.0.0')

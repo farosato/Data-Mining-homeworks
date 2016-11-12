@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <!-- Set viewport_width = device_width and reset scaling (responsive design) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ query }} at ChefChefGo</title>
+    <title>{{ query }} - ChefChefGo</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro|Pacifico" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -19,7 +19,7 @@
       <p>ChefChefGo</p>
       <form id="search_form" name="x" method="GET" action="/">
         <div id="search_bar" class="form-inline">
-          <input id="search_form_input" name="query" type="text" class="form-control" autocomplete="off" autocapitalize="off" autocorrect="off" required>
+          <input id="search_form_input" name="query" type="text" class="form-control" value="{{ query }}" autocomplete="off" autocapitalize="off" autocorrect="off" required>
           <button id="search_button" class="btn btn-default" type="submit">
             <i class="fa fa-search fa-2x"></i>
           </button>
