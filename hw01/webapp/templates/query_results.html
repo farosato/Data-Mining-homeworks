@@ -19,7 +19,8 @@
       <p>ChefChefGo</p>
       <form id="search_form" name="x" method="GET" action="/">
         <div id="search_bar" class="form-inline">
-          <input id="search_form_input" name="query" type="text" class="form-control" value="{{ query }}" autocomplete="off" autocapitalize="off" autocorrect="off" required>
+          <input id="search_form_input" name="query" type="text" class="form-control" value="{{ query }}"
+                 autocomplete="off" autocapitalize="off" autocorrect="off" required>
           <button id="search_button" class="btn btn-default" type="submit">
             <i class="fa fa-search fa-2x"></i>
           </button>
@@ -33,10 +34,13 @@
         {% set recipe_url = 'http://www.bbc.co.uk/food/recipes/' + recipe["url_id"] %}
         <h3 class="r_title">
           <a href="{{ recipe_url }}">{{ recipe["title"] }}</a>
+          {% if recipe["author"] != '' %}
           <span class="r_author">by {{ recipe["author"] }}</span>
+          {% endif %}
         </h3>
         <cite class="r_url">{{ recipe_url }}</cite>
         <span class="r_description">{{ recipe["description"] }}</span>
+        <span class="r_score">Score: {{ score }}</span>
       </div>
       {% else %}
       <div class="result">
