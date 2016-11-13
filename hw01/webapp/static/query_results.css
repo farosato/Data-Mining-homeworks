@@ -68,7 +68,13 @@ body {
   margin-bottom: 25px;
 }
 
-.r_title, .r_author, .r_url {
+.stats {
+    font-size: 15px;
+    color: #808080;
+    margin: 15px auto;
+}
+
+.r_title, .r_author, .r_url, .r_score {
   white-space: nowrap;
 }
 
@@ -78,7 +84,7 @@ body {
 }
 
 .r_author {
-  font-size: 0.7em;
+  font-size: 15px;
 }
 
 .r_url, .r_description {
@@ -95,4 +101,10 @@ body {
 .r_description {
   line-height: 1.3em;
   max-height: 2.6em;
+}
+
+.r_score {
+    font-size: 14px;
+    color: #808080;
+    margin: 15px auto;
 }
