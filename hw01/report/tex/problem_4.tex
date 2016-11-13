@@ -123,7 +123,11 @@ To process this type of queries, we parse the textual query, extracting the conj
 
 \medskip
 
-\noindent As a last addition, we developed a simple \textbf{\textit{web interface}} using \textit{Flask}\cite{flask} microframework. From the home page, you can type your query and get the list of most related recipes. Clicking on a recipe you are redirected to the related page on BBC site\cite{bbc}.
+\noindent As a last addition, we developed a simple \textbf{\textit{web interface}} for the search engine using the \textit{Flask}\cite{flask} microframework. From the home page, you can type a query and get a nicely formatted list of the corresponding most related recipes. Clicking on a particular recipe redirects you to the related page on the BBC site\cite{bbc}.
+\begin{center}
+	\vspace{5mm}
+	\includegraphics[scale = 0.5]{img/homepage.jpg}
+\end{center}
 
 
 \subsubsection{Instructions to run}
@@ -132,26 +136,42 @@ To run the command line interface, open a terminal and type
 \begin{lstlisting}
 	$ python process_queries.py
 \end{lstlisting}
-To run the webapp (in local), open a terminal and type
+Then, follow the format specified in the previous section to input a legal query. You can exit the program by simply pressing Enter without inserting text (or forcing process termination as well).
+
+\bigskip
+
+\noindent To run the webapp (locally), open a terminal and type
 \begin{lstlisting}
 	$ python webapp.py
 \end{lstlisting}
-Then, open a browser and go to \url{localhost:5000}  (note that you still need Internet connection to be redirected to BBC site\cite{bbc}).\\
-The system takes some seconds at the beginning to load the index in memory from storage. Then, follow the format specified in the previous section to input a legal query. You can exit the program by simply pressing Enter without inserting text (or forcing process termination as well).
+Then, open a browser and go to \url{localhost:5000}  (note that you still need a working Internet connection to view the recipes on the BBC site\cite{bbc}).
 
-
+\newpage
 \subsubsection{Examples}
 
+\begin{itemize}
+	\item "roast chicken and potatoes"
+	\begin{center}
+		\includegraphics[scale = 0.5]{img/query1.jpg}
+	\end{center}
+	
+	\item "roast chicken $||$ potatoes"
+	\begin{center}
+		\includegraphics[scale = 0.5]{img/query2.jpg}
+	\end{center}
 
+	\item "chocolate dessert 10 minutes -peanuts"
+	\begin{center}
+		\includegraphics[scale = 0.5]{img/query3.jpg}
+	\end{center}
 
+	\item "spaghetti *vegetarian"
+	\begin{center}
+		\includegraphics[scale = 0.5]{img/query4.jpg}
+	\end{center}
 
-
-
-
-
-
-
-
-
-
-
+	\item "parmigiana $||$ lasagne $||$ cannelloni *vegetarian -artichokes"
+	\begin{center}
+		\includegraphics[scale = 0.5]{img/query5.jpg}
+	\end{center}	
+\end{itemize}

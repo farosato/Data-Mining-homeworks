@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     with open(DEST, 'wb') as out:
         tsv_writer = csv.writer(out, delimiter='\t', encoding='utf-8')
-        tsv_writer.writerow(HEADER)
+        tsv_writer.writerow(HEADER[:len(HEADER)-1])
 
         tsv = open(SRC, 'rb')
         tsv_reader = csv.reader(tsv, delimiter='\t', encoding='utf-8')
