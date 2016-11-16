@@ -1,40 +1,81 @@
 body {
-  font-family: "Source Sans Pro", "Roboto", "Open Sans", Arial, sans-serif;
-  font-size: 15px;
-  max-width: 1132px;
-  margin: auto;
+    font-family: "Source Sans Pro", "Roboto", "Open Sans", Arial, sans-serif;
+    font-size: 15px;
+    /*max-width: 1132px;*/
+    margin: auto;
 }
 
 .splash {
-  margin-top: 20vh;
+    margin-top: 20vh;
 }
 
 h1 {
-  text-align: center;
-  font-family: 'Pacifico', cursive;
-  font-weight: 500;
-  font-size: 50px;
+    text-align: center;
+    font-family: 'Pacifico', cursive;
+    font-weight: 500;
+    font-size: 50px;
 }
 
 #search_bar_homepage {
-  margin: 40px auto;
-  max-width: 590px;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #d0d0d0;;
-  border-radius: 5px;
+    margin: 40px auto;
+    max-width: 590px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #d0d0d0;;
+    border-radius: 5px;
 }
 
 #search_button_homepage {
-  border: none;
-  color: #aaa;
+    border: none;
+    color: #aaa;
 }
 
 #search_form_input_homepage {
-  width: 100%;
-  border: none;
-  box-shadow: none;
-  font-size: 20px;
+    width: 100%;
+    border: none;
+    box-shadow: none;
+    font-size: 20px;
 }
+
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #3e8e41;
+}
+
+.dropdown {
+    float: right;
+    position: relative;
+    display: inline-block;
+
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    right: 0;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/*.dropdown a:hover {background-color: #f1f1f1}*/
+
+.show {display:block;}
