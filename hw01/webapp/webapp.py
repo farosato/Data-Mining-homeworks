@@ -11,6 +11,9 @@ import process_queries as pq
 
 app = Flask(__name__)
 
+# has to be defined outside main, to allow queries from website
+index = pq.load_index()
+
 
 @app.route('/')
 def root():
@@ -25,5 +28,4 @@ def root():
 
 
 if __name__ == '__main__':
-    index = pq.load_index()
     app.run(debug=False, host='0.0.0.0')  # set debug to True to allow auto-reloading during development
