@@ -11,13 +11,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/static/style.css">
-    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
   </head>
 
   <body>
   <div class="dropdown">
-    <!--<i onclick="showHelp()" class="material-icons">help</i>-->
-    <button onclick="showHelp()" class="dropbtn">Help</button>
+    <button onclick="showHelp()" class="dropbtn">
+      <!--showHelp() is not called if click is on icon-->
+      <i class="fa fa-question-circle fa-lg" aria-hidden="true"></i>
+    </button>
     <div id="dropdownHelp" class="dropdown-content">
       <a>
         To get some recipes, you just have to type the terms (separated by blank space) you want to be included in the results.
