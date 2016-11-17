@@ -1,6 +1,7 @@
 body {
   font-family: "Source Sans Pro", "Roboto", "Open Sans", Arial, sans-serif;
   font-size: 15px;
+  width: 100%;
 }
 
 .container-fluid {
@@ -60,8 +61,17 @@ body {
 }
 
 .results-container {
-  margin-left: 145px;
-  max-width: 575px;
+  /*for phones*/
+  margin-left: 5px;
+  margin-right: 115px;
+  width: 100%;
+}
+@media only screen and (min-width: 768px) {
+    /*for desktop*/
+    .results-container {
+      margin-left: 145px;
+      max-width: 575px;
+    }
 }
 
 .result {
@@ -74,9 +84,10 @@ body {
     margin: 15px auto;
 }
 
+/*
 .r_title, .r_author, .r_url, .r_score {
   white-space: nowrap;
-}
+}*/
 
 .r_title {
   font-size: 22px;
