@@ -11,13 +11,35 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/static/style.css">
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
   </head>
 
   <body>
   <div class="dropdown">
-    <button onclick="myFunction()" class="dropbtn">Dropdown</button>
-    <div id="myDropdown" class="dropdown-content">
-      <a href="#help">Insert queries explanation here...</a>
+    <!--<i onclick="showHelp()" class="material-icons">help</i>-->
+    <button onclick="showHelp()" class="dropbtn">Help</button>
+    <div id="dropdownHelp" class="dropdown-content">
+      <a>
+        To get some recipes, you just have to type the terms (separated by blank space) you want to be included in the results.
+        Then, you can also use some advanced features to refine your queries.
+      </a>
+      <a>
+        You can type two (or more) blocks of terms separated by '||' to get the union of the results of each block.
+        For instance, type<br>
+        <center>"spaghetti carbonara || lasagna"</center>
+        to get recipes related to spaghetti carbonara OR lasagna.
+      </a>
+      <a>
+        In addition, you can state if your results must NOT contain some particular terms. You just have to write these terms
+        putting '-' before each of them (at the end of the query). For instance, type<br>
+        <center>"spaghetti carbonara || lasagna -artichokes"</center>
+        to get only the recipes that do NOT include artichokes (maybe you don't like them, or you don't have them available!).
+      </a>
+      <a>
+        If you follow a particular diet, then you may find our diet-aware queries very useful. You just have to write some keywords,
+        putting '*' before each of them (at the end of the query) and all recipes that are NOT COMPLIANT with the diets you
+        specified will be excluded. At the moment, you can use following keywords: 'vegetarian', 'vegan', 'lactose-int'.
+      </a>
     </div>
   </div>
   <div class="container-fluid">
@@ -37,8 +59,8 @@
   <script>
   /* When the user clicks on the button,
   toggle between hiding and showing the dropdown content */
-  function myFunction() {
-      document.getElementById("myDropdown").classList.toggle("show");
+  function showHelp() {
+      document.getElementById("dropdownHelp").classList.toggle("show");
   }
 
   // Close the dropdown if the user clicks outside of it
