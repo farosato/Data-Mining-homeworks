@@ -5,7 +5,7 @@
     <!-- Set viewport_width = device_width and reset scaling (responsive design) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChefChefGo</title>
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro|Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro|Pacifico|Ubuntu+Mono|Bitter" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -15,39 +15,34 @@
 
   <body>
   <div class="dropdown">
-    <button onclick="showHelp()" class="dropbtn">
+    <button onclick="showHelp()" class="btn btn-default dropbtn">
       <i id="helpIcon" class="fa fa-question-circle fa-lg"></i>
     </button>
     <div id="dropdownHelp" class="dropdown-content">
       <a>
-        To get some recipes, you just have to type the terms (separated by blank space) you want to be included in the results.
-        Then, you can also use some advanced features to refine your queries.<br><br>
+        <b>ChefChefGo</b> is a simple recipe search engine.<br><br>
+        
+        Just type the terms you're interested in (e.g. <span class="query-example">"spaghetti carbonara"</span>) and press search.<br><br>
+        
+        Advanced operators let you refine your queries:<br><br>
 
-        <b>Results union</b><br>
-        You can type two (or more) blocks of terms separated by <b>||</b> to get the union of the results of each block.
-        For instance, type<br>
-        <center>"spaghetti carbonara || lasagna"</center>
-        to get recipes related to spaghetti carbonara OR lasagna.<br><br>
+        <b>Union operator ||</b><br>
+        Type two (or more) blocks of terms separated by <b>||</b> to get the union of the results of each block (e.g. <span class="query-example">"spaghetti carbonara || lasagna"</span> to get recipes related to spaghetti carbonara <em>or</em> lasagna).<br><br>
 
-        <b>Results filtering</b><br>
-        You can state if your results must NOT contain some specific terms. You just have to write these terms
-        putting <b>-</b> before each of them (at the end of the query). For instance, type<br>
-        <center>"spaghetti carbonara || lasagna -artichokes"</center>
-        to get only the recipes that do NOT include artichokes (maybe you don't like them, or you don't have them available!).<br><br>
+        <b>Negation operator -</b><br>
+        You can exclude recipes that contain certain terms by prefixing them with the <b>-</b> operator (e.g. <span class="query-example">"spaghetti -artichokes"</span> to get recipes for spaghetti that do <em>not</em> contain artichokes).<br><br>
 
-        <b>Diet-aware results</b><br>
-        If you follow a particular diet, then you may find our diet-aware queries very useful. You just have to write some keywords,
-        putting <b> * </b> before each of them (at the end of the query) and all recipes that are NOT COMPLIANT with the diets you
-        specified will be excluded. At the moment, available keywords are:
-        <li>vegetarian</li>
-        <li>vegan</li>
-        <li>lactose-int</li>
+        <b>Diet filtering</b><br>
+        You can refine your search appending the following keywords to your query to filter out results not compliant with your diet:
+        <li><span class="query-example">*vegetarian</span></li>
+        <li><span class="query-example">*vegan</span></li>
+        <li><span class="query-example">*lactose-int</span></li>
       </a>
     </div>
   </div>
   <div class="container-fluid">
-    <div class="splash">
-      <h1>ChefChefGo</h1>
+    <div id="splash">
+      <h1 id="webapp-title">ChefChefGo</h1>
       <form id="search_form_homepage" name="x" method="GET" action="/">
         <div id="search_bar_homepage" class="form-inline text-center">
           <input id="search_form_input_homepage" name="query" type="text" class="form-control" autofocus
@@ -69,7 +64,6 @@
   // Close the dropdown if the user clicks outside of it
   window.onclick = function(event) {
     if (!event.target.matches('.dropbtn') && !event.target.matches('#helpIcon')) {
-
       var dropdowns = document.getElementsByClassName("dropdown-content");
       var i;
       for (i = 0; i < dropdowns.length; i++) {
