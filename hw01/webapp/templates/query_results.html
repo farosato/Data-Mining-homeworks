@@ -29,7 +29,7 @@
     </div>
 
     <div class="results-container">
-      <p class="stats">{{ results|length }} results ({{"%0.3f" % time|float }} seconds)</p>
+      <p class="stats">{{ results|length }} results ({{ "%0.3f" % time|float }} seconds)</p>
       {% for (recipe, score) in results %}
       <div class="result">
         {% set recipe_url = 'http://www.bbc.co.uk/food/recipes/' + recipe["url_id"] %}
@@ -41,7 +41,7 @@
         </h3>
         <cite class="r_url">{{ recipe_url }}</cite>
         <span class="r_description">{{ recipe["description"] }}</span>
-        <span class="r_score">Score: {{ score }}</span>
+        <span class="r_score">Score: {{ "%0.5f" % score|float }}</span>
       </div>
       {% else %}
       <div class="result">
