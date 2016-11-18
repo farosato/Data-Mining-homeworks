@@ -75,18 +75,12 @@ body {
 }*/
 
 .r_title {
-  font-size: 22px;
+  font-size: 20px;
   margin-bottom: 0px;
 }
 
 .r_author {
   font-size: 15px;
-}
-
-.r_description {
-  display: block;
-  overflow: hidden;
-  margin-top: 0px;
 }
 
 .r_url {
@@ -95,11 +89,21 @@ body {
   display: block;
   margin-top: 0px;
   width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .r_description {
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  max-height: 2.6em; /* Fallback for non-webkit */
+  margin: 0 auto;
   line-height: 1.3em;
-  max-height: 2.6em;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .r_score {
