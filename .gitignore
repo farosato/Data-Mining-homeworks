@@ -360,12 +360,12 @@ crashlytics-build.properties
 fabric.properties
 
 # datasets
-*/recipes*/
-*.zip
+hw*/recipes*/
+hw*/*.zip
 
 # easily computable output files
-hw01/recipes-prep.tsv
-hw01/*.pickle
+hw*/recipes-prep.tsv
+hw*/*.pickle
 
 # reports .pdf
-*/report/*.pdf
+hw*/report/*.pdf
