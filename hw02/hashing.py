@@ -17,6 +17,31 @@ def hash_family(i):
     return hash_member
 
 
+def minwise_hashing(sets):
+    """
+    Given a collection of sets of objects (e.g., strings, or numbers), creates
+    a minwise hashing based signature for each set.
+    """
+    pass
+
+
+def lsh_minwise(docs_hashes):
+    """
+    Given a collection of minwise hash signatures of a set of documents,
+    find all the documents pairs that are near each other.
+    """
+    # TODO implement this once miwise_hashing() is implemented
+    pass
+
+
+def lsh_shingles(docs_shingles):
+    """
+    Given the shingles sets of each document in a set, finds the nearest neighbors
+    by comparing all the shingle sets with each other.
+    """
+    pass
+
+
 if __name__ == "__main__":
     # example of usage for hash_family()
     hash_function = hash_family(2)
