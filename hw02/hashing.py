@@ -45,9 +45,9 @@ def lsh_shingles(docs_shingles):
     by comparing all the shingle sets with each other.
     """
     neighbors = {}  # doc_id -> list of nearest neighbors doc_ids
-    corpus_size = len(docs_shingles)
+    docs = len(docs_shingles)
     for i, s_row in enumerate(docs_shingles):
-        for j in range(i, corpus_size):
+        for j in range(i, docs):
             if i != j and _jaccard(docs_shingles[i], docs_shingles[j]) >= JACCARD_THRESHOLD:
                 try:
                     neighbors[i].append(j)
