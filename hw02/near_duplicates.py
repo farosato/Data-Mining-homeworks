@@ -83,11 +83,10 @@ def _jaccard_sim(a, b):
 
 if __name__ == "__main__":
     # example of usage for brute_force_near_duplicates()
-    # docs = ['a rose is', 'a rose is', 'a rose is', 'a rose is', 'a rose is', 'a rose is']
-    # docs_shingles = [shingling.shingle_hash(d, 4) for d in docs]
-    # for ds in docs_shingles:
-    #     print ds
-    # for i in brute_force_near_duplicates(docs_shingles).items():
-    #     print i
+     docs = ['rode is', 'arode is', 'a rose is', 'a rose is', 'a rose is', 'a rose is']
+     docs_shingles = [shingling.shingle_hash(d, 4) for d in docs]
+                    
+     sigs=hashing.minwise_hashing([shingling.shingle(d,4) for d in docs])
+     
+     print sigs
 
-    pass
