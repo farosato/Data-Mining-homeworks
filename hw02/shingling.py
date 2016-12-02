@@ -26,7 +26,7 @@ def shingle_hash(doc, k):
 
 
 if __name__ == "__main__":
-    # example of usage for shingle()
+    # example of usage for shingle() and shingle_hash()
     print shingle('a rose is a rose is a rose', 4)
     print shingle_hash('a rose is a rose is a rose', 4)
     print shingle('a ros', 4)
