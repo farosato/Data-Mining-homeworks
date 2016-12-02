@@ -8,9 +8,6 @@ import hashing
 import shingling
 
 
-JACCARD_THRESHOLD = 0.8
-
-
 def lsh_near_duplicates(docs_signatures):
     """
     Given a collection of minwise hash signatures of a set of documents,
@@ -36,20 +33,20 @@ def lsh_near_duplicates(docs_signatures):
     you may wish to select b and r to produce a threshold lower than t; if
     speed is important and you wish to limit false positives, select b and r to
     produce a higher threshold.
-    [NOTE: t = 0.8, n = ...]
+    [NOTE: t = 0.8, n = 8]
 
     5. Construct candidate pairs by applying the LSH technique of Section 3.4.1.
     [NOTE: this step is implemented in hashing.lsh().]
 
     6. Examine each candidate pair's signatures and determine whether the fraction of
     components in which they agree is at least t.
+    [NOTE: this step is implemented in hashing.lsh().]
 
     7. Optionally, if the signatures are sufficiently similar, go to the documents
     themselves and check that they are truly similar, rather than documents
     that, by luck, had similar signatures.
     """
-    # TODO implement this once hashing.lsh() is implemented
-    # TODO define n (minwise hash signature length)
+
     pass
 
 
@@ -62,7 +59,7 @@ def brute_force_near_duplicates(docs_shingles):
     docs = len(docs_shingles)
     for i, s_row in enumerate(docs_shingles):
         for j in range(i, docs):
-            if i != j and _jaccard_sim(docs_shingles[i], docs_shingles[j]) >= JACCARD_THRESHOLD:
+            if i != j and _jaccard_sim(docs_shingles[i], docs_shingles[j]) >= hashing.JACCARD_THRESHOLD:
                 try:
                     neighbors[i].append(j)
                 except KeyError:  # doc_id is not in dictionary keys
