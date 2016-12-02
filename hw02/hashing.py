@@ -5,11 +5,6 @@ import itertools
 import random
 import binascii
 
-# This is the number of components in the resulting MinHash signatures.
-# Correspondingly, it is also the number of random hash functions that
-# we will need in order to calculate the MinHash.
-numHashes = 10;
-
 
 DOCS_MINHASH_SIZE = 8       # n = br
 JACCARD_THRESHOLD = 0.8     # t = (1/b)^(1/r)
@@ -17,6 +12,13 @@ BANDS = 2                   # b
 ROWS_PER_BAND = 4           # r
 
 HASH_ID = 2
+
+"""
+This is the number of components in the resulting MinHash signatures.
+Correspondingly, it is also the number of random hash functions that
+we will need in order to calculate the MinHash.
+"""
+NUM_HASHES = 10;
 
 
 def hash_family(i, hash_size, max_length=20):
@@ -35,7 +37,7 @@ def hash_family(i, hash_size, max_length=20):
     return hash_member
 
 
-def pickRandomCoeffs(k, maxN):
+def pick_random_coeffs(k, maxN):
   # Create a list of 'k' random values.
   randList = []
 
@@ -67,8 +69,8 @@ def minwise_hashing(sets):
     # http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php
     nextPrime = 4294967311
 
-    coeffA = pickRandomCoeffs(numHashes,maxShingleID)
-    coeffB = pickRandomCoeffs(numHashes,maxShingleID)
+    coeffA = pick_random_coeffs(NUM_HASHES, maxShingleID)
+    coeffB = pick_random_coeffs(NUM_HASHES, maxShingleID)
 
     signatures = []
     for sset in sets:
@@ -76,7 +78,7 @@ def minwise_hashing(sets):
         # The resulting minhash signature for this document.
         signature = []
         # For each of the random hash functions...
-        for i in range(0, numHashes):
+        for i in range(0, NUM_HASHES):
             # For each of the shingles actually in the document, calculate its hash code
             # using hash function 'i'.
 
