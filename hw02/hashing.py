@@ -37,23 +37,23 @@ def hash_family(i, hash_size, max_length=20):
     return hash_member
 
 
-def pick_random_coeffs(k, maxN):
-  # Create a list of 'k' random values.
-  randList = []
+def pick_random_coeffs(k, max_n):
+    # Create a list of 'k' random values.
+    rand_list = []
 
-  while k > 0:
-    # Get a random shingle ID.
-    randIndex = random.randint(0, maxN)
+    while k > 0:
+        # Get a random shingle ID.
+        rand_index = random.randint(0, max_n)
 
     # Ensure that each random number is unique.
-    while randIndex in randList:
-      randIndex = random.randint(0, maxN)
+    while rand_index in rand_list:
+        rand_index = random.randint(0, max_n)
 
     # Add the random number to the list.
-    randList.append(randIndex)
-    k = k - 1
+    rand_list.append(rand_index)
+    k -= 1
 
-  return randList
+    return rand_list
 
 
 def minwise_hashing(sets):
@@ -62,15 +62,15 @@ def minwise_hashing(sets):
     a minwise hashing based signature for each set.
     """
     # Record the maximum shingle ID that we assigned.
-    maxShingleID = 2**32-1
+    max_shingle_id = 2**32-1
 
-    # We need the next largest prime number above 'maxShingleID'.
+    # We need the next largest prime number above 'max_shingle_id'.
     # I looked this value up here:
     # http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php
-    nextPrime = 4294967311
+    next_prime = 4294967311
 
-    coeffA = pick_random_coeffs(NUM_HASHES, maxShingleID)
-    coeffB = pick_random_coeffs(NUM_HASHES, maxShingleID)
+    coeff_a = pick_random_coeffs(NUM_HASHES, max_shingle_id)
+    coeff_b = pick_random_coeffs(NUM_HASHES, max_shingle_id)
 
     signatures = []
     for sset in sets:
@@ -82,23 +82,24 @@ def minwise_hashing(sets):
             # For each of the shingles actually in the document, calculate its hash code
             # using hash function 'i'.
 
-            # Track the lowest hash ID seen. Initialize 'minHashCode' to be greater than
+            # Track the lowest hash ID seen. Initialize 'min_hash_code' to be greater than
             # the maximum possible value output by the hash.
-            minHashCode = nextPrime + 1
+            min_hash_code = next_prime + 1
             nums=0
             # For each shingle in the document...
-            for shingleID in sset:
-                #Convert the shingle to integer to process his hashCode
-                nums=nums+1
-                shingleCode = binascii.crc32(shingleID) & 0xffffffff
+            for shingle_id in sset:
+                # Convert the shingle to integer to process his hashCode
+                nums += 1
+                shingle_code = binascii.crc32(shingle_id) & 0xffffffff
                 # Evaluate the hash function.
-                hashCode = (coeffA[i] * shingleCode + coeffB[i]) % nextPrime
+                hash_code = (coeff_a[i] * shingle_code + coeff_b[i]) % next_prime
 
                 # Track the lowest hash code seen.
-                if hashCode < minHashCode:
-                    minHashCode = hashCode
-                # Add the smallest hash code value as component number 'i' of the signature.
-            signature.append(minHashCode)
+                if hash_code < min_hash_code:
+                    min_hash_code = hash_code
+
+            # Add the smallest hash code value as component number 'i' of the signature.
+            signature.append(min_hash_code)
 
             # Store the MinHash signature for this document.
             signatures.append(signature)
