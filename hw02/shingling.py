@@ -19,7 +19,7 @@ def shingle_hash(doc, k):
     Represent the document as the set of the hashes of the shingles,
     for some hash function.
     """
-    hash_function = hashing.hash_family(hashing.HASH_ID, hashing.DOCS_MINHASH_SIZE)
+    hash_function = hashing.hash_family(hashing.DEFAULT_HASH_ID, hashing.DOCS_MINHASH_SIZE)
     return set([hash_function(s) for s in shingle(doc, k)])
 
 

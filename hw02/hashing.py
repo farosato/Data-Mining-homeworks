@@ -3,7 +3,6 @@ from __future__ import division
 import hashlib
 import itertools
 import random
-import binascii
 
 
 DOCS_MINHASH_SIZE = 8       # n = br
@@ -11,28 +10,21 @@ JACCARD_THRESHOLD = 0.8     # t = (1/b)^(1/r)
 BANDS = 2                   # b
 ROWS_PER_BAND = 4           # r
 
-HASH_ID = 2
-
-"""
-This is the number of components in the resulting MinHash signatures.
-Correspondingly, it is also the number of random hash functions that
-we will need in order to calculate the MinHash.
-"""
-NUM_HASHES = 10
-# Record the maximum shingle ID that we assigned.
-max_shingle_id = 2**32-1
+MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
+MAX_HASH_ID = 10**MAX_HASH_ID_LENGTH - 1    # max hash member id
+DEFAULT_HASH_ID = 2
 
 
-def hash_family(i, hash_size, max_length=20):
+def hash_family(i, hash_size=DOCS_MINHASH_SIZE):
     """
     Implement a family of hash functions. It hashes strings and
     takes an integer to define the member of the family.
     Return a hash function parametrized by i.
 
+    :param i: hash family member id
     :param hash_size: how many bytes we want back
-    :param max_length: how long can our i be (in decimal)
     """
-    salt = str(i).zfill(max_length)[-max_length:]
+    salt = str(i).zfill(MAX_HASH_ID_LENGTH)[-MAX_HASH_ID_LENGTH:]
 
     def hash_member(x):
         return hashlib.sha1(x + salt).digest()[-hash_size:]
@@ -44,33 +36,38 @@ def minwise_hashing(sets):
     Given a collection of sets of objects (e.g., strings, or numbers), creates
     a minwise hashing based signature for each set.
     """
-    random_hash = _pick_random_numbers(NUM_HASHES, max_shingle_id)
+    random_hash_ids = _pick_random_numbers(BANDS, MAX_HASH_ID)
 
     signatures = []
     for s in sets:
         # The resulting minhash signature for this document.
         signature = []
-        # For each of the random hash functions...
-        for i in range(0, NUM_HASHES):
+
+        """
+        MinHash signatures are made of a numbers of components equal to BANDS.
+        Correspondingly, it is also the number of random hash functions that
+        we will need in order to calculate the MinHash.
+        """
+        for i in range(0, BANDS):
             # For each of the shingles actually in the document, calculate its hash code
             # using hash function 'i'.
 
-            for shingle in s:
-                hash_function = hash_family(random_hash[i],8)
+            for j, shingle in enumerate(s):
+                hash_function = hash_family(random_hash_ids[i], ROWS_PER_BAND)
                 hash_code = hash_function(shingle)
 
-                if i == 0:
-                    min_hash_code=hash_code
+                if j == 0:
+                    min_hash=hash_code
 
                 # Track the lowest hash code seen (lexicographic).
-                if hash_code < min_hash_code:
-                    min_hash_code = hash_code
+                if hash_code < min_hash:
+                    min_hash = hash_code
 
             # Add the smallest hash code value as component number 'i' of the signature.
-            signature.append(min_hash_code)
+            signature.append(min_hash)
 
         # Store the MinHash signature for this document.
-        signatures.append(signature)
+        signatures.append("".join(signature))
 
     return signatures
 
@@ -92,7 +89,7 @@ def lsh(docs_hashes):
     """
     hash_tables = []
     for i in range(BANDS):
-        hash_tables.append([hash_family(HASH_ID, DOCS_MINHASH_SIZE), {}])
+        hash_tables.append([hash_family(DEFAULT_HASH_ID, DOCS_MINHASH_SIZE), {}])
 
     """ For each band, construct candidate pairs """
     for i, h in enumerate(docs_hashes):
