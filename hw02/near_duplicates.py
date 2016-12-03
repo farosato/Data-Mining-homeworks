@@ -4,6 +4,8 @@ Module containing near duplicates computation. Two implementations are provided:
 - brute force approach
 """
 from __future__ import division
+import __init__  # update Python PATH
+from hw01.store_recipes import DEST as SRC
 import hashing
 import shingling
 

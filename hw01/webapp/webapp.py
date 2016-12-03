@@ -3,10 +3,8 @@ import sys
 import os.path
 import time
 
-# process_queries module has to be added manually to path before import. IDE may complain about it, just ignore it.
-# Be careful that following line keeps on pointing to homework 1 root directory.
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import process_queries as pq
+import __init__  # update Python PATH
+import hw01.process_queries as pq
 
 
 app = Flask(__name__)
