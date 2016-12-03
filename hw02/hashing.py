@@ -44,14 +44,14 @@ def pick_random_coeffs(k, max_n):
     while k > 0:
         # Get a random shingle ID.
         rand_index = random.randint(0, max_n)
+        print 1
+        # Ensure that each random number is unique.
+        while rand_index in rand_list:
+            rand_index = random.randint(0, max_n)
 
-    # Ensure that each random number is unique.
-    while rand_index in rand_list:
-        rand_index = random.randint(0, max_n)
-
-    # Add the random number to the list.
-    rand_list.append(rand_index)
-    k -= 1
+        # Add the random number to the list.
+        rand_list.append(rand_index)
+        k -= 1
 
     return rand_list
 
@@ -62,12 +62,12 @@ def minwise_hashing(sets):
     a minwise hashing based signature for each set.
     """
     # Record the maximum shingle ID that we assigned.
-    max_shingle_id = 2**32-1
+    max_shingle_id = 8
 
     # We need the next largest prime number above 'max_shingle_id'.
     # I looked this value up here:
     # http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php
-    next_prime = 4294967311
+    next_prime = 11
 
     coeff_a = pick_random_coeffs(NUM_HASHES, max_shingle_id)
     coeff_b = pick_random_coeffs(NUM_HASHES, max_shingle_id)
@@ -85,11 +85,9 @@ def minwise_hashing(sets):
             # Track the lowest hash ID seen. Initialize 'min_hash_code' to be greater than
             # the maximum possible value output by the hash.
             min_hash_code = next_prime + 1
-            nums=0
             # For each shingle in the document...
             for shingle_id in sset:
                 # Convert the shingle to integer to process his hashCode
-                nums += 1
                 shingle_code = binascii.crc32(shingle_id) & 0xffffffff
                 # Evaluate the hash function.
                 hash_code = (coeff_a[i] * shingle_code + coeff_b[i]) % next_prime
