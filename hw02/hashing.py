@@ -18,7 +18,9 @@ This is the number of components in the resulting MinHash signatures.
 Correspondingly, it is also the number of random hash functions that
 we will need in order to calculate the MinHash.
 """
-NUM_HASHES = 10;
+NUM_HASHES = 10
+# Record the maximum shingle ID that we assigned.
+max_shingle_id = 2**32-1
 
 
 def hash_family(i, hash_size, max_length=20):
@@ -37,44 +39,15 @@ def hash_family(i, hash_size, max_length=20):
     return hash_member
 
 
-def pick_random_coeffs(k, max_n):
-    # Create a list of 'k' random values.
-    rand_list = []
-
-    while k > 0:
-        # Get a random shingle ID.
-        rand_index = random.randint(0, max_n)
-        print 1
-        # Ensure that each random number is unique.
-        while rand_index in rand_list:
-            rand_index = random.randint(0, max_n)
-
-        # Add the random number to the list.
-        rand_list.append(rand_index)
-        k -= 1
-
-    return rand_list
-
-
 def minwise_hashing(sets):
     """
     Given a collection of sets of objects (e.g., strings, or numbers), creates
     a minwise hashing based signature for each set.
     """
-    # Record the maximum shingle ID that we assigned.
-    max_shingle_id = 2**32-1
-
-    # We need the next largest prime number above 'max_shingle_id'.
-    # I looked this value up here:
-    # http://compoasso.free.fr/primelistweb/page/prime/liste_online_en.php
-    next_prime = 4294967311
-
-    coeff_a = pick_random_coeffs(NUM_HASHES, max_shingle_id)
-    coeff_b = pick_random_coeffs(NUM_HASHES, max_shingle_id)
+    random_hash = _pick_random_numbers(NUM_HASHES, max_shingle_id)
 
     signatures = []
-    for sset in sets:
-        print sset
+    for s in sets:
         # The resulting minhash signature for this document.
         signature = []
         # For each of the random hash functions...
@@ -82,29 +55,22 @@ def minwise_hashing(sets):
             # For each of the shingles actually in the document, calculate its hash code
             # using hash function 'i'.
 
-            # Track the lowest hash ID seen. Initialize 'min_hash_code' to be greater than
-            # the maximum possible value output by the hash.
-            #min_hash_code = next_prime + 1
-            # For each shingle in the document...
-            for shingle_id in sset:
-                # Convert the shingle to integer to process his hashCode
-                #shingle_code = binascii.crc32(shingle_id) & 0xffffffff
-                shingle_codef = hash_family(i,8)
-                hash_code = shingle_codef(shingle_id)
-                if(i==0):
-                    min_hash_code=hash_code
-                # Evaluate the hash function.
-                #hash_code = (coeff_a[i] * shingle_code + coeff_b[i]) % next_prime
+            for shingle in s:
+                hash_function = hash_family(random_hash[i],8)
+                hash_code = hash_function(shingle)
 
-                # Track the lowest hash code seen.
+                if i == 0:
+                    min_hash_code=hash_code
+
+                # Track the lowest hash code seen (lexicographic).
                 if hash_code < min_hash_code:
                     min_hash_code = hash_code
 
             # Add the smallest hash code value as component number 'i' of the signature.
             signature.append(min_hash_code)
 
-            # Store the MinHash signature for this document.
-            signatures.append(signature)
+        # Store the MinHash signature for this document.
+        signatures.append(signature)
 
     return signatures
 
@@ -152,6 +118,27 @@ def lsh(docs_hashes):
                         near_duplicates.add(second)
 
     return near_duplicates
+
+
+def _pick_random_numbers(k, max_num):
+    """
+    Create a list of k random values in [0, max_num].
+    """
+    rand_list = []
+
+    while k > 0:
+        # Get a random shingle ID.
+        rand_index = random.randint(0, max_num)
+
+        # Ensure that each random number is unique.
+        while rand_index in rand_list:
+            rand_index = random.randint(0, max_num)
+
+        # Add the random number to the list.
+        rand_list.append(rand_index)
+        k -= 1
+
+    return rand_list
 
 
 def _signatures_bands_similarity(first_sign, second_sign):
