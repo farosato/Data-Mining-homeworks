@@ -10,24 +10,36 @@ import hashing
 import shingling
 
 
-def lsh_near_duplicates(docs_signatures):
-    """
-    Given a collection of minwise hash signatures of a set of documents,
-    it finds the all the documents pairs that are near each other.
-    The procedure is defined in LRU book as follow:
+SHINGLE_SIZE = 10
 
+
+def lsh_near_duplicates(docs_shingles):
+    """
+    Given a collection of shingles sets of a set of documents,
+    it finds the all the documents pairs that are near each other.
+    The procedure is defined in LRU book as follow.
+    """
+
+    """
     1. Pick a value of k and construct from each document the set of k-shingles.
     Optionally, hash the k-shingles to shorter bucket numbers.
-    [NOTE: this step is implemented in shingling.py. It is performed outside
-    this function to reuse shingles in brute force approach.]
 
     2. Sort the document-shingle pairs to order them by shingle.
+
+    [NOTE: previous steps are implemented in shingling.py. It is performed outside
+    this function to reuse shingles in brute force approach.]
 
     3. Pick a length n for the minhash signatures. Feed the sorted list to the
     algorithm of Section 3.3.5 to compute the minhash signatures for all the
     documents.
-    [NOTE: this step is implemented in hashing.minwise_hashing().]
+    """
 
+    minhash_signatures = hashing.minwise_hashing(docs_shingles)
+
+    for s in minhash_signatures:
+        print s
+
+    """
     4. Choose a threshold t that defines how similar documents have to be in
     order for them to be regarded as a desired "similar pair." Pick a number
     of bands b and a number of rows r such that br = n, and the threshold
@@ -38,18 +50,13 @@ def lsh_near_duplicates(docs_signatures):
     [NOTE: t = 0.8, n = 8]
 
     5. Construct candidate pairs by applying the LSH technique of Section 3.4.1.
-    [NOTE: this step is implemented in hashing.lsh().]
 
     6. Examine each candidate pair's signatures and determine whether the fraction of
     components in which they agree is at least t.
-    [NOTE: this step is implemented in hashing.lsh().]
-
-    7. Optionally, if the signatures are sufficiently similar, go to the documents
-    themselves and check that they are truly similar, rather than documents
-    that, by luck, had similar signatures.
     """
 
-    pass
+    near_duplicates = hashing.lsh(minhash_signatures)
+    return near_duplicates
 
 
 def brute_force_near_duplicates(docs_shingles):
@@ -82,13 +89,17 @@ def _jaccard_sim(a, b):
 
 
 if __name__ == "__main__":
-    docs = ['rode is', 'arode is', 'a rose is', 'a rose is', 'a rose is', 'a rose is']
-    docs_shingles = [shingling.shingle_hash(d, 4) for d in docs]
 
-    for s in docs_shingles:
-        print s
-                    
-    signatures = hashing.minwise_hashing([shingling.shingle(d, 4) for d in docs])
-     
-    for s in signatures:
-        print s
+    # create documents shingles sets
+    docs_shingles = []
+    with open(SRC, 'r') as docs:
+        docs.readline()  # skip header line
+
+        i = 0  # to limit file scanning at first 10 recipes during development
+        line = docs.readline()
+        while line is not None and i < 10:
+            docs_shingles.append(shingling.shingle_hash(line, SHINGLE_SIZE))
+            line = docs.readline()
+            i += 1
+
+    print lsh_near_duplicates(docs_shingles)
