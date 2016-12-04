@@ -44,13 +44,13 @@ The key idea of "diffusion" is that this set can be defined inductively as follo
 &B(v,t+1) = \bigcup_{(v,z) \in E} B(z,t) \ \cup \ \{ v \} \label{ball}
 \end{align}
 The intuition underlying (\ref{ball}) is that vertices at distance $t+1$ from the current location can be reached in $t$ hops from each one of the neighbours. Even though it is trivial to design an algorithm that implements the inductive definition, keeping all the sets in memory and performing union among them is costly (indeed, space complexity is $\mathcal{O}(n^2)$).\\
-Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, that is an algorithm for approximating the number of distinct elements in a stream (or set, in this case) with a single pass and space complexity which is \textbf{logarithmic} in the maximum number of possible distinct elements. In this settings, "diffusion" sets are implemented as \textbf{bitmasks} of $\log{n}$ bits each and union is computed efficiently through \textbf{bitwise OR} operation. What follows is the algorithm we designed.
+Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, that is an algorithm for approximating the number of distinct elements in a stream (or set, in this case) with a single pass and space complexity which is \textbf{logarithmic} in the maximum number of possible distinct elements. In this settings, "diffusion" sets are implemented as \textbf{bitmasks} of $k$ bits each and union is computed efficiently through \textbf{bitwise OR} operation. What follows is the algorithm we designed.
 \medskip
 \begin{algorithm}
 \caption{Approximate diameter computation}
 \begin{algorithmic}[1]
 	\ForAll{$v \in V$}
-		\State $B(v,0) = log{n}$ bits bitmask s.t. only 1 bit is set and bit $i$ has probability \State $\frac{1}{2^{i+1}}$ to be set
+		\State $B(v,0) = k$ bits bitmask s.t. bit $i$ has probability $\frac{1}{2^{i+1}}$ to be set
 	\EndFor
 	\ForAll{distance $t$ \textbf{from} 1}
 		\ForAll{$v \in V$}
@@ -60,11 +60,11 @@ Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, 
 			\State $B(u,t) = B(u,t) \quad BITWISE-OR \quad B_{last}(v)$
 		\EndFor
 		\ForAll{$v \in V$}
-			\State $R =$ position of leftmost non-zero bit in $B(v,t)$
-			\State $IS(v,t) = 2^R$
+			\If{$B(v,t) = B_{last}(v)$} 
+				\State $unchanged = unchanged + 1$
+			\EndIf
 		\EndFor
-		\State $S(t) = \dfrac{1}{|V|} \cdot \sum_{v \in V}IS(v,t)$
-		\If{$|V| - \epsilon < S(t)$} 
+		\If{$unchanged = |V|$} 
 			\State \Return t 
 		\EndIf
 	\EndFor
@@ -72,18 +72,12 @@ Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, 
 \end{algorithm}
 
 \medskip
-\noindent Note that we introduced value $\epsilon$ (line 17), standing for the \textbf{error} we accept to tolerate when estimating $D(G)$. Indeed, the computation stops when the average cardinality of the "diffusion" sets is \textbf{close} to $|V|$, i.e. differs from it by at most $\epsilon$. Hence, because of (\ref{ball_diameter}), we can conclude that the last value of $t$ is close to the exact value of $D(G)$.\\
+\noindent The computation stops when \textbf{all} the bitmasks associated with each node stops changing, i.e. when
+\begin{align}
+B(v,t) = B(v, t-1) \quad \forall v \in V \label{approx_termination}
+\end{align}
 The algorithm includes at least a linear scanning of vertices and edges for each iteration and performs a number of iterations equal to $D(G)$. Let $d$ be such value. Hence, the time complexity of the whole algorithm is
 \begin{align*}
 \mathcal{O}(d \cdot (n + m))
 \end{align*}
-Since we necessarily need to iterate over vertices and edges to compute "diffusion" sets, the only way to reduce the complexity is to manipulate $d$, thus, the number of times that the main loop is executed. To reduce its value, we can only increase the value of $\epsilon$, losing accuracy. Therefore, $\epsilon$ is the parameter through which we can \textbf{tune} the trade-off between accuracy and speed.
-
-
-
-
-
-
-
-
-
+Since we necessarily need to iterate over vertices and edges to compute "diffusion" sets, the only way to reduce the complexity is to manipulate $d$, thus, the number of times that the main loop is executed. To reduce its value, we can only decrease the value of $k$. Indeed, having \textbf{shorter} bitmasks increase the possibility to have (\ref{approx_termination}) holding \textbf{earlier}, with a relates loss of accuracy. Therefore, $k$ is the parameter through which we can \textbf{tune} the trade-off between accuracy and speed.
