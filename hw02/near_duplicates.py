@@ -6,14 +6,18 @@ Module containing near duplicates computation. Two implementations are provided:
 from __future__ import division
 import __init__  # update Python PATH
 from hw01.store_recipes import DEST as SRC
+from brute_force_near_duplicates import DEST_DUPL as SRC_BRUTE_FORCE
 import hashing
 import shingling
+import time
+import pickle
 
 
+SEPARATOR = 50
 SHINGLE_SIZE = 10
 
 
-def lsh_near_duplicates(docs_shingles):
+def lsh_near_duplicates(shingles_sets):
     """
     Given a collection of shingles sets of a set of documents,
     it finds the all the documents pairs that are near each other.
@@ -34,10 +38,9 @@ def lsh_near_duplicates(docs_shingles):
     documents.
     """
 
-    minhash_signatures = hashing.minwise_hashing(docs_shingles)
-
-    for s in minhash_signatures:
-        print s
+    minhash_signatures = hashing.minwise_hashing(shingles_sets)
+    # for s in minhash_signatures:
+    #     print s
 
     """
     4. Choose a threshold t that defines how similar documents have to be in
@@ -58,25 +61,35 @@ def lsh_near_duplicates(docs_shingles):
     return hashing.lsh(minhash_signatures)  # return near duplicates
 
 
-def brute_force_near_duplicates(docs_shingles):
+def brute_force_near_duplicates(shingles_sets):
     """
     Given the shingles sets of each document in a set, finds the nearest neighbors
     by comparing all the shingle sets with each other.
     """
-    neighbors = {}  # doc_id -> list of nearest neighbors doc_ids
-    docs = len(docs_shingles)
-    for i, s_row in enumerate(docs_shingles):
-        for j in range(i, docs):
-            if i != j and _jaccard_sim(docs_shingles[i], docs_shingles[j]) >= hashing.JACCARD_THRESHOLD:
-                try:
-                    neighbors[i].append(j)
-                except KeyError:  # doc_id is not in dictionary keys
-                    neighbors[i] = [j]
-                try:
-                    neighbors[j].append(i)
-                except KeyError:  # doc_id is not in dictionary keys
-                    neighbors[j] = [i]
-    return neighbors
+    near_duplicates = set()
+    corpus_size = len(shingles_sets)
+    for i, s_row in enumerate(shingles_sets):
+        for j in range(i, corpus_size):
+            if i != j and _jaccard_sim(shingles_sets[i], shingles_sets[j]) >= hashing.JACCARD_THRESHOLD:
+                near_duplicates.add(i)
+                near_duplicates.add(j)
+    return near_duplicates
+
+
+def create_documents_shingles(show_progress=False):
+    """ Create documents shingles sets. """
+    shingles_sets = []
+    with open(SRC, 'r') as docs:
+        docs.readline()  # skip header line
+
+        print 'Shingling documents...'
+        doc_id, line = 0, docs.readline()
+        while line != '':
+            if show_progress:
+                print doc_id
+            shingles_sets.append(shingling.shingle_hash(line, SHINGLE_SIZE))
+            doc_id, line = doc_id + 1, docs.readline()
+    return shingles_sets
 
 
 def _jaccard_sim(a, b):
@@ -88,17 +101,20 @@ def _jaccard_sim(a, b):
 
 
 if __name__ == "__main__":
+    docs_shingles = create_documents_shingles()
 
-    # create documents shingles sets
-    docs_shingles = []
-    with open(SRC, 'r') as docs:
-        docs.readline()  # skip header line
+    # load previously computed brute force result, since it is constant
+    # print '\n', '#'*SEPARATOR, '\nLoading brute force approach result...'
+    # with open(SRC_BRUTE_FORCE, 'rb') as src:
+    #     print 'Loading index...'
+    #     brute_force = pickle.load(src)
 
-        i = 0  # to limit file scanning at first 10 recipes during development
-        line = docs.readline()
-        while line is not None and i < 10:
-            docs_shingles.append(shingling.shingle_hash(line, SHINGLE_SIZE))
-            line = docs.readline()
-            i += 1
+    # find near duplicates using lsh approach
+    print '\n', '#'*SEPARATOR, '\nPerforming lsh approach...'
+    start_time = time.time()
+    lsh = lsh_near_duplicates(docs_shingles)
+    print 'LSH approach found %s near duplicates.' % len(lsh)
+    print 'LSH approach took  %s seconds.' % (time.time() - start_time)
 
-    print lsh_near_duplicates(docs_shingles)
+    # compare approaches
+    # print '\n', '#'*SEPARATOR, '\nSize of intersection is %s duplicates.' % len(lsh.intersection(brute_force))
