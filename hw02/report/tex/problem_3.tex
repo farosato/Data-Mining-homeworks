@@ -59,6 +59,7 @@ Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, 
 		\ForAll{$(u,v) \in E$}
 			\State $B(u,t) = B(u,t) \quad BITWISE-OR \quad B_{last}(v)$
 		\EndFor
+		\State $unchanged = 0$
 		\ForAll{$v \in V$}
 			\If{$B(v,t) = B_{last}(v)$} 
 				\State $unchanged = unchanged + 1$

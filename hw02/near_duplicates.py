@@ -39,8 +39,6 @@ def lsh_near_duplicates(shingles_sets):
     """
 
     minhash_signatures = hashing.minwise_hashing(shingles_sets)
-    # for s in minhash_signatures:
-    #     print s
 
     """
     4. Choose a threshold t that defines how similar documents have to be in
