@@ -5,10 +5,10 @@ import itertools
 import random
 
 
-DOCS_MINHASH_SIZE = 8       # n = br
+DOCS_MINHASH_SIZE = 10      # n = br >= log(corpus_size)
 JACCARD_THRESHOLD = 0.8     # t = (1/b)^(1/r)
 BANDS = 2                   # b
-ROWS_PER_BAND = 4           # r
+ROWS_PER_BAND = 5           # r
 
 MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
 MAX_HASH_ID = 10**MAX_HASH_ID_LENGTH - 1    # max hash member id
@@ -33,8 +33,8 @@ def hash_family(i, hash_size=DOCS_MINHASH_SIZE):
 
 def minwise_hashing(sets):
     """
-    Given a collection of sets of objects (e.g., strings, or numbers), creates
-    a minwise hashing based signature for each set.
+    Given a collection of sets of objects (e.g., strings, or numbers),
+    creates a minwise hashing based signature for each set.
     """
     random_hash_ids = _pick_random_numbers(BANDS, MAX_HASH_ID)
 
@@ -57,7 +57,7 @@ def minwise_hashing(sets):
                 hash_code = hash_function(shingle)
 
                 if j == 0:
-                    min_hash=hash_code
+                    min_hash = hash_code
 
                 # Track the lowest hash code seen (lexicographic).
                 if hash_code < min_hash:
