@@ -55,8 +55,7 @@ def lsh_near_duplicates(docs_shingles):
     components in which they agree is at least t.
     """
 
-    near_duplicates = hashing.lsh(minhash_signatures)
-    return near_duplicates
+    return hashing.lsh(minhash_signatures)  # return near duplicates
 
 
 def brute_force_near_duplicates(docs_shingles):

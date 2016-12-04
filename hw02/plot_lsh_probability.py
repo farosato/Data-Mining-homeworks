@@ -10,8 +10,6 @@ def lsh_probability(x):
 
 if __name__ == "__main__":
     x = numpy.linspace(0, 1)
-
-    # compose plot
     pylab.plot(x, lsh_probability(x))
     pylab.xlabel('Jaccard similarity')
     pylab.ylabel('Probability of collision')

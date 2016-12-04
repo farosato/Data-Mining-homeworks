@@ -68,7 +68,6 @@ def minwise_hashing(sets):
 
         # Store the MinHash signature for this document.
         signatures.append("".join(signature))
-
     return signatures
 
 
@@ -113,7 +112,6 @@ def lsh(docs_hashes):
                     if _signatures_bands_similarity(docs_hashes[first], docs_hashes[second]) >= JACCARD_THRESHOLD:
                         near_duplicates.add(first)
                         near_duplicates.add(second)
-
     return near_duplicates
 
 
@@ -134,7 +132,6 @@ def _pick_random_numbers(k, max_num):
         # Add the random number to the list.
         rand_list.append(rand_index)
         k -= 1
-
     return rand_list
 
 
