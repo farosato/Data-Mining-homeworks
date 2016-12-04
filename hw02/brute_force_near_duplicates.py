@@ -5,12 +5,12 @@ It is useful to create a .pickle object representing the set.
 import os
 import pickle
 import time
+from near_duplicates import SRC_BRUTE_FORCE as DEST_DUPL
 from near_duplicates import SEPARATOR
 from near_duplicates import brute_force_near_duplicates
 from near_duplicates import create_documents_shingles
 
 
-DEST_DUPL = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_near_duplicates.pickle')
 DEST_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'results.txt')
 
 

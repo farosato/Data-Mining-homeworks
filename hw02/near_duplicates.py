@@ -6,13 +6,14 @@ Module containing near duplicates computation. Two implementations are provided:
 from __future__ import division
 import __init__  # update Python PATH
 from hw01.store_recipes import DEST as SRC
-from brute_force_near_duplicates import DEST_DUPL as SRC_BRUTE_FORCE
 import hashing
 import shingling
 import time
+import os
 import pickle
 
 
+SRC_BRUTE_FORCE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_near_duplicates.pickle')
 SEPARATOR = 50
 SHINGLE_SIZE = 10
 
