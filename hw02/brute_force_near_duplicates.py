@@ -44,7 +44,7 @@ if __name__ == "__main__":
         print '\n'
 
         for i in similarities:
-            row = '%d -> %d\t\tsim = %f' % (i[0], i[1], i[2])
+            row = '%d <-> %d\t\tsim = %f' % (i[0], i[1], i[2])
             report.write(row + '\n')
             print row
 
