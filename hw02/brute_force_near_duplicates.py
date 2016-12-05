@@ -17,16 +17,16 @@ if __name__ == "__main__":
 
     print '\n', '#'*SEPARATOR, '\nPerforming brute force approach...'
     start_time = time.time()
-    brute_force, similarities = brute_force_near_duplicates(docs_shingles)
+    brute_force_sim = brute_force_near_duplicates(docs_shingles)
     tot_time = time.time() - start_time
 
     # Pickle results
     with open(DEST_SIM, 'wb') as data_dump:
-        pickle.dump(similarities, data_dump)
+        pickle.dump(brute_force_sim, data_dump)
 
     # print report
     with open(DEST_REPORT, 'w') as report:
-        duplicates_num = 'Brute force approach found %s near duplicate pairs.' % len(similarities)
+        duplicates_num = 'Brute force approach found %s near duplicate pairs.' % len(brute_force_sim)
         report.write(duplicates_num + '\n')
         print duplicates_num
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         report.write('\n')
         print '\n'
 
-        for i in similarities:
+        for i in brute_force_sim:
             row = '%s <-> %s \tsim = %f' % ('{0: <5}'.format(i[0]), '{0: <5}'.format(i[1]), i[2])
             report.write(row + '\n')
             print row
