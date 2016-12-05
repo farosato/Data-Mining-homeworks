@@ -13,7 +13,8 @@ import os
 import pickle
 
 
-SRC_BRUTE_FORCE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_near_duplicates.pickle')
+SRC_BRUTE_FORCE_DUPL = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_near_duplicates.pickle')
+SRC_BRUTE_FORCE_SIM = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_similarities.pickle')
 SEPARATOR = 50
 SHINGLE_SIZE = 10
 
@@ -66,13 +67,16 @@ def brute_force_near_duplicates(shingles_sets):
     by comparing all the shingle sets with each other.
     """
     near_duplicates = set()
+    similarities = []
     corpus_size = len(shingles_sets)
     for i, s_row in enumerate(shingles_sets):
-        for j in range(i, corpus_size):
-            if i != j and _jaccard_sim(shingles_sets[i], shingles_sets[j]) >= hashing.JACCARD_THRESHOLD:
+        for j in range(i + 1, corpus_size):
+            similarity = _jaccard_sim(shingles_sets[i], shingles_sets[j])
+            if similarity >= hashing.JACCARD_THRESHOLD:
                 near_duplicates.add(i)
                 near_duplicates.add(j)
-    return near_duplicates
+                similarities.append((i, j, similarity))
+    return near_duplicates, similarities
 
 
 def create_documents_shingles(show_progress=False):
@@ -105,7 +109,6 @@ if __name__ == "__main__":
     # load previously computed brute force result, since it is constant
     # print '\n', '#'*SEPARATOR, '\nLoading brute force approach result...'
     # with open(SRC_BRUTE_FORCE, 'rb') as src:
-    #     print 'Loading index...'
     #     brute_force = pickle.load(src)
 
     # find near duplicates using lsh approach
