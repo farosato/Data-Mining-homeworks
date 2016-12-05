@@ -11,12 +11,16 @@ import shingling
 import time
 import os
 import pickle
+from shutil import copyfile
 
 
 SRC_BRUTE_FORCE_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_results.txt')
 SRC_BRUTE_FORCE_DUPL = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_near_duplicates.pickle')
 SRC_BRUTE_FORCE_SIM = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_similarities.pickle')
+DEST_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'results.txt')
 SEPARATOR = 50
+TRAILER = '\n' + '#'*SEPARATOR + '\n'
+
 SHINGLE_SIZE = 10
 
 
@@ -116,8 +120,30 @@ if __name__ == "__main__":
     print '\n', '#'*SEPARATOR, '\nPerforming lsh approach...'
     start_time = time.time()
     lsh = lsh_near_duplicates(docs_shingles)
-    print 'LSH approach found %s near duplicates.' % len(lsh)
-    print 'LSH approach took  %s seconds.' % (time.time() - start_time)
+    tot_time = time.time() - start_time
 
-    # compare approaches
-    # print '\n', '#'*SEPARATOR, '\nSize of intersection is %s duplicates.' % len(lsh.intersection(brute_force))
+    # print report
+    copyfile(SRC_BRUTE_FORCE_REPORT, DEST_REPORT)
+    with open(DEST_REPORT, 'a') as report:
+        duplicates_num = 'LSH approach found %s near duplicates.' % len(lsh)
+        report.write(duplicates_num + '\n')
+        print duplicates_num
+
+        running_time = 'LSH approach took  %s seconds.' % tot_time
+        report.write(running_time + '\n')
+        print running_time
+
+        report.write('\n')
+        print '\n'
+
+        # for i in similarities:
+        #     row = '%s <-> %s \tsim = %f' % ('{0: <5}'.format(i[0]), '{0: <5}'.format(i[1]), i[2])
+        #     report.write(row + '\n')
+        #     print row
+
+        report.write(TRAILER)
+
+        # compare approaches
+        # print '\nSize of intersection is %s duplicates.' % len(lsh.intersection(brute_force))
+
+        report.write(TRAILER)

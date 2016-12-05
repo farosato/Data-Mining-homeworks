@@ -6,7 +6,6 @@ def shingle(doc, k):
     """
     Given a document, creates its set of character shingles of some length k.
     """
-    # TODO check if applying tokenization first is preferable in our application
     if len(doc) <= k:
         shingles = [doc]
     else:
@@ -19,7 +18,7 @@ def shingle_hash(doc, k):
     Represent the document as the set of the hashes of the shingles,
     for some hash function.
     """
-    hash_function = hashing.hash_family(hashing.DEFAULT_HASH_ID, hashing.DOCS_MINHASH_SIZE)
+    hash_function = hashing.hash_family(hashing.DEFAULT_HASH_ID, hashing.DEFAULT_HASH_SIZE)
     return set([hash_function(s) for s in shingle(doc, k)])
 
 

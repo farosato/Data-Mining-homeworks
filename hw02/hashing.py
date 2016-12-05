@@ -13,9 +13,10 @@ ROWS_PER_BAND = 5           # r
 MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
 MAX_HASH_ID = 10**MAX_HASH_ID_LENGTH - 1    # max hash member id
 DEFAULT_HASH_ID = 2
+DEFAULT_HASH_SIZE = 10
 
 
-def hash_family(i, hash_size=DOCS_MINHASH_SIZE):
+def hash_family(i, hash_size=DEFAULT_HASH_SIZE):
     """
     Implement a family of hash functions. It hashes strings and
     takes an integer to define the member of the family.
