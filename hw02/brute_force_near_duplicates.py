@@ -23,6 +23,14 @@ if __name__ == "__main__":
     start_time = time.time()
     brute_force, similarities = brute_force_near_duplicates(docs_shingles)
 
+    # Pickle results
+    with open(DEST_DUPL, 'wb') as data_dump:
+        pickle.dump(brute_force, data_dump)
+
+    with open(DEST_SIM, 'wb') as data_dump:
+        pickle.dump(similarities, data_dump)
+
+    # print report
     with open(DEST_REPORT, 'w') as report:
         duplicates_num = 'Brute force approach found %s near duplicates.' % len(brute_force)
         report.write(duplicates_num + '\n')
@@ -41,10 +49,3 @@ if __name__ == "__main__":
             print row
 
         report.write(TRAILER)
-
-    # Pickle the near duplicates set
-    with open(DEST_DUPL, 'wb') as data_dump:
-        pickle.dump(brute_force, data_dump)
-
-    with open(DEST_SIM, 'wb') as data_dump:
-        pickle.dump(similarities, data_dump)
