@@ -5,6 +5,7 @@ It is useful to create a .pickle object representing the set.
 import os
 import pickle
 import time
+from near_duplicates import SRC_BRUTE_FORCE_REPORT as DEST_REPORT
 from near_duplicates import SRC_BRUTE_FORCE_DUPL as DEST_DUPL
 from near_duplicates import SRC_BRUTE_FORCE_SIM as DEST_SIM
 from near_duplicates import SEPARATOR
@@ -12,7 +13,6 @@ from near_duplicates import brute_force_near_duplicates
 from near_duplicates import create_documents_shingles
 
 
-DEST_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'results.txt')
 TRAILER = '\n' + '#'*SEPARATOR + '\n'
 
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         print '\n'
 
         for i in similarities:
-            row = '%d <-> %d\t\tsim = %f' % (i[0], i[1], i[2])
+            row = '%s <-> %s \tsim = %f' % ('{0: <5}'.format(i[0]), '{0: <5}'.format(i[1]), i[2])
             report.write(row + '\n')
             print row
 
