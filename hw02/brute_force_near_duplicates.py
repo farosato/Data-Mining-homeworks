@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # print report
     with open(DEST_REPORT, 'w') as report:
-        duplicates_num = 'Brute force approach found %s near duplicates.' % len(brute_force)
+        duplicates_num = 'Brute force approach found %s near duplicate pairs.' % len(similarities)
         report.write(duplicates_num + '\n')
         print duplicates_num
 

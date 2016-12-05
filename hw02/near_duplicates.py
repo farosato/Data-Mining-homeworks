@@ -18,7 +18,7 @@ SRC_BRUTE_FORCE_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__))
 SRC_BRUTE_FORCE_DUPL = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_near_duplicates.pickle')
 SRC_BRUTE_FORCE_SIM = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_similarities.pickle')
 DEST_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'results.txt')
-SEPARATOR = 50
+SEPARATOR = 60
 TRAILER = '\n' + '#'*SEPARATOR + '\n'
 
 SHINGLE_SIZE = 10
@@ -72,7 +72,7 @@ def brute_force_near_duplicates(shingles_sets):
     by comparing all the shingle sets with each other.
     """
     near_duplicates = set()
-    similarities = []
+    similarities = set()
     corpus_size = len(shingles_sets)
     for i, s_row in enumerate(shingles_sets):
         for j in range(i + 1, corpus_size):
@@ -80,7 +80,7 @@ def brute_force_near_duplicates(shingles_sets):
             if similarity >= hashing.JACCARD_THRESHOLD:
                 near_duplicates.add(i)
                 near_duplicates.add(j)
-                similarities.append((i, j, similarity))
+                similarities.add((i, j, similarity))
     return near_duplicates, similarities
 
 
@@ -112,20 +112,22 @@ if __name__ == "__main__":
     docs_shingles = create_documents_shingles()
 
     # load previously computed brute force result, since it is constant
-    # print '\n', '#'*SEPARATOR, '\nLoading brute force approach result...'
-    # with open(SRC_BRUTE_FORCE, 'rb') as src:
-    #     brute_force = pickle.load(src)
+    print '\n', '#'*SEPARATOR, '\nLoading brute force approach result...'
+    with open(SRC_BRUTE_FORCE_SIM, 'rb') as src:
+        brute_force_sim = pickle.load(src)
 
     # find near duplicates using lsh approach
     print '\n', '#'*SEPARATOR, '\nPerforming lsh approach...'
     start_time = time.time()
-    lsh = lsh_near_duplicates(docs_shingles)
+    lsh, lsh_sim = lsh_near_duplicates(docs_shingles)
     tot_time = time.time() - start_time
 
     # print report
     copyfile(SRC_BRUTE_FORCE_REPORT, DEST_REPORT)
     with open(DEST_REPORT, 'a') as report:
-        duplicates_num = 'LSH approach found %s near duplicates.' % len(lsh)
+        report.write('\n')
+
+        duplicates_num = 'LSH approach found %s near duplicate pairs.' % len(lsh_sim)
         report.write(duplicates_num + '\n')
         print duplicates_num
 
@@ -136,14 +138,18 @@ if __name__ == "__main__":
         report.write('\n')
         print '\n'
 
-        # for i in similarities:
-        #     row = '%s <-> %s \tsim = %f' % ('{0: <5}'.format(i[0]), '{0: <5}'.format(i[1]), i[2])
-        #     report.write(row + '\n')
-        #     print row
+        for i in lsh_sim:
+            row = '%s <-> %s \tsim = %f' % ('{0: <5}'.format(i[0]), '{0: <5}'.format(i[1]), i[2])
+            report.write(row + '\n')
+            print row
 
         report.write(TRAILER)
 
-        # compare approaches
-        # print '\nSize of intersection is %s duplicates.' % len(lsh.intersection(brute_force))
+        # compute approaches intersection
+        a = set((a, b) for (a, b, c) in lsh_sim)
+        b = set((a, b) for (a, b, c) in brute_force_sim)
+        inters_size = '\nSize of intersection between approaches is %s duplicate pairs.' % len(a.intersection(b))
+        report.write(inters_size + '\n')
+        print inters_size
 
         report.write(TRAILER)

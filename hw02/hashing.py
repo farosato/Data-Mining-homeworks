@@ -5,10 +5,10 @@ import itertools
 import random
 
 
-DOCS_MINHASH_SIZE = 10      # n = br >= log(corpus_size)
+NUM_HASH = 10               # n = NUM_HASH * DEFAULT_HASH_SIZE = br >= log(corpus_size)
 JACCARD_THRESHOLD = 0.8     # t = (1/b)^(1/r)
-BANDS = 2                   # b
-ROWS_PER_BAND = 5           # r
+BANDS = 10                  # b
+ROWS_PER_BAND = 10          # r
 
 MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
 MAX_HASH_ID = 10**MAX_HASH_ID_LENGTH - 1    # max hash member id
@@ -16,7 +16,7 @@ DEFAULT_HASH_ID = 2
 DEFAULT_HASH_SIZE = 10
 
 
-def hash_family(i, hash_size=DEFAULT_HASH_SIZE):
+def hash_family(i=DEFAULT_HASH_ID, hash_size=DEFAULT_HASH_SIZE):
     """
     Implement a family of hash functions. It hashes strings and
     takes an integer to define the member of the family.
@@ -37,7 +37,7 @@ def minwise_hashing(sets):
     Given a collection of sets of objects (e.g., strings, or numbers),
     creates a minwise hashing based signature for each set.
     """
-    random_hash_ids = _pick_random_numbers(BANDS, MAX_HASH_ID)
+    random_hash_ids = _pick_random_numbers(NUM_HASH, MAX_HASH_ID)
 
     signatures = []
     for s in sets:
@@ -45,16 +45,16 @@ def minwise_hashing(sets):
         signature = []
 
         """
-        MinHash signatures are made of a numbers of components equal to BANDS.
-        Correspondingly, it is also the number of random hash functions that
-        we will need in order to calculate the MinHash.
+        MinHash signatures are made of a numbers of components equal to NUM_HASH.
+        Correspondingly, it is also the number of random hash functions that we will need
+        in order to calculate the MinHash.
         """
-        for i in range(0, BANDS):
+        for i in range(0, NUM_HASH):
             # For each of the shingles actually in the document, calculate its hash code
             # using hash function 'i'.
 
             for j, shingle in enumerate(s):
-                hash_function = hash_family(random_hash_ids[i], ROWS_PER_BAND)
+                hash_function = hash_family(random_hash_ids[i], DEFAULT_HASH_SIZE)
                 hash_code = hash_function(shingle)
 
                 if j == 0:
@@ -68,7 +68,7 @@ def minwise_hashing(sets):
             signature.append(min_hash)
 
         # Store the MinHash signature for this document.
-        signatures.append("".join(signature))
+        signatures.append(''.join(signature))
     return signatures
 
 
@@ -77,10 +77,11 @@ def lsh(docs_hashes):
     Given a collection of minwise hash signatures of a set of documents,
     find all the documents pairs that are near each other.
     """
-    if DOCS_MINHASH_SIZE != BANDS*ROWS_PER_BAND:
+    if NUM_HASH * DEFAULT_HASH_SIZE != BANDS*ROWS_PER_BAND:
         raise ValueError('n = br constraint does not hold.')
 
     near_duplicates = set()
+    similarities = []
 
     """
     For each band, append to hash tables list a sublist composed by an hash function
@@ -89,7 +90,7 @@ def lsh(docs_hashes):
     """
     hash_tables = []
     for i in range(BANDS):
-        hash_tables.append([hash_family(DEFAULT_HASH_ID, DOCS_MINHASH_SIZE), {}])
+        hash_tables.append([hash_family(DEFAULT_HASH_ID, NUM_HASH), {}])
 
     """ For each band, construct candidate pairs """
     for i, h in enumerate(docs_hashes):
@@ -110,10 +111,16 @@ def lsh(docs_hashes):
             for pair in itertools.product(candidates, repeat=2):
                 first, second = pair[0], pair[1]
                 if first != second:
-                    if _signatures_bands_similarity(docs_hashes[first], docs_hashes[second]) >= JACCARD_THRESHOLD:
+                    similarity = _signatures_bands_similarity(docs_hashes[first], docs_hashes[second])
+                    if similarity >= JACCARD_THRESHOLD:
                         near_duplicates.add(first)
                         near_duplicates.add(second)
-    return near_duplicates
+                        similarities.append((first, second, similarity))
+
+    # filter out duplicate pairs (i.e. a,b = b,a)
+    similarities = set((a, b, c) if a <= b else (b, a, c) for a, b, c in similarities)
+
+    return near_duplicates, similarities
 
 
 def _pick_random_numbers(k, max_num):
@@ -141,7 +148,7 @@ def _signatures_bands_similarity(first_sign, second_sign):
     for j in range(BANDS):
         start = j * BANDS
         end = start + ROWS_PER_BAND
-        if first_sign[start:end] == second_sign[start:end]:
+        if first_sign[start:end] == second_sign[start:end]:  # performs ordered lists equality check
             agreed += 1
     return agreed / BANDS
 
