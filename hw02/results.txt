@@ -1,0 +1,3 @@
+Brute force approach found 10 near duplicates.
+Brute force approach took  14447.5999999 seconds.
+##################################################
