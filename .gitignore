@@ -366,6 +366,7 @@ hw*/*.zip
 # easily computable output files
 hw*/recipes-prep.tsv
 hw01/*.pickle
+hw02/results.txt
 
 # reports .pdf
 hw*/report/*.pdf
