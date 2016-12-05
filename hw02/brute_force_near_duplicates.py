@@ -5,7 +5,6 @@ It is useful to create a .pickle object representing the set.
 import pickle
 import time
 from near_duplicates import SRC_BRUTE_FORCE_REPORT as DEST_REPORT
-from near_duplicates import SRC_BRUTE_FORCE_DUPL as DEST_DUPL
 from near_duplicates import SRC_BRUTE_FORCE_SIM as DEST_SIM
 from near_duplicates import SEPARATOR
 from near_duplicates import TRAILER
@@ -22,9 +21,6 @@ if __name__ == "__main__":
     tot_time = time.time() - start_time
 
     # Pickle results
-    with open(DEST_DUPL, 'wb') as data_dump:
-        pickle.dump(brute_force, data_dump)
-
     with open(DEST_SIM, 'wb') as data_dump:
         pickle.dump(similarities, data_dump)
 

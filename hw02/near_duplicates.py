@@ -15,7 +15,6 @@ from shutil import copyfile
 
 
 SRC_BRUTE_FORCE_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_results.txt')
-SRC_BRUTE_FORCE_DUPL = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_near_duplicates.pickle')
 SRC_BRUTE_FORCE_SIM = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'brute_force_similarities.pickle')
 DEST_REPORT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'results.txt')
 SEPARATOR = 60
