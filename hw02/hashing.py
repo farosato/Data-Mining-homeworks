@@ -1,11 +1,10 @@
 """ Module containing hashing functionalities. """
 from __future__ import division
 import hashlib
-import itertools
 import random
 
 
-NUM_HASH = 10               # n = NUM_HASH * DEFAULT_HASH_SIZE = br >= log(corpus_size)
+NUM_HASH = 10               # n = NUM_HASH * DEFAULT_HASH_SIZE = br
 JACCARD_THRESHOLD = 0.8     # t = (1/b)^(1/r)
 BANDS = 10                  # b
 ROWS_PER_BAND = 10          # r
@@ -77,10 +76,9 @@ def lsh(docs_hashes):
     Given a collection of minwise hash signatures of a set of documents,
     find all the documents pairs that are near each other.
     """
-    if NUM_HASH * DEFAULT_HASH_SIZE != BANDS*ROWS_PER_BAND:
+    if NUM_HASH * DEFAULT_HASH_SIZE != BANDS * ROWS_PER_BAND:
         raise ValueError('n = br constraint does not hold.')
 
-    near_duplicates = set()
     similarities = []
 
     """
@@ -92,7 +90,10 @@ def lsh(docs_hashes):
     for i in range(BANDS):
         hash_tables.append([hash_family(DEFAULT_HASH_ID, NUM_HASH), {}])
 
-    """ For each band, construct candidate pairs """
+    """
+    For each band, construct candidate pairs. If two signatures are equals in at least
+    one band, then they are a candidate pair.
+    """
     for i, h in enumerate(docs_hashes):
         for j in range(BANDS):
             start = j*BANDS
@@ -103,39 +104,30 @@ def lsh(docs_hashes):
                 hash_tables[j][1][sub_h] = [i]
 
     """
-    For each candidate pair, check whether the fraction of components in which
+    For each candidate pair, check whether the fraction of bands in which
     they agree is at least t. If it is so, then they are near duplicates.
     """
     for t in hash_tables:
         for _, candidates in t[1].iteritems():
-            for pair in itertools.product(candidates, repeat=2):
-                first, second = pair[0], pair[1]
-                if first != second:
+            cand_size = len(candidates)
+            for i in range(0, cand_size):
+                for j in range(i + 1, cand_size):
+                    first, second = candidates[i], candidates[j]
                     similarity = _signatures_bands_similarity(docs_hashes[first], docs_hashes[second])
                     if similarity >= JACCARD_THRESHOLD:
-                        near_duplicates.add(first)
-                        near_duplicates.add(second)
                         similarities.append((first, second, similarity))
-
     # filter out duplicate pairs (i.e. a,b = b,a)
-    similarities = set((a, b, c) if a <= b else (b, a, c) for a, b, c in similarities)
-
-    return near_duplicates, similarities
+    return set((a, b, c) if a <= b else (b, a, c) for a, b, c in similarities)
 
 
 def _signatures_bands_similarity(first_sign, second_sign):
+    """
+    Evaluate fraction of bands in which signatures agree.
+    """
     agreed = 0
     for j in range(BANDS):
         start = j * BANDS
         end = start + ROWS_PER_BAND
-        if first_sign[start:end] == second_sign[start:end]:  # performs ordered lists equality check
+        if first_sign[start:end] == second_sign[start:end]:
             agreed += 1
     return agreed / BANDS
-
-
-if __name__ == "__main__":
-    # example of usage for hash_family()
-    # hash_function = hash_family(2)
-    # print hash_function('hello')
-
-    pass

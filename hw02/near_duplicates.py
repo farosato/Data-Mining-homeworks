@@ -70,17 +70,14 @@ def brute_force_near_duplicates(shingles_sets):
     Given the shingles sets of each document in a set, finds the nearest neighbors
     by comparing all the shingle sets with each other.
     """
-    near_duplicates = set()
     similarities = set()
     corpus_size = len(shingles_sets)
-    for i, s_row in enumerate(shingles_sets):
+    for i in range(0, corpus_size):
         for j in range(i + 1, corpus_size):
             similarity = _jaccard_sim(shingles_sets[i], shingles_sets[j])
             if similarity >= hashing.JACCARD_THRESHOLD:
-                near_duplicates.add(i)
-                near_duplicates.add(j)
                 similarities.add((i, j, similarity))
-    return near_duplicates, similarities
+    return similarities
 
 
 def create_documents_shingles(show_progress=False):
@@ -118,7 +115,7 @@ if __name__ == "__main__":
     # find near duplicates using lsh approach
     print '\n', '#'*SEPARATOR, '\nPerforming lsh approach...'
     start_time = time.time()
-    lsh, lsh_sim = lsh_near_duplicates(docs_shingles)
+    lsh_sim = lsh_near_duplicates(docs_shingles)
     tot_time = time.time() - start_time
 
     # print report
@@ -137,17 +134,18 @@ if __name__ == "__main__":
         report.write('\n')
         print '\n'
 
-        for i in lsh_sim:
-            row = '%s <-> %s \tsim = %f' % ('{0: <5}'.format(i[0]), '{0: <5}'.format(i[1]), i[2])
+        for t in lsh_sim:
+            row = '%s <-> %s \tsim = %f' % ('{0: <5}'.format(t[0]), '{0: <5}'.format(t[1]), t[2])
             report.write(row + '\n')
             print row
 
         report.write(TRAILER)
 
         # compute approaches intersection
-        a = set((a, b) for (a, b, c) in lsh_sim)
-        b = set((a, b) for (a, b, c) in brute_force_sim)
-        inters_size = '\nSize of intersection between approaches is %s duplicate pairs.' % len(a.intersection(b))
+        lsh_pairs = set((a, b) for (a, b, c) in lsh_sim)
+        brute_force_pairs = set((a, b) for (a, b, c) in brute_force_sim)
+        inters_size = '\nSize of intersection between approaches is %s duplicate pairs.' % \
+                      len(lsh_pairs.intersection(brute_force_pairs))
         report.write(inters_size + '\n')
         print inters_size
 
