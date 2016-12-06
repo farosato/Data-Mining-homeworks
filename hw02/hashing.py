@@ -37,7 +37,7 @@ def minwise_hashing(sets):
     Given a collection of sets of objects (e.g., strings, or numbers),
     creates a minwise hashing based signature for each set.
     """
-    random_hash_ids = _pick_random_numbers(NUM_HASH, MAX_HASH_ID)
+    random_hash_ids = random.sample(xrange(0, MAX_HASH_ID), NUM_HASH)  # xrange to avoid BIG static list
 
     signatures = []
     for s in sets:
@@ -121,26 +121,6 @@ def lsh(docs_hashes):
     similarities = set((a, b, c) if a <= b else (b, a, c) for a, b, c in similarities)
 
     return near_duplicates, similarities
-
-
-def _pick_random_numbers(k, max_num):
-    """
-    Create a list of k random values in [0, max_num].
-    """
-    rand_list = []
-
-    while k > 0:
-        # Get a random shingle ID.
-        rand_index = random.randint(0, max_num)
-
-        # Ensure that each random number is unique.
-        while rand_index in rand_list:
-            rand_index = random.randint(0, max_num)
-
-        # Add the random number to the list.
-        rand_list.append(rand_index)
-        k -= 1
-    return rand_list
 
 
 def _signatures_bands_similarity(first_sign, second_sign):
