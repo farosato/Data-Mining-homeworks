@@ -37,6 +37,7 @@ def minwise_hashing(sets):
     creates a minwise hashing based signature for each set.
     """
     random_hash_ids = random.sample(xrange(0, MAX_HASH_ID), NUM_HASH)  # xrange to avoid BIG static list
+    hash_functions = [hash_family(hid) for hid in random_hash_ids]
 
     signatures = []
     for s in sets:
@@ -46,24 +47,24 @@ def minwise_hashing(sets):
         """
         MinHash signatures are made of a numbers of components equal to NUM_HASH.
         Correspondingly, it is also the number of random hash functions that we will need
-        in order to calculate the MinHash.
+        in order to calculate the MinHash signatures.
         """
-        for i in range(0, NUM_HASH):
+        for hash_func in hash_functions:
             # For each of the shingles actually in the document, calculate its hash code
-            # using hash function 'i'.
+            # using the hash function.
 
-            for j, shingle in enumerate(s):
-                hash_function = hash_family(random_hash_ids[i], DEFAULT_HASH_SIZE)
-                hash_code = hash_function(shingle)
+            # initialize min_hash
+            shingle = s.pop()
+            min_hash = hash_func(shingle)
+            s.add(shingle)
 
-                if j == 0:
-                    min_hash = hash_code
-
+            for shingle in s:
+                hash_code = hash_func(shingle)
                 # Track the lowest hash code seen (lexicographic).
                 if hash_code < min_hash:
                     min_hash = hash_code
 
-            # Add the smallest hash code value as component number 'i' of the signature.
+            # Add the smallest hash code value as the i-th component of the signature.
             signature.append(min_hash)
 
         # Store the MinHash signature for this document.
