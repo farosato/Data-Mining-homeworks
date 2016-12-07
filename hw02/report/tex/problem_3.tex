@@ -8,8 +8,7 @@ What is the running time of your algorithm? How can you control the trade-off be
 
 \subsection{Exact solution}
 
-Let $G$ be a graph. Let $V$ be the set of vertices of $G$, such that $|V| = n$, and $E$ be the set of edges of G, such
-that $|E| = m$. We define the \textbf{diameter} of $G$ as
+Let $G$ be a graph. Let $V$ be the set of vertices of $G$, such that $|V| = n$, and $E$ be the set of edges of $G$, such that $|E| = m$. We define the \textbf{diameter} of $G$ as
 \begin{align*}
 D(G) = \max_{u,v \in V} \ d(u,v)
 \end{align*}
@@ -50,19 +49,19 @@ Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, 
 \caption{Approximate diameter computation}
 \begin{algorithmic}[1]
 	\ForAll{$v \in V$}
-		\State $B(v,0) = k$ bits bitmask s.t. bit $i$ has probability $\frac{1}{2^{i+1}}$ to be set
+		\State $B(v,0) \ \leftarrow \ k$ bits bitmask s.t. bit $i$ has probability $\frac{1}{2^{i+1}}$ to be set
 	\EndFor
 	\ForAll{distance $t$ \textbf{from} 1}
 		\ForAll{$v \in V$}
-			\State $B_{last}(v), \ B(v,t) = B(v,t-1)$
+			\State $B_{last}(v), \ B(v,t) \ \leftarrow \ B(v,t-1)$
 		\EndFor
 		\ForAll{$(u,v) \in E$}
-			\State $B(u,t) = B(u,t) \quad BITWISE-OR \quad B_{last}(v)$
+			\State $B(u,t) \ \leftarrow \ B(u,t) \quad BITWISE-OR \quad B_{last}(v)$
 		\EndFor
-		\State $unchanged = 0$
+		\State $unchanged \ \leftarrow \ 0$
 		\ForAll{$v \in V$}
 			\If{$B(v,t) = B_{last}(v)$} 
-				\State $unchanged = unchanged + 1$
+				\State $unchanged \ \leftarrow \ unchanged + 1$
 			\EndIf
 		\EndFor
 		\If{$unchanged = |V|$} 

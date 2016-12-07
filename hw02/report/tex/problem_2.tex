@@ -8,4 +8,103 @@ Our sampling algorithm for estimating the triangle coefficient relies on samplin
 
 \subsection{Connected triple sampling}
 
-\textbf{Solution available on Google Drive.}
+Let $G$ be a graph. Let $V$ be the set of vertices and $E$ be the set of edges of $G$. We define $\langle u,v,z\rangle$ as a \textbf{connected triple} centred in $v$, i.e. a triple of vertices of $G$ such that $(u,v) \in E$ and $(v,z) \in E$ (where edges are assumed undirected). Hence, the total number of connected triples in $G$ is
+\begin{align*}
+CT(G) = \sum_{v \in V} CT(G,v) = \ \sum_{v \in V} \binom{d_v}{2} \ = \ \sum_{v \in V} \dfrac{d_v(d_v - 1)}{2}
+\end{align*}
+Note that $d_v$ stands for the \textbf{degree} of vertex $v \in V$.\\
+Since we use \textbf{incidence model} to store the edges, if $G$ is \textbf{undirected}, then
+\begin{align*}
+(u,v) \in E \ \Rightarrow \ (v,u) \in E
+\end{align*}
+Note that the sub-list of edges that are incident in $v \in V$ has length equal to $d_v$. It is trivial to deduce that each element adds a number of connected triples centred in $v$ equal to its \textbf{0-based position} in this sub-list. For instance, suppose we have following incidence sub-list for $a \in V$:
+\begin{align*}
+	0. \quad &a,b\\
+	1. \quad &a,c\\
+	2. \quad &a,d\\
+	\ldots
+\end{align*}
+Following picture shows how the graph grows as we scan the list:\\
+\begin{figure}[!htbp]
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\begin{tikzpicture}[>=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
+		\graph [tree layout, grow=down, fresh nodes, level distance=0.5in, sibling distance=0.5in]
+		{ a <-> {b} };
+		\end{tikzpicture}
+		\caption*{$CT(G,a) = 0$}
+		\label{fig:CT0}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\begin{tikzpicture}[>=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
+		\graph [tree layout, grow=down, fresh nodes, level distance=0.5in, sibling distance=0.5in]
+		{ a <-> {b, c} };
+		\end{tikzpicture}
+		\caption*{$CT(G,a) = 1$}
+		\label{fig:CT1}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\begin{tikzpicture}[>=stealth, every node/.style={circle, draw, minimum size=0.75cm}]
+		\graph [tree layout, grow=down, fresh nodes, level distance=0.5in, sibling distance=0.5in]
+		{ a <-> {b, c, d} };
+		\end{tikzpicture}
+		\caption*{$CT(G,a) = 3$}
+		\label{fig:CT3}
+	\end{subfigure}
+\end{figure}
+
+\noindent As we can see, when $(a,d)$ is read, two new triples are created: $\langle b,a,d\rangle$ and $\langle c,a,d\rangle$. These ones have to be added to triples created in previous steps, that is the only $\langle b,a,c\rangle$, in this case. Indeed, the number of connected triples centred in a vertex $v$ is equal to the \textbf{number of possible pairs involving its neighbours}, that is $\binom{d_v}{2}$.\\
+What follow are the \textbf{two passes} of the algorithm we designed to sample a connected triple uniformly at random, based on previous considerations.
+\medskip
+\begin{algorithm}
+	\caption{$1^{st}$ pass: compute $CT(G)$}
+	\begin{algorithmic}[1]
+		\State $v \ \leftarrow \ edges[0][0]$ \Comment pick the first vertex in the first edge of the stream
+		\State $v_{iedix} \ \leftarrow \ 0$ \Comment 0-based index in incidence sub-list of v
+		\State $total \ \leftarrow \ 0$
+		\ForAll{$e \in edges \setminus \{v\}$}
+			\If{$e[0] = v$}
+				\State $v_{iedix} \ \leftarrow \ v_{iedix} + 1$
+				\State $total \ \leftarrow \ total + v_{iedix}$
+			\Else \Comment reset
+				\State $v \ \leftarrow \ e[0]$
+				\State $v_{iedix} \ \leftarrow \ 0$
+			\EndIf
+		\EndFor
+		\State \Return $total$
+	\end{algorithmic}
+\end{algorithm}
+
+\newpage
+\begin{algorithm}
+	\caption{$2^{nd}$ pass: sample connected triple uniformly at random}
+	\begin{algorithmic}[1]
+		\State $i \ \leftarrow$ random integer in $[1, CT(G)]$
+		\State $v \ \leftarrow \ edges[0][0]$
+		\State $v_{iedix} \ \leftarrow \ 0$
+		\State $v_{edges} \ \leftarrow \ [edges[0]]$ \Comment running list of edges incident to v
+		\State $total \ \leftarrow \ 0$
+		\ForAll{$e \in edges \setminus \{v\}$}
+			\If{$e[0] = v$}
+				\State $v_{edges}.append(e)$
+				\State $v_{iedix} \ \leftarrow \ v_{iedix} + 1$
+				\State $total \ \leftarrow \ total + v_{iedix}$
+				\If{$total \ge 1$} \Comment build and return $i\text{-}th$ triple (deterministic)
+					\State $u \ \leftarrow \ e[1]$ \Comment picked from first edge s.t. $total \ge 1$ holds
+					\State $w \ \leftarrow \ v_{edges}[total-i][1]$ \Comment picked from $(total-i)\text{-}th$ incident edge
+					\State \Return $\langle u,v,w \rangle$
+				\EndIf
+			\Else \Comment reset
+				\State $v \ \leftarrow \ e[0]$
+				\State $v_{iedix} \ \leftarrow \ 0$
+				\State $v_{edges} \ \leftarrow \ [e]$
+			\EndIf
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+
+
+
+
