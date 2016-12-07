@@ -4,10 +4,10 @@ import hashlib
 import random
 
 
-NUM_HASH = 10               # n = NUM_HASH * DEFAULT_HASH_SIZE = br
+NUM_HASH = 10               # n = br
 JACCARD_THRESHOLD = 0.8     # t = (1/b)^(1/r)
-BANDS = 10                  # b
-ROWS_PER_BAND = 10          # r
+BANDS = 2                   # b
+ROWS_PER_BAND = 5           # r
 
 MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
 MAX_HASH_ID = 10**MAX_HASH_ID_LENGTH - 1    # max hash member id
@@ -77,7 +77,7 @@ def lsh(docs_hashes):
     Given a collection of minwise hash signatures of a set of documents,
     find all the documents pairs that are near each other.
     """
-    if NUM_HASH * DEFAULT_HASH_SIZE != BANDS * ROWS_PER_BAND:
+    if NUM_HASH != BANDS * ROWS_PER_BAND:
         raise ValueError('n = br constraint does not hold.')
 
     similarities = []
@@ -97,8 +97,8 @@ def lsh(docs_hashes):
     """
     for i, h in enumerate(docs_hashes):
         for j in range(BANDS):
-            start = j*BANDS
-            sub_h = hash_tables[j][0](h[start:start+ROWS_PER_BAND])
+            start = j*ROWS_PER_BAND*DEFAULT_HASH_SIZE
+            sub_h = hash_tables[j][0](h[start:start+ROWS_PER_BAND*DEFAULT_HASH_SIZE])
             try:
                 hash_tables[j][1][sub_h].append(i)
             except KeyError:  # hash is not in dictionary keys
@@ -127,7 +127,7 @@ def _signatures_bands_similarity(first_sign, second_sign):
     """
     agreed = 0
     for j in range(BANDS):
-        start = j * BANDS
+        start = j*ROWS_PER_BAND*DEFAULT_HASH_SIZE
         end = start + ROWS_PER_BAND
         if first_sign[start:end] == second_sign[start:end]:
             agreed += 1

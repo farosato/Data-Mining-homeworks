@@ -35,7 +35,7 @@ Let $X$ be a discrete random variable representing the total number of men sitte
 \begin{align*}
 	X: \Omega \rightarrow \{ x \in \mathbb{N} \ | \ 0 \leq x \leq n \}
 \end{align*}
-Let $X_i$ be a Bernoulli random variable representing whether the $i \textendash th$ man is sitted next to at least a woman or not. Hence,
+Let $X_i$ be a Bernoulli random variable representing whether the $i\text{-} th$ man is sitted next to at least a woman or not. Hence,
 \begin{align*}
 	X_i = 
 	\left\{ \begin{aligned}
@@ -56,11 +56,11 @@ Therefore, we need to compute $E\left[ X_i \right]$ in order to get the desired 
 	&= 1 - \dfrac{(n+m) \cdot \binom{n-1}{2} \cdot 2 \cdot (n+m-3)!}{(n+m)!} \label{pr_xi0}\\
 	&= 1 - \dfrac{(n-1) \cdot (n-2)}{(n+m-1) \cdot (n+m-2)} \label{expect_xi}
 \end{align}
-Let us focus on result (\ref{pr_xi0}). We trivially computed $\Pr(X_i = 0)$, i.e. the probability that a man is not seated next to a woman, by enumerating all cases in which the $i \textendash th$ man is sitted next to other two men. Indeed, there are:
+Let us focus on result (\ref{pr_xi0}). We trivially computed $\Pr(X_i = 0)$, i.e. the probability that a man is not seated next to a woman, by enumerating all cases in which the $i \text{-} th$ man is sitted next to other two men. Indeed, there are:
 \begin{itemize}
-	\item $n+m$ possible seats for the $i \textendash th$ man.
+	\item $n+m$ possible seats for the $i \text{-} th$ man.
 	\item $\binom{n-1}{2}$ ways to choose other two men.
-	\item 2 ways to arrange other two men ("around" the $i \textendash th$ man).
+	\item 2 ways to arrange other two men ("around" the $i \text{-} th$ man).
 	\item $(n+m-3)!$ permutations of the remaining people.
 \end{itemize}
 Hence, substituting (\ref{expect_xi}) into (\ref{lin_expect}), we have that
