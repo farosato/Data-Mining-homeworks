@@ -2,7 +2,7 @@
 
 \section{Problem 4}
 
-We are monitoring a graph, which arrives as a stream of edges $\varepsilon= e_1, e_2, \ldots$. We
+We are monitoring a graph, which arrives as a stream of edges $\mathcal{E} = e_1, e_2, \ldots$. We
 assume that exactly one edge arrives at a time, with edge $e_{i}$ arriving at time $i$, and the stream is starting at time 1. Each edge $e_{i}$ is a pair of vertices $(u_{i},v_{i})$, and we use $V$ to denote the set of all vertices that we have seen so far.\\
 We assume that we are working in the sliding window model. According to that model, at each
 time $t$ only the $w$ most recent edges are considered active. Thus, the set of active edges $E(t,w)$ at time $t$ and for window length $w$ is:

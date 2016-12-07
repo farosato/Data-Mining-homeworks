@@ -6,8 +6,8 @@ import random
 
 NUM_HASH = 10               # n = br
 JACCARD_THRESHOLD = 0.8     # t = (1/b)^(1/r)
-BANDS = 2                  # b
-ROWS_PER_BAND = 5          # r
+BANDS = 2                   # b
+ROWS_PER_BAND = 5           # r
 
 MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
 MAX_HASH_ID = 10**MAX_HASH_ID_LENGTH - 1    # max hash member id
