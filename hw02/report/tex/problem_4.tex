@@ -36,8 +36,39 @@ algorithm that quickly decides, at any time $t$, if the graph $G(t,w)$ is connec
 	given the state at time $t$ and the new edge $e_{t+1}$ that arrives at time $t + 1$. You should provide your answer using the $\mathcal{O}(\cdot)$ notation, written as a function of the window length $w$ and the number of vertices $n$.
 \end{enumerate}
 
-\subsection{Connectivity algorithm}
+\subsection{Streaming connectivity checking}
 
-\subsection{Space complexity}
+A \textbf{naive} approach for this problem could be performing a visit of the graph (DFS or BFS) each time the window slides forward, to check whether the number of visited vertices is equal to $|V|$ or not. However, this simple algorithm has a \textbf{space} complexity equal to $\mathcal{O}(w)$, since all the edges in window have to be kept in memory to perform the check, that is infeasible in these settings.\\
+Our idea is based on the fact that graph connectivity can be checked looking only at a \textbf{spanning tree} of $G$. Let $ST(G)$ be a spanning tree of $G$, then
+\begin{align*}
+ST(G)\text{ is connected }\Leftrightarrow \ G\text{ is connected}
+\end{align*}
+In addition, in this case, we want to consider $ST(G)$ such that it is made of the \textbf{most recent} edges in the stream, to delay its updates as much as possible. Note that \textbf{checking connectivity} on $ST(G)$ has \textbf{space} complexity equal to 
+\begin{align*}
+\mathcal{O}(|V|)
+\end{align*}
+since we simply need to perform a visit of the tree, whose number of edges is $|V| - 1$.\\
+Clearly, we also need to take into account the \textbf{time} complexity of managing the spanning tree. Again, a naive approach could be to rebuild it each time the window slides forward, but it would cost $\mathcal{O}(w)$ (infeasible). However, we could simply \textbf{update} it whenever the window moves, with a cost equal to $\mathcal{O}(|V|)$. A simple algorithm to do that is:
+\begin{enumerate}
+	\item Add newly read edge to $ST(G)$.
+	\item Detect the \textbf{loop} possibly introduced in step 1 (we can use \textbf{Algorithm \ref{loop_check}} to do that) and delete the oldest edge in it.
+\end{enumerate}
+Note that, since the graph trivially have \textbf{only one} loop, we have that $|V| = |E|$. Hence, \textbf{time} complexity of \textbf{Algorithm \ref{loop_check}} (in this case), and thus of our \textbf{update algorithm}, is
+\begin{align*}
+\mathcal{O}(|V|)
+\end{align*}
+What follows is the pseudocode of our streaming algorithm to decide whether $G(t,w)$ is connected.
 
-\subsection{Update time complexity}
+\newpage
+\begin{algorithm}
+	\caption{Check $G(t,w)$ connectivity}
+	\begin{algorithmic}[1]
+		\State $st \ \leftarrow \ \text{empty spanning tree}$
+		\Event{new edge $e_t = (u,v)$ in stream}
+			\State $st.add(e_t)$
+			\State $st.removeExpiredEdge()$
+			\State $st.removeOldestEdgeInCycle()$
+			\State \Return $st.checkConnectivity()$
+		\EndEvent
+	\end{algorithmic}
+\end{algorithm}
