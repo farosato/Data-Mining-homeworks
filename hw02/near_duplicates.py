@@ -70,7 +70,7 @@ def brute_force_near_duplicates(shingle_sets):
     Given the shingles sets of each document in a set, finds the nearest neighbors
     by comparing all the shingle sets with each other.
     """
-    similarities = {}
+    similarities = set()
     corpus_size = len(shingle_sets)
     for i in range(0, corpus_size):
         for j in range(i + 1, corpus_size):

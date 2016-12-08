@@ -87,7 +87,6 @@ def lsh(signatures):
     For each band we have an hash table represented as a dictionary
     where an entry is a (bucket_id -> list of doc_ids) pair.
     """
-    hash_function = hash_family()
     bands_hash_tables = []
     for i in range(BANDS):
         bands_hash_tables.append([hash_family(DEFAULT_HASH_ID, HASHES_PER_SIGNATURE), {}])
@@ -100,13 +99,12 @@ def lsh(signatures):
         for band_idx in range(BANDS):
             start_row = band_idx * ROWS_PER_BAND
             end_row = start_row + ROWS_PER_BAND
-            band = sig[start_row : end_row]
+            band = sig[start_row: end_row]
             bucket_idx = bands_hash_tables[band_idx][0](''.join(band))
             try:
                 bands_hash_tables[band_idx][1][bucket_idx].append(doc_id)
             except KeyError:  # hash is not in dictionary keys
                 bands_hash_tables[band_idx][1][bucket_idx] = [doc_id]
-
 
     """
     For each candidate pair, check whether the fraction of signatures in which
@@ -145,6 +143,7 @@ def _pick_random_numbers(k, max_num):
         rand_list.append(rand_index)
         k -= 1
     return rand_list
+
 
 def _compute_signatures_similarity(sig1, sig2):
     """
