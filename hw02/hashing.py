@@ -4,15 +4,15 @@ import hashlib
 import random
 
 
-NUM_HASH = 10               # n = br
-JACCARD_THRESHOLD = 0.8     # t = (1/b)^(1/r)
-BANDS = 2                   # b
+HASHES_PER_SIGNATURE = 100  # n = b * r
+JACCARD_THRESHOLD = 0.8     # threshold = (1/b)^(1/r)
+BANDS = 20                  # b
 ROWS_PER_BAND = 5           # r
 
 MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
-MAX_HASH_ID = 10**MAX_HASH_ID_LENGTH - 1    # max hash member id
+MAX_HASH_ID = 10L**MAX_HASH_ID_LENGTH - 1    # max hash member id
 DEFAULT_HASH_ID = 2
-DEFAULT_HASH_SIZE = 10
+DEFAULT_HASH_SIZE = 8
 
 
 def hash_family(i=DEFAULT_HASH_ID, hash_size=DEFAULT_HASH_SIZE):
@@ -36,94 +36,101 @@ def minwise_hashing(sets):
     Given a collection of sets of objects (e.g., strings, or numbers),
     creates a minwise hashing based signature for each set.
     """
-    random_hash_ids = _pick_random_numbers(NUM_HASH, MAX_HASH_ID)
+    # Pick several "independent" hash functions.
+    random_hash_ids = _pick_random_numbers(HASHES_PER_SIGNATURE, MAX_HASH_ID)
+    hash_functions = [hash_family(hid) for hid in random_hash_ids]
 
-    signatures = []
+    signatures = []  # signature matrix (HASHES_PER_SIGNATURE x |sets|)
     for s in sets:
-        # The resulting minhash signature for this document.
+        # The resulting minhash signature for this particular document.
         signature = []
 
         """
-        MinHash signatures are made of a numbers of components equal to NUM_HASH.
+        MinHash signatures are made of a numbers of components (minhashes) equal to HASES_PER_SIGNATURE.
         Correspondingly, it is also the number of random hash functions that we will need
-        in order to calculate the MinHash.
+        in order to calculate the minhash signatures.
         """
-        for i in range(0, NUM_HASH):
+        for hash_func in hash_functions:
             # For each of the shingles actually in the document, calculate its hash code
-            # using hash function 'i'.
+            # using the hash function.
 
-            for j, shingle in enumerate(s):
-                hash_function = hash_family(random_hash_ids[i], DEFAULT_HASH_SIZE)
-                hash_code = hash_function(shingle)
+            # initialize min_hash
+            shingle = s.pop()
+            min_hash = hash_func(shingle)
+            s.add(shingle)
 
-                if j == 0:
-                    min_hash = hash_code
-
-                # Track the lowest hash code seen (lexicographic).
+            for shingle in s:
+                hash_code = hash_func(shingle)
+                # Track the minimum hash code seen (lexicographic since hashes are strings).
                 if hash_code < min_hash:
                     min_hash = hash_code
 
-            # Add the smallest hash code value as component number 'i' of the signature.
+            # Add the minimum hash code value as the i-th component of the signature.
             signature.append(min_hash)
 
         # Store the MinHash signature for this document.
-        signatures.append(''.join(signature))
+        signatures.append(signature)
     return signatures
 
 
-def lsh(docs_hashes):
+def lsh(signatures):
     """
-    Given a collection of minwise hash signatures of a set of documents,
+    Given a matrix of minwise hash signatures for a set of documents,
     find all the documents pairs that are near each other.
     """
-    if NUM_HASH != BANDS * ROWS_PER_BAND:
-        raise ValueError('n = br constraint does not hold.')
+    if HASHES_PER_SIGNATURE != BANDS * ROWS_PER_BAND:
+        raise ValueError('n = b * r constraint does not hold.')
 
     similarities = []
 
     """
-    For each band, append to hash tables list a sublist composed by an hash function
-    (in case we would apply a different one to each band) and a dictionary
-    (collection of buckets) such that an entry is (hash -> list of doc_ids).
+    For each band we have an hash table represented as a dictionary
+    where an entry is a (bucket_id -> list of doc_ids) pair.
     """
-    hash_tables = []
+    hash_function = hash_family()
+    bands_hash_tables = []
     for i in range(BANDS):
-        hash_tables.append([hash_family(DEFAULT_HASH_ID, NUM_HASH), {}])
+        bands_hash_tables.append([hash_family(DEFAULT_HASH_ID, HASHES_PER_SIGNATURE), {}])
 
     """
     For each band, construct candidate pairs. If two signatures are equals in at least
     one band, then they are a candidate pair.
     """
-    for i, h in enumerate(docs_hashes):
-        for j in range(BANDS):
-            start = j*ROWS_PER_BAND*DEFAULT_HASH_SIZE
-            sub_h = hash_tables[j][0](h[start:start+ROWS_PER_BAND*DEFAULT_HASH_SIZE])
+    for doc_id, sig in enumerate(signatures):
+        for band_idx in range(BANDS):
+            start_row = band_idx * ROWS_PER_BAND
+            end_row = start_row + ROWS_PER_BAND
+            band = sig[start_row : end_row]
+            bucket_idx = bands_hash_tables[band_idx][0](''.join(band))
             try:
-                hash_tables[j][1][sub_h].append(i)
+                bands_hash_tables[band_idx][1][bucket_idx].append(doc_id)
             except KeyError:  # hash is not in dictionary keys
-                hash_tables[j][1][sub_h] = [i]
+                bands_hash_tables[band_idx][1][bucket_idx] = [doc_id]
+
 
     """
-    For each candidate pair, check whether the fraction of bands in which
-    they agree is at least t. If it is so, then they are near duplicates.
+    For each candidate pair, check whether the fraction of signatures in which
+    they agree is at least equal to the threshold. If it is so, then they actually are near duplicates.
     """
-    for t in hash_tables:
-        for _, candidates in t[1].iteritems():
-            cand_size = len(candidates)
-            for i in range(0, cand_size):
-                for j in range(i + 1, cand_size):
-                    first, second = candidates[i], candidates[j]
-                    similarity = _signatures_bands_similarity(docs_hashes[first], docs_hashes[second])
+    for band_struct in bands_hash_tables:
+        for _, candidates in band_struct[1].iteritems():
+            for c1_idx, c1 in enumerate(candidates):
+                for c2 in candidates[c1_idx + 1:]:
+                    similarity = _compute_signatures_similarity(signatures[c1], signatures[c2])
                     if similarity >= JACCARD_THRESHOLD:
-                        similarities.append((first, second, similarity))
-    # filter out duplicate pairs (i.e. a,b = b,a)
-    return set((a, b, c) if a <= b else (b, a, c) for a, b, c in similarities)
+                        similarities.append((c1, c2, similarity))
+    # filter out duplicate pairs (i.e. a,b = b,a) (two candidates could collide in more than one band)
+    return {(a, b, s) if a <= b else (b, a, s) for a, b, s in similarities}
 
 
 def _pick_random_numbers(k, max_num):
     """
-    Create a list of k random values in [0, max_num].
+    Create a list of k random integer values in [0, max_num].
+    Can't use range or xrange in python 2 because of overflow problems with very large ranges.
     """
+    if k > max_num:
+        raise ValueError('Not enough unique values in the range.')
+
     rand_list = []
 
     while k > 0:
@@ -139,15 +146,15 @@ def _pick_random_numbers(k, max_num):
         k -= 1
     return rand_list
 
+def _compute_signatures_similarity(sig1, sig2):
+    """
+    Evaluate fraction of minhashes in which signatures agree.
+    """
+    if len(sig1) != len(sig2) or len(sig1) != HASHES_PER_SIGNATURE:
+        raise ValueError('Signatures should both have n components.')
 
-def _signatures_bands_similarity(first_sign, second_sign):
-    """
-    Evaluate fraction of bands in which signatures agree.
-    """
-    agreed = 0
-    for j in range(BANDS):
-        start = j*ROWS_PER_BAND*DEFAULT_HASH_SIZE
-        end = start + ROWS_PER_BAND
-        if first_sign[start:end] == second_sign[start:end]:
-            agreed += 1
-    return agreed / BANDS
+    match = 0
+    for minhash1, minhash2 in zip(sig1, sig2):
+        if minhash1 == minhash2:
+            match += 1
+    return match / HASHES_PER_SIGNATURE

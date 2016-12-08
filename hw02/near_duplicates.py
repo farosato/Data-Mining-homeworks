@@ -23,10 +23,10 @@ TRAILER = '\n' + '#'*SEPARATOR + '\n'
 SHINGLE_SIZE = 10
 
 
-def lsh_near_duplicates(shingles_sets):
+def lsh_near_duplicates(shingle_sets):
     """
-    Given a collection of shingles sets of a set of documents,
-    it finds the all the documents pairs that are near each other.
+    Given a collection of shingles sets of a collection of documents,
+    it finds all the documents pairs that are near each other.
     The procedure is defined in LRU book as follow.
     """
 
@@ -44,7 +44,7 @@ def lsh_near_duplicates(shingles_sets):
     documents.
     """
 
-    minhash_signatures = hashing.minwise_hashing(shingles_sets)
+    minhash_signatures = hashing.minwise_hashing(shingle_sets)
 
     """
     4. Choose a threshold t that defines how similar documents have to be in
@@ -65,16 +65,16 @@ def lsh_near_duplicates(shingles_sets):
     return hashing.lsh(minhash_signatures)  # return near duplicates
 
 
-def brute_force_near_duplicates(shingles_sets):
+def brute_force_near_duplicates(shingle_sets):
     """
     Given the shingles sets of each document in a set, finds the nearest neighbors
     by comparing all the shingle sets with each other.
     """
-    similarities = set()
-    corpus_size = len(shingles_sets)
+    similarities = {}
+    corpus_size = len(shingle_sets)
     for i in range(0, corpus_size):
         for j in range(i + 1, corpus_size):
-            similarity = _jaccard_sim(shingles_sets[i], shingles_sets[j])
+            similarity = _jaccard_sim(shingle_sets[i], shingle_sets[j])
             if similarity >= hashing.JACCARD_THRESHOLD:
                 similarities.add((i, j, similarity))
     return similarities
@@ -82,7 +82,7 @@ def brute_force_near_duplicates(shingles_sets):
 
 def create_documents_shingles(show_progress=False):
     """ Create documents shingles sets. """
-    shingles_sets = []
+    shingle_sets = []
     with open(SRC, 'r') as docs:
         docs.readline()  # skip header line
 
@@ -91,9 +91,9 @@ def create_documents_shingles(show_progress=False):
         while line != '':
             if show_progress:
                 print doc_id
-            shingles_sets.append(shingling.shingle_hash(line, SHINGLE_SIZE))
+            shingle_sets.append(shingling.shingle(line, SHINGLE_SIZE))
             doc_id, line = doc_id + 1, docs.readline()
-    return shingles_sets
+    return shingle_sets
 
 
 def _jaccard_sim(a, b):
@@ -106,6 +106,7 @@ def _jaccard_sim(a, b):
 
 if __name__ == "__main__":
     docs_shingles = create_documents_shingles()
+    docs_hashed_shingles = [shingling.hash_shingles(s) for s in docs_shingles]
 
     # load previously computed brute force result, since it is constant
     print '\n', '#'*SEPARATOR, '\nLoading brute force approach result...'
@@ -115,7 +116,7 @@ if __name__ == "__main__":
     # find near duplicates using lsh approach
     print '\n', '#'*SEPARATOR, '\nPerforming lsh approach...'
     start_time = time.time()
-    lsh_sim = lsh_near_duplicates(docs_shingles)
+    lsh_sim = lsh_near_duplicates(docs_hashed_shingles)
     tot_time = time.time() - start_time
 
     # print report
@@ -142,8 +143,8 @@ if __name__ == "__main__":
         report.write(TRAILER)
 
         # compute approaches intersection
-        lsh_pairs = set((a, b) for (a, b, c) in lsh_sim)
-        brute_force_pairs = set((a, b) for (a, b, c) in brute_force_sim)
+        lsh_pairs = {(a, b) for (a, b, c) in lsh_sim}
+        brute_force_pairs = {(a, b) for (a, b, c) in brute_force_sim}
         inters_size = '\nSize of intersection between approaches is %s duplicate pairs.' % \
                       len(lsh_pairs.intersection(brute_force_pairs))
         report.write(inters_size + '\n')
