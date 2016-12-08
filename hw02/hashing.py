@@ -37,7 +37,7 @@ def minwise_hashing(sets):
     creates a minwise hashing based signature for each set.
     """
     # Pick several "independent" hash functions.
-    random_hash_ids = random.sample(xrange(0, MAX_HASH_ID), HASHES_PER_SIGNATURE)  # xrange to avoid BIG static list
+    random_hash_ids = _pick_random_numbers(HASHES_PER_SIGNATURE, MAX_HASH_ID)
     hash_functions = [hash_family(hid) for hid in random_hash_ids]
 
     signatures = []  # signature matrix (HASHES_PER_SIGNATURE x |sets|)
@@ -130,6 +130,7 @@ def _pick_random_numbers(k, max_num):
     """
     if k > max_num:
         raise ValueError('Not enough unique values in the range.')
+
     rand_list = []
 
     while k > 0:
@@ -146,7 +147,7 @@ def _pick_random_numbers(k, max_num):
     return rand_list
 
 def _compute_signatures_similarity(sig1, sig2):
-   """
+    """
     Evaluate fraction of minhashes in which signatures agree.
     """
     if len(sig1) != len(sig2) or len(sig1) != HASHES_PER_SIGNATURE:
