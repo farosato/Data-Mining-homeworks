@@ -10,7 +10,7 @@ BANDS = 20                  # b
 ROWS_PER_BAND = 5           # r
 
 MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
-MAX_HASH_ID = 10**MAX_HASH_ID_LENGTH - 1    # max hash member id
+MAX_HASH_ID = 10L**MAX_HASH_ID_LENGTH - 1    # max hash member id
 DEFAULT_HASH_ID = 2
 DEFAULT_HASH_SIZE = 8
 
@@ -123,8 +123,30 @@ def lsh(signatures):
     return set((a, b, s) if a <= b else (b, a, s) for a, b, s in similarities)
 
 
-def _compute_signatures_similarity(sig1, sig2):
+def _pick_random_numbers(k, max_num):
     """
+    Create a list of k random integer values in [0, max_num].
+    Can't use range or xrange in python 2 because of overflow problems with very large ranges.
+    """
+    if k > max_num:
+        raise ValueError('Not enough unique values in the range.')
+    rand_list = []
+
+    while k > 0:
+        # Get a random shingle ID.
+        rand_index = random.randint(0, max_num)
+
+        # Ensure that each random number is unique.
+        while rand_index in rand_list:
+            rand_index = random.randint(0, max_num)
+
+        # Add the random number to the list.
+        rand_list.append(rand_index)
+        k -= 1
+    return rand_list
+
+def _compute_signatures_similarity(sig1, sig2):
+   """
     Evaluate fraction of minhashes in which signatures agree.
     """
     if len(sig1) != len(sig2) or len(sig1) != HASHES_PER_SIGNATURE:
