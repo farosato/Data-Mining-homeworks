@@ -49,7 +49,8 @@ obvious loop.
 A simple DFS (Depth First Search) does the trick. If we find a
 \textit{back edge} during the traversal (i.e. an edge from a node to
 itself, or to one of its ancestors in the tree produced by DFS), then
-the graph is cyclic, otherwise it isn't.
+the graph is cyclic, otherwise it isn't. What follows is the pseudocode 
+of the algorithm to perform this check.
 \newpage
 \begin{algorithm}
 	\caption{Detect presence of cycles in citation network}
@@ -58,17 +59,17 @@ the graph is cyclic, otherwise it isn't.
 			\State mark $v$ as $UNVISITED$
 		\EndFor
 		\State $S \ \leftarrow \ \text{empty stack}$
-		\State pick any $u \in V$, mark $u$ as $ON\text{-}STACK$
+		\State pick any $u \in V$, mark $u$ as $PENDING$
 		\State $S.push(u)$
 		\While{$S$ is not empty}
 			\State $v \ \leftarrow \ S.peek()$
 			\State $has\text{-}unvisited\text{-}neighbors \ \leftarrow \ false$
 			\ForAll{$(v,z) \in E$}
-				\If{$z$ marked as $ON\text{-}STACK$}
+				\If{$z$ marked as $PENDING$}
 					\State \Return TRUE
 				\ElsIf{$z$ marked as $UNVISITED$}
 					\State $has\text{-}unvisited\text{-}neighbors \ \leftarrow \ true$
-					\State mark $z$ as $ON\text{-}STACK$
+					\State mark $z$ as $PENDING$
 					\State $S.push(z)$
 				\EndIf
 			\EndFor
