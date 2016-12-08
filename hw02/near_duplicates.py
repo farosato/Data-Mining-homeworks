@@ -70,7 +70,7 @@ def brute_force_near_duplicates(shingle_sets):
     Given the shingles sets of each document in a set, finds the nearest neighbors
     by comparing all the shingle sets with each other.
     """
-    similarities = set()
+    similarities = {}
     corpus_size = len(shingle_sets)
     for i in range(0, corpus_size):
         for j in range(i + 1, corpus_size):
@@ -106,7 +106,7 @@ def _jaccard_sim(a, b):
 
 if __name__ == "__main__":
     docs_shingles = create_documents_shingles()
-    docs_hashed_shingles = [shingling.hash_shingles(set) for set in docs_shingles]
+    docs_hashed_shingles = [shingling.hash_shingles(s) for s in docs_shingles]
 
     # load previously computed brute force result, since it is constant
     print '\n', '#'*SEPARATOR, '\nLoading brute force approach result...'
@@ -143,8 +143,8 @@ if __name__ == "__main__":
         report.write(TRAILER)
 
         # compute approaches intersection
-        lsh_pairs = set((a, b) for (a, b, c) in lsh_sim)
-        brute_force_pairs = set((a, b) for (a, b, c) in brute_force_sim)
+        lsh_pairs = {(a, b) for (a, b, c) in lsh_sim}
+        brute_force_pairs = {(a, b) for (a, b, c) in brute_force_sim}
         inters_size = '\nSize of intersection between approaches is %s duplicate pairs.' % \
                       len(lsh_pairs.intersection(brute_force_pairs))
         report.write(inters_size + '\n')

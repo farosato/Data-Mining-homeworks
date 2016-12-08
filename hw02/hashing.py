@@ -120,7 +120,7 @@ def lsh(signatures):
                     if similarity >= JACCARD_THRESHOLD:
                         similarities.append((c1, c2, similarity))
     # filter out duplicate pairs (i.e. a,b = b,a) (two candidates could collide in more than one band)
-    return set((a, b, s) if a <= b else (b, a, s) for a, b, s in similarities)
+    return {(a, b, s) if a <= b else (b, a, s) for a, b, s in similarities}
 
 
 def _pick_random_numbers(k, max_num):
