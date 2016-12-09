@@ -101,7 +101,8 @@ def _jaccard_sim(a, b):
     Computes Jaccard similarity of the given sets.
     Note that both params are required to be Python sets.
     """
-    return len(a.intersection(b)) / len(a.union(b))
+    intersection = len(a.intersection(b))
+    return intersection / (len(a) + len(b) - intersection)
 
 
 if __name__ == "__main__":
@@ -145,9 +146,9 @@ if __name__ == "__main__":
         # compute approaches intersection
         lsh_pairs = {(a, b) for (a, b, c) in lsh_sim}
         brute_force_pairs = {(a, b) for (a, b, c) in brute_force_sim}
-        inters_size = '\nSize of intersection between approaches is %s duplicate pairs.' % \
-                      len(lsh_pairs.intersection(brute_force_pairs))
-        report.write(inters_size + '\n')
-        print inters_size
+        intersection_size = '\nSize of intersection between approaches is %s duplicate pairs.' % \
+                            len(lsh_pairs.intersection(brute_force_pairs))
+        report.write(intersection_size + '\n')
+        print intersection_size
 
         report.write(TRAILER)
