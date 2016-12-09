@@ -63,12 +63,15 @@ What follows is the pseudocode of our streaming algorithm to decide whether $G(t
 \begin{algorithm}
 	\caption{Check $G(t,w)$ connectivity}
 	\begin{algorithmic}[1]
+		\State $w \ \leftarrow \ \text{window size}$
 		\State $st \ \leftarrow \ \text{empty spanning tree}$
 		\Event{new edge $e_t = (u,v)$ in stream}
+			\If{$t > w$}
+				\State $st.removeExpiredEdge()$ \Comment delete edge with timestamp $t-w$
+			\EndIf
 			\State $st.add(e_t)$
-			\State $st.removeExpiredEdge()$
-			\State $st.removeOldestEdgeInCycle()$
-			\State \Return $st.checkConnectivity()$
+			\State $st.removeCycle()$ \Comment delete oldest involved edge in (possible) cycle
+			\State \Return $st.isConnected()$  \Comment visit tree to count connected vertices
 		\EndEvent
 	\end{algorithmic}
 \end{algorithm}
