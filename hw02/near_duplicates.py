@@ -116,7 +116,7 @@ if __name__ == "__main__":
         brute_force_sim = pickle.load(src)
 
     # find near duplicates using lsh approach
-    print '\n', '#'*SEPARATOR, '\nPerforming lsh approach (b = %, r = %)...' % hashing.BANDS, hashing.ROWS_PER_BAND
+    print '\n', '#'*SEPARATOR, '\nPerforming lsh approach (b = %d, r = %d)...' % (hashing.BANDS, hashing.ROWS_PER_BAND)
     start_time = time.time()
     lsh_sim = lsh_near_duplicates(docs_shingles, debug=True)
     tot_time = time.time() - start_time
