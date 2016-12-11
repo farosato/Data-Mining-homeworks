@@ -12,24 +12,25 @@ Let $G$ be a graph. Let $V$ be the set of vertices of $G$, such that $|V| = n$, 
 \begin{align*}
 D(G) = \max_{u,v \in V} \ d(u,v)
 \end{align*}
-i.e. the greatest \textbf{shortest path} (distance) between any pair of vertices in $G$.\\
+i.e. the greatest \textbf{shortest path} (distance) between any pair of vertices in $G$ (assuming the graph is connected).\\
 We can derive an algorithm to compute the \textbf{exact} diameter of $G$ by trivially applying the definition, that is:
 \begin{enumerate}
 	\item Compute the shortest path between each pair of vertices of $G$. 
 	\item Find the greatest length of any of these paths, that is $D(G)$.
 \end{enumerate}
-The most efficient way to implement the first step is Dijkstra's algorithm\cite{dijkstra}. Indeed, it has a very nice
+If the graph is \textbf{weighted}, the most efficient way to implement the first step is Dijkstra's algorithm\cite{dijkstra}. Indeed, it has a very nice
 property: computing the shortest paths from a vertex $u$ to each of the other vertices of $G$ costs the same of computing
 the shortest paths from $u$ to a specific vertex $v$. Note that we need to perform \cite{dijkstra} starting from each
 $u \in V$ to get all the shortest paths (needed for step 2). Hence, the time complexity of the whole algorithm is
 \begin{align*}
 \mathcal{O}(n \cdot m\log{n})
 \end{align*}
+Note that, if the graph is \textbf{unweighted}, then Dijkstra is an overkill, since the first step could be implemented performing a simple BFS from each node.
 
 \subsection{Approximate solution}
 
-Since the algorithm to compute the exact diameter is costly with respect to big graphs, we are interested in finding a good \textbf{approximation}.\\
-In what follows, we propose a solution that is based on "\textbf{diffusion}" approach, used in practice to compute the distance distribution of a given graph. Let $B(v,t)$ be the set of vertices within distance $t$ from $v$, i.e.
+Computing the exact diameter is costly when dealing with very big graphs. Thus we are interested in finding a good \textbf{approximation}.\\
+In class we saw an approximation algorithm based on a "\textbf{diffusion}" approach, used in practice to compute the \textbf{distance distribution} of a given graph. Let $B(v,t)$ be the set of vertices within distance $t$ from $v$, i.e.
 \begin{align*}
 B(v,t) = \{ z \in V \ | \ d(v,z) \le t \} \qquad v \in V, \ t \ge 0
 \end{align*}
@@ -42,9 +43,11 @@ The key idea of "diffusion" is that this set can be defined inductively as follo
 &B(v,0) = \{ v \} \nonumber\\
 &B(v,t+1) = \bigcup_{(v,z) \in E} B(z,t) \ \cup \ \{ v \} \label{ball}
 \end{align}
-The intuition underlying (\ref{ball}) is that vertices at distance $t+1$ from the current location can be reached in $t$ hops from each one of the neighbours. Even though it is trivial to design an algorithm that implements the inductive definition, keeping all the sets in memory and performing union among them is costly (indeed, space complexity is $\mathcal{O}(n^2)$).\\
-Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, that is an algorithm for approximating the number of distinct elements in a stream (or set, in this case) with a single pass and space complexity which is \textbf{logarithmic} in the maximum number of possible distinct elements. In this settings, "diffusion" sets are implemented as \textbf{bitmasks} of $k$ bits each and union is computed efficiently through \textbf{bitwise OR} operation. What follows is the algorithm we designed.
+The intuition underlying (\ref{ball}) is that vertices at distance $t+1$ from the current location can be reached in $t$ hops from each one of the neighbours. \\
+Even though it is trivial to design an algorithm that implements the inductive definition (done in class), keeping all the sets in memory and performing union among them is costly (indeed, space complexity is $\mathcal{O}(n^2)$).\\
+Then we can apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme and substitute the sets with probabilistic counters (indeed Flajolet-Martin sketching is a scheme for approximating the number of distinct elements in a stream - or set, as in this case - with a single pass, and a space complexity which is \textbf{logarithmic} in the maximum number of distinct elements). In other terms, "diffusion" sets are implemented as \textbf{bitmasks} of $k$ bits each and union is computed efficiently through \textbf{bitwise OR} operations.
 \medskip
+\setcounter{algorithm}{0}
 \begin{algorithm}
 \caption{Approximate diameter computation}
 \begin{algorithmic}[1]
@@ -53,7 +56,8 @@ Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, 
 	\EndFor
 	\ForAll{distance $t$ \textbf{from} 1}
 		\ForAll{$v \in V$}
-			\State $B_{last}(v), \ B(v,t) \ \leftarrow \ B(v,t-1)$
+			\State $B_{last}(v) \ \leftarrow \ B(v,t-1)$
+            \State $B(v,t) \ \leftarrow \ B(v,t-1)$
 		\EndFor
 		\ForAll{$(u,v) \in E$}
 			\State $B(u,t) \ \leftarrow \ B(u,t) \quad BITWISE-OR \quad B_{last}(v)$
@@ -72,7 +76,7 @@ Therefore, we need to apply \textbf{Flajolet-Martin sketching}\cite{fm} scheme, 
 \end{algorithm}
 
 \medskip
-\noindent The computation stops when \textbf{all} the bitmasks associated with each node stops changing, i.e. when
+\noindent The computation stops when \textbf{all} the bitmasks associated with each node stop changing, i.e. when
 \begin{align}
 B(v,t) = B(v, t-1) \quad \forall v \in V \label{approx_termination}
 \end{align}
@@ -80,4 +84,4 @@ The algorithm includes at least a linear scanning of vertices and edges for each
 \begin{align*}
 \mathcal{O}(d \cdot (n + m))
 \end{align*}
-Since we necessarily need to iterate over vertices and edges to compute "diffusion" sets, the only way to reduce the complexity is to manipulate $d$, thus, the number of times that the main loop is executed. To reduce its value, we can only decrease the value of $k$. Indeed, having \textbf{shorter} bitmasks increase the possibility to have (\ref{approx_termination}) holding \textbf{earlier}, with a relates loss of accuracy. Therefore, $k$ is the parameter through which we can \textbf{tune} the trade-off between accuracy and speed.
+Since we necessarily need to iterate over vertices and edges to compute the "diffusion sets", the only way to reduce the complexity is to manipulate $d$, thus, the number of times that the main loop is executed. To reduce its value, we can only decrease the value of $k$. Indeed, having \textbf{shorter} bitmasks increases the probability of having (\ref{approx_termination}) holding \textbf{earlier}, with a related loss of accuracy. Therefore, $k$ is the parameter through which we can \textbf{tune} the trade-off between accuracy and speed.

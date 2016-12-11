@@ -29,7 +29,7 @@ If we imagine each article having a unique time-stamp (i.e. each article
 coming into existence at a unique point in time, thus establishing
 a \textbf{total order} of the articles), we can only have an edge
 $\left(B, A\right)$ if $A$ precedes $B$ in time,
-i.e. $\left(B,A\right) \in E \ \Rightarrow \ A<B$. In other words each article can cite only
+i.e. $\left(B,A\right) \in E \ \Rightarrow \ A < B$. In other words each article can cite only
 articles that precede it. Hence, it's not possible for the graph to have a loop, cause this would
 mean that some article is actually citing an article that follows it.\\
 More formally: suppose we have a loop $A \leftarrow B \leftarrow \dots \leftarrow A$, then this would mean that $A < B < \dots < A$, clearly an absurdity.
@@ -46,7 +46,7 @@ obvious loop.
 
 \subsection{Loop checking}
 
-A simple DFS (Depth First Search) does the trick. If we find a
+A simple DFS (Depth First Search) does the trick. Intuitively, if we find a
 \textit{back edge} during the traversal (i.e. an edge from a node to
 itself, or to one of its ancestors in the tree produced by DFS), then
 the graph is cyclic, otherwise it isn't. What follows is the pseudocode 
