@@ -24,9 +24,6 @@ def hash_shingles(shingle_set):
 
 if __name__ == "__main__":
     # example of usage for shingle() and shingle_hash()
-    print shingle('a rose is a rose is a rose', 4)
-    print hash_shingles('a rose is a rose is a rose', 4)
-    print shingle('a ros', 4)
-    print hash_shingles('a ros', 4)
-    print shingle('a ro', 4)
-    print hash_shingles('a ro', 4)
+    shingles = shingle('a rose is a rose is a rose', 4)
+    print shingles
+    print hash_shingles(shingles)
