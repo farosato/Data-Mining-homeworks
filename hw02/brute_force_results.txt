@@ -1,5 +1,5 @@
 Brute force approach found 5 near duplicate pairs.
-Brute force approach took  14431.655 seconds.
+Brute force approach took  3608.655 seconds.
 
 196   <-> 9111      sim = 0.811616
 706   <-> 707       sim = 0.818757

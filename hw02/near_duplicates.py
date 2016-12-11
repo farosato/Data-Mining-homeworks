@@ -150,6 +150,6 @@ if __name__ == "__main__":
         report.write(TRAILER)
 
     # print report
+    print TRAILER
     with open(DEST_REPORT, 'r') as report:
-        for line in report:
-            print line
+        print report.read()
