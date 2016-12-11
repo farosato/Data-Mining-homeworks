@@ -2,6 +2,7 @@
 from __future__ import division
 import hashlib
 import random
+import time
 
 
 HASHES_PER_SIGNATURE = 100  # n = b * r
@@ -31,11 +32,14 @@ def hash_family(i=DEFAULT_HASH_ID, hash_size=DEFAULT_HASH_SIZE):
     return hash_member
 
 
-def minwise_hashing(sets):
+def minwise_hashing(sets, debug=False):
     """
     Given a collection of sets of objects (e.g., strings, or numbers),
     creates a minwise hashing based signature for each set.
     """
+    if debug:
+        start_time = time.time()
+
     # Pick several "independent" hash functions.
     random_hash_ids = _pick_random_numbers(HASHES_PER_SIGNATURE, MAX_HASH_ID)
     hash_functions = [hash_family(hid) for hid in random_hash_ids]
@@ -70,16 +74,23 @@ def minwise_hashing(sets):
 
         # Store the MinHash signature for this document.
         signatures.append(signature)
+
+    if debug:
+        elapsed = time.time() - start_time
+        print "Producing Minwise Hashing signatures took %s seconds" % elapsed
     return signatures
 
 
-def lsh(signatures):
+def lsh(signatures, debug=False):
     """
     Given a matrix of minwise hash signatures for a set of documents,
     find all the documents pairs that are near each other.
     """
     if HASHES_PER_SIGNATURE != BANDS * ROWS_PER_BAND:
         raise ValueError('n = b * r constraint does not hold.')
+
+    if debug:
+        start_time = time.time()
 
     similarities = []
 
@@ -118,7 +129,13 @@ def lsh(signatures):
                     if similarity >= JACCARD_THRESHOLD:
                         similarities.append((c1, c2, similarity))
     # filter out duplicate pairs (i.e. a,b = b,a) (two candidates could collide in more than one band)
-    return {(a, b, s) if a <= b else (b, a, s) for a, b, s in similarities}
+    similarities = {(a, b, s) if a <= b else (b, a, s) for a, b, s in similarities}
+
+    if debug:
+        elapsed = time.time() - start_time
+        print "LSH took %s seconds" % elapsed
+
+    return similarities
 
 
 def _pick_random_numbers(k, max_num):

@@ -23,7 +23,7 @@ TRAILER = '\n' + '#'*SEPARATOR + '\n'
 SHINGLE_SIZE = 10
 
 
-def lsh_near_duplicates(shingle_sets):
+def lsh_near_duplicates(shingle_sets, debug=False):
     """
     Given a collection of shingles sets of a collection of documents,
     it finds all the documents pairs that are near each other.
@@ -44,7 +44,7 @@ def lsh_near_duplicates(shingle_sets):
     documents.
     """
 
-    minhash_signatures = hashing.minwise_hashing(shingle_sets)
+    minhash_signatures = hashing.minwise_hashing(shingle_sets, debug)
 
     """
     4. Choose a threshold t that defines how similar documents have to be in
@@ -62,7 +62,7 @@ def lsh_near_duplicates(shingle_sets):
     components in which they agree is at least t.
     """
 
-    return hashing.lsh(minhash_signatures)  # return near duplicates
+    return hashing.lsh(minhash_signatures, debug)  # return near duplicates
 
 
 def brute_force_near_duplicates(shingle_sets):
@@ -107,7 +107,8 @@ def _jaccard_sim(a, b):
 
 if __name__ == "__main__":
     docs_shingles = create_documents_shingles()
-    docs_hashed_shingles = [shingling.hash_shingles(s) for s in docs_shingles]
+    # No real point in hashing the shingles since we're going to perform minhashing (except trivial compression)
+    docs_shingles = [shingling.hash_shingles(s) for s in docs_shingles]
 
     # load previously computed brute force result, since it is constant
     print '\n', '#'*SEPARATOR, '\nLoading brute force approach result...'
@@ -115,31 +116,27 @@ if __name__ == "__main__":
         brute_force_sim = pickle.load(src)
 
     # find near duplicates using lsh approach
-    print '\n', '#'*SEPARATOR, '\nPerforming lsh approach...'
+    print '\n', '#'*SEPARATOR, '\nPerforming lsh approach (b = %, r = %)...' % hashing.BANDS, hashing.ROWS_PER_BAND
     start_time = time.time()
-    lsh_sim = lsh_near_duplicates(docs_hashed_shingles)
+    lsh_sim = lsh_near_duplicates(docs_shingles, debug=True)
     tot_time = time.time() - start_time
 
-    # print report
+    # write report
     copyfile(SRC_BRUTE_FORCE_REPORT, DEST_REPORT)
     with open(DEST_REPORT, 'a') as report:
         report.write('\n')
 
         duplicates_num = 'LSH approach found %s near duplicate pairs.' % len(lsh_sim)
         report.write(duplicates_num + '\n')
-        print duplicates_num
 
         running_time = 'LSH approach took  %s seconds.' % tot_time
         report.write(running_time + '\n')
-        print running_time
 
         report.write('\n')
-        print '\n'
 
         for t in lsh_sim:
             row = '%s <-> %s \tsim = %f' % ('{0: <5}'.format(t[0]), '{0: <5}'.format(t[1]), t[2])
             report.write(row + '\n')
-            print row
 
         report.write(TRAILER)
 
@@ -149,6 +146,10 @@ if __name__ == "__main__":
         intersection_size = '\nSize of intersection between approaches is %s duplicate pairs.' % \
                             len(lsh_pairs.intersection(brute_force_pairs))
         report.write(intersection_size + '\n')
-        print intersection_size
 
         report.write(TRAILER)
+
+    # print report
+    with open(DEST_REPORT, 'r') as report:
+        for line in report:
+            print line
