@@ -362,6 +362,8 @@ fabric.properties
 # datasets
 hw*/recipes*/
 hw*/*.zip
+hw*/*.gz
+hw03/access_log_Jul95.txt
 
 # easily computable output files
 hw*/recipes-prep.tsv
