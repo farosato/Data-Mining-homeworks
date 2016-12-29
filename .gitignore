@@ -363,7 +363,7 @@ fabric.properties
 hw*/recipes*/
 hw*/*.zip
 hw*/*.gz
-hw03/access_log_Jul95.txt
+hw03/access_log_*
 
 # easily computable output files
 hw*/recipes-prep.tsv
