@@ -8,7 +8,7 @@ import time
 HASHES_PER_SIGNATURE = 100  # n = b * r
 JACCARD_THRESHOLD = 0.8     # threshold = (1/b)^(1/r)
 BANDS = 10                  # b
-ROWS_PER_BAND = 10           # r
+ROWS_PER_BAND = 10          # r
 
 MAX_HASH_ID_LENGTH = 20                     # max num of decimal digits for hash member id
 MAX_HASH_ID = 10L**MAX_HASH_ID_LENGTH - 1   # max hash member id
