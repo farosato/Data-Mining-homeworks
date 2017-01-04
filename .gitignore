@@ -364,6 +364,7 @@ hw*/recipes*/
 hw*/*.zip
 hw*/*.gz
 hw03/access_log_*
+hw03/tweets*
 
 # easily computable output files
 hw*/recipes-prep.tsv
@@ -372,3 +373,6 @@ hw02/results.txt
 
 # reports .pdf
 hw*/report/*.pdf
+
+# private files
+hw03/twitter_secret_keys.py
