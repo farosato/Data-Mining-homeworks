@@ -1,24 +1,35 @@
 """ Module containing streaming algorithms for frequency moments estimation. """
 from __future__ import division
-import __init__
-import hw02.hashing as hw_utils
-import time
 from xxhash import xxh64
+import random
 
 
 MAX_SEED = 18446744073709551615L  # = 2**64-1
 
 
+est_num, group_size = 0, 0
 fm_random_hashes = []
 fm_estimates = []
 ams_random_hashes = []
 ams_estimates = []
 
 
-def flajolet_martin(item, est_num, group_size):
+def init(est_num_, group_size_):
+    """ Initialize global variables. """
+    global est_num, group_size, fm_random_hashes, fm_estimates, ams_random_hashes, ams_estimates
+
+    est_num = est_num_
+    group_size = group_size_
+
+    fm_random_hashes = ams_random_hashes = _pick_random_numbers(est_num, MAX_SEED)
+    fm_estimates = [0] * est_num
+    ams_estimates = [0] * est_num
+
+
+def flajolet_martin(item):
     """ Estimate stream 0-th frequency moment. """
     for i, seed in enumerate(fm_random_hashes):
-        signature = bin(xxh64(item, seed=seed).intdigest())
+        signature = xxh64(item, seed=seed).intdigest()
         new_est = 2**(_tail_length(signature))
         if new_est > fm_estimates[i]:
             fm_estimates[i] = new_est
@@ -40,17 +51,17 @@ def alon_matias_szegedy(item):
     return int(_mean([x**2 for x in ams_estimates]))
 
 
-def _tail_length(bin_sign):
+def _tail_length(sign):
     """
     Compute binary signature 'tail length'.
-    Signature is assumed to be big endian.
     """
     tail_length = 0
-    for bit in bin_sign[:1:-1]:  # truncate first two chars, iterate from last
-        if bit == '1':
+    while sign != 0:
+        if sign & 1:  # lsb is 1
             return tail_length
         tail_length += 1
-    return tail_length
+        sign >>= 1
+    return len(bin(sign))
 
 
 def _one_sign(item, seed):
@@ -73,35 +84,26 @@ def _median(values):
     return (values[int(length/2)] + values[int(middle/2)]) / 2
 
 
-if __name__ == '__main__':
+def _pick_random_numbers(k, max_num):
+    """
+    Create a list of k random integer values in [0, max_num].
+    Can't use range or xrange in python 2 because of overflow
+    problems with very large ranges.
+    """
+    if k > max_num:
+        raise ValueError('Not enough unique values in range.')
 
-    EST_NUM = 100
-    GROUP_SIZE = 10
+    rand_list = []
 
-    # fm_random_hashes = hw_utils._pick_random_numbers(EST_NUM, MAX_SEED)
-    # fm_estimates = [0] * EST_NUM
+    while k > 0:
+        # Get a random number in range.
+        rand_index = random.randint(0, max_num)
 
-    ams_random_hashes = hw_utils._pick_random_numbers(EST_NUM, MAX_SEED)
-    ams_estimates = [0] * EST_NUM
+        # Ensure that each random number is unique.
+        while rand_index in rand_list:
+            rand_index = random.randint(0, max_num)
 
-    with open('access_log_test.txt', 'r') as src:
-
-        # 0-th frequency moment
-        # start_time = time.time()
-        #
-        # line = src.readline()
-        # while line != '':
-        #     print flajolet_martin(line, EST_NUM, GROUP_SIZE)
-        #     line = src.readline()
-        #
-        # print 'time: %s seconds' % (time.time() - start_time)
-
-        # 2-nd frequency moment
-        start_time = time.time()
-
-        line = src.readline()
-        while line != '':
-            print alon_matias_szegedy(line)
-            line = src.readline()
-
-        print 'time: %s seconds' % (time.time() - start_time)
+        # Add the random number to the list.
+        rand_list.append(rand_index)
+        k -= 1
+    return rand_list
