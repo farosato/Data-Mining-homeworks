@@ -11,6 +11,8 @@ MAX_SEED = 18446744073709551615L  # = 2**64-1
 
 fm_random_hashes = []
 fm_estimates = []
+ams_random_hashes = []
+ams_estimates = []
 
 
 def flajolet_martin(item, est_num, group_size):
@@ -28,8 +30,14 @@ def flajolet_martin(item, est_num, group_size):
     return int(_median(means))
 
 
-def alon_matias_szegedy():
+def alon_matias_szegedy(item):
     """ Estimate stream 2-nd frequency moment. """
+    for i, seed in enumerate(ams_random_hashes):
+        if _one_sign(item, seed):
+            ams_estimates[i] += 1
+        else:
+            ams_estimates[i] -= 1
+    return int(_mean([x**2 for x in ams_estimates]))
 
 
 def _tail_length(bin_sign):
@@ -43,6 +51,15 @@ def _tail_length(bin_sign):
             return tail_length
         tail_length += 1
     return tail_length
+
+
+def _one_sign(item, seed):
+    """
+    Hash an item to a random value in {-1,+1}.
+    If signature is odd, then return True (False otherwise).
+    True maps to +1, False maps to -1.
+    """
+    return True if (xxh64(item, seed=seed).intdigest() & 1) else False
 
 
 def _mean(values):
@@ -61,16 +78,30 @@ if __name__ == '__main__':
     EST_NUM = 100
     GROUP_SIZE = 10
 
-    fm_random_hashes = hw_utils._pick_random_numbers(EST_NUM, MAX_SEED)
-    fm_estimates = [0] * EST_NUM
+    # fm_random_hashes = hw_utils._pick_random_numbers(EST_NUM, MAX_SEED)
+    # fm_estimates = [0] * EST_NUM
+
+    ams_random_hashes = hw_utils._pick_random_numbers(EST_NUM, MAX_SEED)
+    ams_estimates = [0] * EST_NUM
 
     with open('access_log_test.txt', 'r') as src:
 
+        # 0-th frequency moment
+        # start_time = time.time()
+        #
+        # line = src.readline()
+        # while line != '':
+        #     print flajolet_martin(line, EST_NUM, GROUP_SIZE)
+        #     line = src.readline()
+        #
+        # print 'time: %s seconds' % (time.time() - start_time)
+
+        # 2-nd frequency moment
         start_time = time.time()
 
         line = src.readline()
         while line != '':
-            print flajolet_martin(line, EST_NUM, GROUP_SIZE)
+            print alon_matias_szegedy(line)
             line = src.readline()
 
         print 'time: %s seconds' % (time.time() - start_time)
