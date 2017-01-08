@@ -15,10 +15,11 @@ QUERY = ['python', 'datamining', 'hashing']
 class StatsListener(StreamListener):
     """ Estimate stream frequency moments when a tweet is received. """
 
-    def __init__(self, est_num=None, group_size=None):
+    def __init__(self, est_num=None, group_size=None, progress=False):
         super(StatsListener, self).__init__()
         self.est_num = est_num
         self.group_size = group_size
+        self.progress = progress
         if est_num is not None and group_size is not None:
             sse.init(est_num, group_size)
 
@@ -30,8 +31,11 @@ class StatsListener(StreamListener):
                 dest.write(tweet_text + '\n')
                 print tweet_text
             if self.est_num is not None and self.group_size is not None:
-                print 'F0: %s' % sse.flajolet_martin(tweet_text)
-                print 'F2: %s' % sse.alon_matias_szegedy(tweet_text)
+                sse.flajolet_martin(tweet_text)
+                sse.alon_matias_szegedy(tweet_text)
+                if self.progress:
+                    print 'F0: %s' % sse.fm_compute_est()
+                    print 'F2: %s' % sse.ams_compute_est()
             print ''
         except BaseException as e:
             print 'Error on_data: %s' % str(e), '\n'
@@ -48,7 +52,7 @@ if __name__ == '__main__':
     EST_NUM = 100
     GROUP_SIZE = 10
 
-    # listener = StatsListener(EST_NUM, GROUP_SIZE)
+    # listener = StatsListener(EST_NUM, GROUP_SIZE, True)
     listener = StatsListener()
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)

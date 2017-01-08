@@ -27,28 +27,49 @@ def init(est_num_, group_size_):
 
 
 def flajolet_martin(item):
-    """ Estimate stream 0-th frequency moment. """
+    """
+    Update stream 0-th frequency moment independent
+    estimates using flajolet-martin algorithm.
+    """
     for i, seed in enumerate(fm_random_hashes):
         signature = xxh64(item, seed=seed).intdigest()
         new_est = 2**(_tail_length(signature))
         if new_est > fm_estimates[i]:
             fm_estimates[i] = new_est
 
+
+def fm_compute_est():
+    """
+    Estimate stream 0-th frequency moment applying
+    median of the averages technique on independent
+    flajolet-martin estimates.
+    """
     means = []
     for start in range(0, est_num, group_size):
-        means.append(_mean(fm_estimates[start:start+group_size]))
-
+        end = start + group_size
+        means.append(_mean(fm_estimates[start:end]))
     return int(_median(means))
 
 
 def alon_matias_szegedy(item):
-    """ Estimate stream 2-nd frequency moment. """
+    """
+    Update stream 2-nd frequency moment independent
+    estimates using alon-matias-szegedy algorithm.
+    """
     for i, seed in enumerate(ams_random_hashes):
         if _one_sign(item, seed):
             ams_estimates[i] += 1
         else:
             ams_estimates[i] -= 1
-    return int(_mean([x**2 for x in ams_estimates]))
+
+
+def ams_compute_est():
+    """
+    Estimate stream 2-nd frequency moment computing
+    average of independent alon-matias-szegedy
+    estimates.
+    """
+    return int(_mean([x ** 2 for x in ams_estimates]))
 
 
 def _tail_length(sign):
