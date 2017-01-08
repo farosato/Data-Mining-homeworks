@@ -52,9 +52,7 @@ def alon_matias_szegedy(item):
 
 
 def _tail_length(sign):
-    """
-    Compute binary signature 'tail length'.
-    """
+    """ Compute binary signature 'tail length'. """
     tail_length = 0
     while sign != 0:
         if sign & 1:  # lsb is 1

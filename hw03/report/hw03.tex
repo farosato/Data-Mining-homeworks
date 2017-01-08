@@ -1,0 +1,60 @@
+% !TeX program = lualatex
+% !TeX spellcheck = en_GB
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{kpfonts}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{tikz}
+\usepackage{subcaption}
+
+\usetikzlibrary{graphdrawing}
+\usetikzlibrary{graphs}
+\usegdlibrary{trees}
+
+\lstset{frame=tb,
+	language=Bash,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=4
+}
+
+\algdef{SE}[EVENT]{Event}{EndEvent}[1]{\textbf{upon event}\ #1\ \algorithmicdo}{\algorithmicend\ \textbf{event}}\algtext*{EndEvent}
+
+\renewcommand{\thealgorithm}{\arabic{section}.\arabic{algorithm}}
+
+\title{Data Mining, Homework \#3}
+\author{Giacomo Lanciano (1487019)}
+\date{January 22, 2017}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\pagenumbering{roman}
+
+\newpage
+\pagenumbering{arabic}
+\input{tex/problem_1.tex}
+
+\newpage
+\input{tex/problem_2.tex}
+
+\newpage
+\bibliographystyle{unsrt}
+\bibliography{bib/biblio}
+\addcontentsline{toc}{section}{References}
+
+\end{document}
