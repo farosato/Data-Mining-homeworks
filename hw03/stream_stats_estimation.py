@@ -33,7 +33,7 @@ def flajolet_martin(item):
     """
     for i, seed in enumerate(fm_random_hashes):
         signature = xxh64(item, seed=seed).intdigest()
-        new_est = 2**(_tail_length(signature))
+        new_est = _tail_length(signature)
         if new_est > fm_estimates[i]:
             fm_estimates[i] = new_est
 
@@ -48,7 +48,7 @@ def fm_compute_est():
     for start in range(0, est_num, group_size):
         end = start + group_size
         means.append(_mean(fm_estimates[start:end]))
-    return int(_median(means))
+    return int(2**_median(means))
 
 
 def alon_matias_szegedy(item):

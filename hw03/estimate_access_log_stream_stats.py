@@ -16,14 +16,13 @@ def est_0th_fm(in_file, actual_value):
     print '\nEstimating 0-th frequency moment...'
     with open(in_file, 'r') as src:
         start_time = time.time()
-
         res, line = 0, src.readline()
         while line != '':
             sse.flajolet_martin(line)
             line = src.readline()
+        print 'time:   %s seconds' % (time.time() - start_time)
 
         res = sse.fm_compute_est()
-        print 'time:   %s seconds' % (time.time() - start_time)
         print 'act F0: %s' % actual_value
         print 'est F0: %s' % res
         errors(res, actual_value)
@@ -33,14 +32,13 @@ def est_2nd_fm(in_file, actual_value):
     print '\nEstimating 2-nd frequency moment...'
     with open(in_file, 'r') as src:
         start_time = time.time()
-
         res, line = 0, src.readline()
         while line != '':
             sse.alon_matias_szegedy(line)
             line = src.readline()
+        print 'time:   %s seconds' % (time.time() - start_time)
 
         res = sse.ams_compute_est()
-        print 'time:   %s seconds' % (time.time() - start_time)
         print 'act F2: %s' % actual_value
         print 'est F2: %s' % res
         errors(res, actual_value)
