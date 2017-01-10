@@ -2,14 +2,15 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 from twitter_secret_keys import *
-import stream_stats_estimation as sse
+from freq_moments_estimation import FreqMomentsEstimator
 import json
 import time
 import os
 
-
 DEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tweets.txt')
 QUERY = ['python', 'datamining', 'hashing']
+EST_NUM = 100
+GROUP_SIZE = 10
 
 
 class StatsListener(StreamListener):
@@ -21,7 +22,7 @@ class StatsListener(StreamListener):
         self.group_size = group_size
         self.progress = progress
         if est_num is not None and group_size is not None:
-            sse.init(est_num, group_size)
+            self.fme = FreqMomentsEstimator(est_num, group_size)
 
     def on_data(self, data):
         try:
@@ -31,11 +32,11 @@ class StatsListener(StreamListener):
                 dest.write(tweet_text + '\n')
                 print tweet_text
             if self.est_num is not None and self.group_size is not None:
-                sse.flajolet_martin(tweet_text)
-                sse.alon_matias_szegedy(tweet_text)
+                self.fme.flajolet_martin(tweet_text)
+                self.fme.alon_matias_szegedy(tweet_text)
                 if self.progress:
-                    print 'F0: %s' % sse.fm_compute_est()
-                    print 'F2: %s' % sse.ams_compute_est()
+                    print 'F0: %s' % self.fme.fm_estimate()
+                    print 'F2: %s' % self.fme.ams_estimate()
             print ''
         except BaseException as e:
             print 'Error on_data: %s' % str(e), '\n'
@@ -49,11 +50,8 @@ class StatsListener(StreamListener):
 
 if __name__ == '__main__':
 
-    EST_NUM = 100
-    GROUP_SIZE = 10
-
-    # listener = StatsListener(EST_NUM, GROUP_SIZE, True)
     listener = StatsListener()
+    # listener = StatsListener(EST_NUM, GROUP_SIZE, True)
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, listener)

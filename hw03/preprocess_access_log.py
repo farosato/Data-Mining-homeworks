@@ -1,6 +1,5 @@
 import os
 
-
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'access_log_Jul95.txt')
 DEST = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'access_log_prep.txt')
 
