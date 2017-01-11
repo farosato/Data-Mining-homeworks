@@ -2,4 +2,48 @@
 
 \section{Problem 1}
 
-Blah
+In what follows, I present the implementation of the \textbf{streaming algorithms} we studied in class to estimate some useful statistics on data streams. You can find the source code in the material attached with this documentation.\medskip
+
+\noindent\textbf{Disclaimer}: to run my code, be sure to be on a Linux machine (or any other that allows you to run Bash scripts) and have Python 2.7 installed. Note that some additional Python modules are required (see following sections).
+
+
+\subsection{Flajolet-Martin algorithm}
+
+Let $X = (x_1, x_2, \ldots, x_m)$ be a sequence (stream) of elements where $x_j \in \{1,\ldots,n\}$ and $m_i = |\ \{j \ | \ x_j = i\}\ |$ be the number of occurrences of $i \in \{1,\ldots,n\}$ in $X$.
+The $k\text{-}th$ \textbf{frequency moment} of $X$ is defined as
+\begin{align}
+	F_k = \sum_{i = 1}^{n} m_{i}^k \label{fk}
+\end{align}
+From (\ref{fk}), we can trivially deduce that $F_0$ is equal to the number of distinct elements in the stream. \textbf{Flajolet-Martin}\cite{fm} algorithm is a scheme for approximating $F_0$ with a single pass, and a space complexity which is \textbf{logarithmic} in the maximum number of distinct elements.\\
+The idea behind the algorithm is to exploit some particular properties of \textbf{hash signatures}. In particular, we want to consider a \textbf{binary} signature for each element in the stream and look at how many 0's it ends in, i.e. the so-called \textbf{tail length}. Given an hash function $h$, let $R$ be the \textbf{maximum} tail length seen so far in the stream. Then, we can estimate $F_0$ computing the value $2^R$ (see \cite{mmd}, section 4.4.2 for further details).\\
+To improve the \textbf{accuracy} of the approximation, we could combine a bunch of independent estimates, obtained using several different (random) hash functions. However, there exist some issue to take into account when combining these results. Indeed, increasing the value of $R$ by 1 corresponds to double the value of $2^R$. For instance, a single occasional outsized value of $2^R$ could hugely affect the \textbf{average}, with a corresponding loss of accuracy. Also taking the \textbf{median} of the independent estimates is not effective, since it would always be a power of 2, thus, it could be impossible to obtain a close estimate. An effective workaround is to combine the two methods:
+\begin{enumerate}
+	\item group independent estimates into smaller \textbf{sub-groups} and compute the \textbf{average} of each.
+	
+	\item compute the \textbf{median of the averages}.
+\end{enumerate}
+This trick allows to reduce the influence of the issues described above and to obtain a close approximation for the $0\text{-}th$ frequency moment.
+
+
+\subsection{Alon-Matias-Szegedy algorithm}
+
+Alon-Matias-Szegedy algorithm is a scheme for approximating the $2\text{-}nd$ frequency moment of a stream ($F_2$), that is considered an \textbf{index of homogeneity}, with a single pass, and a space complexity which is \textbf{logarithmic} in the maximum number of distinct elements and the size of the stream.\\
+Let $\{1,\ldots,n\}$ be the set of distinct elements in the stream. The algorithm consists in \textbf{hashing} each $i \in \{1,\ldots,n\}$ to a random element $\epsilon_i \in \{-1,+1\}$ and maintaining the sketch
+\begin{align}
+	Z = \sum_{i} \epsilon_i m_i
+\end{align}
+Then, we can take $X = Z^2$ as an approximation of $F_2$. To improve the \textbf{accuracy} of the approximation, we could take the \textbf{average} of a bunch of independent estimates, obtained using several different (random) hash functions (used to map elements to $\{-1,+1\}$). Indeed, we have that \textbf{on expectation} this value is equal to the $2\text{-}nd$ frequency moment (see \cite{mmd} (section 4.5) and \cite{ams} for further details and formal proof).
+
+
+\subsection{Implementation}
+
+I created a Python module (named \textit{freq\_moments\_estimation.py}) that encapsulates the algorithms described above. In particular, both of them are implement in an \textbf{online} fashion, such that as soon as a new element of the stream arrives it is possible to update the estimates.\\
+To test my implementations, I also made a Bash script (named \textit{compute-freq-moments.sh}) that computes frequency moments \textbf{exactly} (dropping the streaming model and given that the input consists in a single \textit{.txt} file). In particular, I used a combination of \textit{sort} and \textit{uniq} commands to get elements frequencies and then applied definition (\ref{fk}) for $k = 0$ and $k = 2$. To run the script, open a terminal and type
+\begin{lstlisting}
+$ ./compute-freq-moments.sh file_name.txt > file_name_results.txt
+\end{lstlisting}
+where \textit{file\_name.txt} is the file containing the stream (one element per line). Redirecting the output to a file is suggested to easily reuse these results when evaluating the accuracy of streaming algorithms (see later).
+
+
+\subsection{Results}
+
