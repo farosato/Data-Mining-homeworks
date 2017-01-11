@@ -32,18 +32,45 @@ Let $\{1,\ldots,n\}$ be the set of distinct elements in the stream. The algorith
 \begin{align}
 	Z = \sum_{i} \epsilon_i m_i
 \end{align}
-Then, we can take $X = Z^2$ as an approximation of $F_2$. To improve the \textbf{accuracy} of the approximation, we could take the \textbf{average} of a bunch of independent estimates, obtained using several different (random) hash functions (used to map elements to $\{-1,+1\}$). Indeed, we have that \textbf{on expectation} this value is equal to the $2\text{-}nd$ frequency moment (see \cite{mmd} (section 4.5) and \cite{ams} for further details and formal proof).
+Then, we can take $X = Z^2$ as an approximation of $F_2$. To improve the \textbf{accuracy} of the approximation, we could take the \textbf{average} of a bunch of independent estimates, obtained using several different (random) hash functions (used to map elements to $\{-1,+1\}$). Indeed, we have that \textbf{on expectation} this value is equal to the $2\text{-}nd$ frequency moment (see \cite{mmd} (section 4.5) and \cite{dm-streams} for further details and formal proof).
 
 
 \subsection{Implementation}
 
-I created a Python module (named \textit{freq\_moments\_estimation.py}) that encapsulates the algorithms described above. In particular, both of them are implement in an \textbf{online} fashion, such that as soon as a new element of the stream arrives it is possible to update the estimates.\\
-To test my implementations, I also made a Bash script (named \textit{compute-freq-moments.sh}) that computes frequency moments \textbf{exactly} (dropping the streaming model and given that the input consists in a single \textit{.txt} file). In particular, I used a combination of \textit{sort} and \textit{uniq} commands to get elements frequencies and then applied definition (\ref{fk}) for $k = 0$ and $k = 2$. To run the script, open a terminal and type
+I created a Python module (named \textit{freq\_moments\_estimation.py}) that encapsulates the algorithms described above. In particular, both of them are implement in an \textbf{online} fashion, such that as soon as a new element of the stream arrives it is possible to update the estimates and get the approximation.\\
+To check the validity of my implementations, I made a Bash script that computes frequency moments \textbf{exactly}, dropping the streaming model and given that the input consists in a single \textit{.txt} file. In particular, I used a combination of \textit{sort} and \textit{uniq} commands to get elements frequencies and then applied definition (\ref{fk}) for $k = 0$ and $k = 2$. To run the script, open a terminal and type
 \begin{lstlisting}
 $ ./compute-freq-moments.sh file_name.txt > file_name_results.txt
 \end{lstlisting}
-where \textit{file\_name.txt} is the file containing the stream (one element per line). Redirecting the output to a file is suggested to easily reuse these results when evaluating the accuracy of streaming algorithms (see later).
+where \textit{file\_name.txt} is the file containing the stream (one element per line). Redirecting the output to a file is suggested to easily reuse these results when evaluating the accuracy of streaming algorithms (see later).\\
+
+\noindent For the first test, I used the provided NASA access log dataset\cite{nasa}. First of all, I made a simple Python script to pre-process the dataset, to retain only the info about IP addresses. To run the script, open a terminal and type
+\begin{lstlisting}
+$ python preprocess_access_log.py
+\end{lstlisting}
+The corresponding output will be stored into a file named \textit{access\_log\_prep.txt}, that can be used as input for the Bash script to generate a file named \textit{access\_log\_prep\_results.txt}, containing the \textbf{exact values} of the frequency moments.
+Thus, we can perform the estimates for that values, running a Python script named \textit{estimate\_access\_log\_freq\_moments.py}. Before running, open the file and set the number of \textbf{independent estimates} and the number of \textbf{estimates per group} to be used. Then, open a terminal and type
+\begin{lstlisting}
+$ python estimate_access_log_freq_moments.py
+\end{lstlisting}
+The output of this script consists in the estimates for $0\text{-}th$ and $2\text{-}nd$ frequency moments and the absolute and relative errors (with respect to actual values).\\
+
+\noindent For the second test, I generated a stream consisting of messages taken from Twitter. To do that, I used \textit{tweepy}\cite{tweepy}, an easy-to-use and open source Python wrapper for \textbf{Twitter Streaming API}\cite{twitter}. The source code for this test is located in a Python script named \textit{generate\_tweets\_stream.py}. Note that to run the script Twitter \textbf{API keys} are required (in \textit{twitter\_secret\_keys\_template.txt} there are instructions to add them to the source code). See \cite{twitter} to know how to generate API keys. Then, open a terminal and type
+\begin{lstlisting}
+$ python generate_tweets_stream.py
+\end{lstlisting}
+Then program will output to screen the tweets that matches the given query (that can be easily adjusted in the script) and the values of frequency moments estimates (according to the parameters set in the code) as soon as a new one arrives.
+In addition, all tweets will be stored into a file named \textit{tweets.txt}. This output can be used as input for the Bash script to generate a file named \textit{tweets\_results.txt}, containing the \textbf{exact values} of the frequency moments.
+Thus, we can perform the estimates for that values, running a Python script named \textit{estimate\_tweets\_freq\_moments.py}. Similarly to the previous test, we can set the parameters to be used and then open a terminal and type
+\begin{lstlisting}
+$ python estimate_tweets_freq_moments.py
+\end{lstlisting}
+The output will be of the same kind of the one obtained in the previous test.
 
 
 \subsection{Results}
+
+In what follows, I report some results obtained from several different run of the estimates scripts.
+
+
 

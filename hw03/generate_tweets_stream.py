@@ -52,9 +52,7 @@ class StatsListener(StreamListener):
 
 
 if __name__ == '__main__':
-
-    listener = StatsListener()
-    # listener = StatsListener(EST_NUM, GROUP_SIZE, True)
+    listener = StatsListener(EST_NUM, GROUP_SIZE, True)
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, listener)
