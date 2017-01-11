@@ -1,7 +1,10 @@
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
-from twitter_secret_keys import *
+from twitter_secret_keys import access_token
+from twitter_secret_keys import access_token_secret
+from twitter_secret_keys import consumer_key
+from twitter_secret_keys import consumer_secret
 from freq_moments_estimation import FreqMomentsEstimator
 import json
 import time
