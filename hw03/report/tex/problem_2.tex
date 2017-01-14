@@ -2,4 +2,51 @@
 
 \section{Problem 2}
 
-Blah
+Consider a graph $G = (V,E)$, with $V = V_1 \cup V_2 \cup V_3 \cup V_4$, each $|V_i| = n'$, and all the $V_i$s disjoint, so that $|V| = n = 4n'$. Assume that for each $V_i$ a fraction $p'$ exists, that is, $m' = p'\cdot\binom{n'}{2}$ out of the $\binom{n'}{2}$ edges within $V_i$ exist, and that for each $V_i,V_j$ with $i \neq j$ a fraction $p''$ exists (i.e. $m'' = p'' \cdot n'^2$ out of the $n'^2$ possible edges exist). Consider the following two partitionings of the graph:
+\begin{enumerate}
+	\item There are four partitions, with every $V_i$ in each own partition.
+	
+	\item There are two partitions, $V_1$ and $V_2$ in one and $V_3$ and $V_4$ in the other.
+\end{enumerate}
+Show that the modularity of the first partitioning is asymptotically higher from the modularity of the second if and only if $p' > p''$. Explain whether this result is expected.
+
+
+\subsection{Solution}
+
+\begin{proof}
+	Recall that the modularity\cite{mod} of a graph is defined as
+	\begin{align*}
+		Q = \sum_{i = 1}^{k} \left( \dfrac{E(V_i)}{|E|} - \left( \dfrac{\sum_{v \in V_i} d_v}{2|E|} \right)^2 \right) 
+	\end{align*}
+	where $k$ is the number of clusters, $E(V_i)$ is the number of edges inside $V_i$ and $d_v$ is the degree of node $v$. Let $Q_1$ and $Q_2$ be  (respectively) the modularities of the two partitionings of $G$, we have that
+	\begin{align*}
+		Q_1 &= 4 \left( \dfrac{m'}{4m' + 6m''} - \left( \frac{2m' + 3m''}{2(4m' + 6m'')} \right)^2 \right) = 4 \left( \dfrac{m'}{4m' + 6m''} - \frac{1}{16} \right)\\
+		Q_2 &= 2 \left( \dfrac{2m' + m''}{4m' + 6m''} - \left( \frac{2(2m' + 3m'')}{2(4m' + 6m'')} \right)^2 \right) = 2 \left( \dfrac{2m' + m''}{4m' + 6m''} - \frac{1}{4} \right) 
+	\end{align*}
+	
+	\medskip
+	\noindent Assuming that $Q_1 > Q_2$, we get
+	\begin{align}
+		4 \left( \dfrac{m'}{4m' + 6m''} \right) - \frac{1}{4} &> 2 \left( \dfrac{2m' + m''}{4m' + 6m''} \right) - \frac{1}{2} \nonumber\\ 
+		\dfrac{- 2m''}{4m' + 6m''} + \frac{1}{4} &> 0 \nonumber\\ 
+		\dfrac{2m' - m''}{4(2m' + 3m'')} &> 0 \label{frac}
+	\end{align}
+	
+	\medskip
+	\noindent Since the denominator is positive, the only way for (\ref{frac}) to hold is that the numerator is in turn positive. Therefore,
+	\begin{align*}
+		&2m' - m'' > 0\\
+		&2p' \cdot \dfrac{n'(n'-1)}{2} > p''n'^2\\
+		&p' > \dfrac{n'}{n'-1} \cdot p''
+	\end{align*}
+	
+	\medskip
+	\noindent Hence, as $n'$ goes to infinity (asymptotically),
+	\begin{align*}
+		Q_1 > Q_2 \ \Leftrightarrow \ p' > p''
+	\end{align*}
+\end{proof}
+
+\medskip
+\noindent This result is expected, since modularity measures the \textbf{quality} of a clustering.\\
+Note that the number of possible edges within a cluster $\left( \frac{n'(n'-1)}{2} \right)$ and the number of possible edges "between" two clusters $\left( n'^2 \right)$ asymptotically coincide. Therefore, having $p' > p''$ means that (asymptotically) clusters are \textbf{loosely} connected each other, with respect to how nodes within a cluster are connected. Hence, in this case, the first partitioning is better then the second (in terms of modularity).

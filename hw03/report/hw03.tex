@@ -3,16 +3,12 @@
 
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{amsfonts}
 \usepackage{hyperref}
 \usepackage{verbatim}
 \usepackage{kpfonts}
 \usepackage{listings}
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
-\usepackage{tikz}
-\usepackage{subcaption}
-\usepackage{csvsimple}
 
 \lstset{frame=tb,
 	language=Bash,
@@ -26,10 +22,6 @@
 	breakatwhitespace=true,
 	tabsize=4
 }
-
-\algdef{SE}[EVENT]{Event}{EndEvent}[1]{\textbf{upon event}\ #1\ \algorithmicdo}{\algorithmicend\ \textbf{event}}\algtext*{EndEvent}
-
-\renewcommand{\thealgorithm}{\arabic{section}.\arabic{algorithm}}
 
 \title{Data Mining, Homework \#3}
 \author{Giacomo Lanciano (1487019)}

@@ -18,7 +18,6 @@ GROUP_SIZE = 10
 
 class StatsListener(StreamListener):
     """ Estimate stream frequency moments when a tweet is received. """
-
     def __init__(self, est_num=None, group_size=None, progress=False):
         super(StatsListener, self).__init__()
         self.est_num = est_num
