@@ -57,14 +57,12 @@ class FreqMomentsEstimator:
 
 
 def _tail_length(sign):
-    """ Compute binary signature 'tail length'. """
-    tail_length = 0
-    while sign != 0:
-        if sign & 1:  # lsb is 1
-            return tail_length
-        tail_length += 1
-        sign >>= 1
-    return len(bin(sign))
+    """
+    Compute binary signature 'tail length' (i.e. number of trailing zeros).
+    Result is given by the position of the lsb set in the bitwise AND of
+    the signature with its two's complement (clears all but the lsb set).
+    """
+    return (sign & -sign).bit_length() - 1
 
 
 def _one_sign(item, seed):
