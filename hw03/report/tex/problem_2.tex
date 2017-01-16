@@ -15,10 +15,14 @@ Show that the modularity of the first partitioning is asymptotically higher from
 
 \begin{proof}
 	Recall that the modularity\cite{mod} of a graph is defined as
+	
 	\begin{align*}
 		Q = \sum_{i = 1}^{k} \left( \dfrac{E(V_i)}{|E|} - \left( \dfrac{\sum_{v \in V_i} d_v}{2|E|} \right)^2 \right) 
 	\end{align*}
-	where $k$ is the number of clusters, $E(V_i)$ is the number of edges inside $V_i$ and $d_v$ is the degree of node $v$. Let $Q_1$ and $Q_2$ be  (respectively) the modularities of the two partitionings of $G$, we have that
+	
+	\medskip
+	\noindent where $k$ is the number of clusters, $E(V_i)$ is the number of edges inside $V_i$ and $d_v$ is the degree of node $v$. Let $Q_1$ and $Q_2$ be  (respectively) the modularities of the two partitionings of $G$, we have that
+	
 	\begin{align*}
 		Q_1 &= 4 \left( \dfrac{m'}{4m' + 6m''} - \left( \frac{2m' + 3m''}{2(4m' + 6m'')} \right)^2 \right) = 4 \left( \dfrac{m'}{4m' + 6m''} - \frac{1}{16} \right)\\
 		Q_2 &= 2 \left( \dfrac{2m' + m''}{4m' + 6m''} - \left( \frac{2(2m' + 3m'')}{2(4m' + 6m'')} \right)^2 \right) = 2 \left( \dfrac{2m' + m''}{4m' + 6m''} - \frac{1}{4} \right) 
@@ -26,6 +30,7 @@ Show that the modularity of the first partitioning is asymptotically higher from
 	
 	\medskip
 	\noindent Assuming that $Q_1 > Q_2$, we get
+	
 	\begin{align}
 		4 \left( \dfrac{m'}{4m' + 6m''} \right) - \frac{1}{4} &> 2 \left( \dfrac{2m' + m''}{4m' + 6m''} \right) - \frac{1}{2} \nonumber\\ 
 		\dfrac{- 2m''}{4m' + 6m''} + \frac{1}{4} &> 0 \nonumber\\ 
@@ -34,14 +39,16 @@ Show that the modularity of the first partitioning is asymptotically higher from
 	
 	\medskip
 	\noindent Since the denominator is positive, the only way for (\ref{frac}) to hold is that the numerator is in turn positive. Therefore,
+	
 	\begin{align*}
-		&2m' - m'' > 0\\
-		&2p' \cdot \dfrac{n'(n'-1)}{2} > p''n'^2\\
-		&p' > \dfrac{n'}{n'-1} \cdot p''
+		2m' - m'' &> 0\\
+		2p' \cdot \dfrac{n'(n'-1)}{2} &> p''n'^2\\
+		p' &> \dfrac{n'}{n'-1} \cdot p''
 	\end{align*}
 	
 	\medskip
 	\noindent Hence, as $n'$ goes to infinity (asymptotically),
+	
 	\begin{align*}
 		Q_1 > Q_2 \ \Leftrightarrow \ p' > p''
 	\end{align*}

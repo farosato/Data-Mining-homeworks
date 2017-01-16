@@ -29,9 +29,9 @@ This trick allows to reduce the influence of the issues described above and to o
 
 Alon-Matias-Szegedy algorithm is a scheme for approximating the $2\text{-}nd$ frequency moment of a stream ($F_2$), that is considered an \textbf{index of homogeneity}, with a single pass, and a space complexity which is \textbf{logarithmic} in the maximum number of distinct elements and the size of the stream.\\
 Let $\{1,\ldots,n\}$ be the set of distinct elements in the stream. The algorithm consists in \textbf{hashing} each $i \in \{1,\ldots,n\}$ to a random element $\epsilon_i \in \{-1,+1\}$ and maintaining the sketch
-\begin{align}
+\begin{align*}
 	Z = \sum_{i} \epsilon_i m_i
-\end{align}
+\end{align*}
 Then, we can take $X = Z^2$ as an approximation of $F_2$. To improve the \textbf{accuracy} of the approximation, we could take the \textbf{average} of a bunch of independent estimates, obtained using several different (random) hash functions (used to map elements to $\{-1,+1\}$). Indeed, we have that \textbf{on expectation} this value is equal to the $2\text{-}nd$ frequency moment (see \cite{mmd} (section 4.5) and \cite{dm-streams} for further details and formal proof).
 
 
