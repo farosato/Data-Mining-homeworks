@@ -21,11 +21,18 @@ Show that the modularity of the first partitioning is asymptotically higher from
 	\end{align*}
 	
 	\medskip
-	\noindent where $k$ is the number of clusters, $E(V_i)$ is the number of edges inside $V_i$ and $d_v$ is the degree of node $v$. Let $Q_1$ and $Q_2$ be  (respectively) the modularities of the two partitionings of $G$, we have that
+	\noindent where $k$ is the number of clusters, $E(V_i)$ is the number of edges $(u,v) \in E$ such that $u,v \in V_i$ and $d_v$ is the degree of node $v$. Note that, for each $V_i$,
+	
+	\begin{align*}
+		\sum_{v \in V_i} d_v = 2 \cdot E(V_i) \ + \ |\ \{(u,v) \in E \ | \ u \in V_i, \ v \notin V_i\}\ |
+	\end{align*}
+	
+	\medskip
+	\noindent Let $Q_1$ and $Q_2$ be  (respectively) the modularities of the two partitionings of $G$, we have that
 	
 	\begin{align*}
 		Q_1 &= 4 \left( \dfrac{m'}{4m' + 6m''} - \left( \frac{2m' + 3m''}{2(4m' + 6m'')} \right)^2 \right) = 4 \left( \dfrac{m'}{4m' + 6m''} - \frac{1}{16} \right)\\
-		Q_2 &= 2 \left( \dfrac{2m' + m''}{4m' + 6m''} - \left( \frac{2(2m' + 3m'')}{2(4m' + 6m'')} \right)^2 \right) = 2 \left( \dfrac{2m' + m''}{4m' + 6m''} - \frac{1}{4} \right) 
+		Q_2 &= 2 \left( \dfrac{2m' + m''}{4m' + 6m''} - \left( \frac{2(2m' + m'') + 4m''}{2(4m' + 6m'')} \right)^2 \right) = 2 \left( \dfrac{2m' + m''}{4m' + 6m''} - \frac{1}{4} \right) 
 	\end{align*}
 	
 	\medskip
@@ -55,5 +62,5 @@ Show that the modularity of the first partitioning is asymptotically higher from
 \end{proof}
 
 \medskip
-\noindent This result is expected, since modularity measures the \textbf{quality} of a clustering.\\
-Note that the number of possible edges within a cluster $\left( \frac{n'(n'-1)}{2} \right)$ and the number of possible edges "between" two clusters $\left( n'^2 \right)$ asymptotically coincide. Therefore, having $p' > p''$ means that (asymptotically) clusters are \textbf{loosely} connected each other, with respect to how nodes within a cluster are connected. Hence, in this case, the first partitioning is better then the second (in terms of modularity).
+\noindent This result is expected, since modularity measures the \textbf{quality} of a clustering. Indeed, the higher the modularity, the \textit{better} a graph is partitioned. It means that nodes in a partition (cluster) are \textbf{strongly} connected one another, while partitions are quite decoupled (i.e. there exist \textit{few} edges such that their ends belong to \textbf{different} partitions).\\
+Note that the number of possible edges within a cluster $\left( \frac{n'(n'-1)}{2} \right)$ and the number of possible edges \textit{between} two clusters $\left( n'^2 \right)$ asymptotically coincide. Therefore, having $p' > p''$ (where $p'$ is the fraction of existing edges within a cluster and $p''$ is the fraction of existing edges \textit{between} two clusters) means that (asymptotically) clusters are \textbf{loosely} connected each other, with respect to how nodes within a cluster are connected. Hence, in these settings, the first partitioning has an higher modularity with respect to the second.
