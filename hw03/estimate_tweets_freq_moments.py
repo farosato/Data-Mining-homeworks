@@ -1,4 +1,3 @@
-from __future__ import division
 from freq_moments_estimation import FreqMomentsEstimator
 import estimate_access_log_freq_moments as eal
 import os

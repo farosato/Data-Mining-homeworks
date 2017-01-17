@@ -8,15 +8,15 @@ else
     SRC="$1"
 fi
 
-DEST="$DIR/`basename "$SRC" .txt`_frequencies.txt"
+FREQ="$DIR/`basename "$SRC" .txt`_frequencies.txt"
 
 # compute items frequencies
-sort $SRC | uniq -c > $DEST
+sort $SRC | uniq -c > $FREQ
 
 # compute 0-th frequency moment
-echo F0: $(wc -l < $DEST)
+echo F0: $(wc -l < $FREQ)
 
 # compute 2-nd frequency moment
-python $DIR/compute_f2.py $DEST
+python $DIR/compute_fk.py 2 $FREQ
 
 exit 0
