@@ -362,9 +362,11 @@ fabric.properties
 # datasets
 hw*/recipes*/
 hw*/*.zip
-hw*/*.gz
-hw03/access_log_*
-hw03/tweets*
+
+# temp files
+hw03/access_log_prep_frequencies.txt
+hw03/access_log_test_frequencies.txt
+hw03/tweets_frequencies.txt
 
 # easily computable output files
 hw*/recipes-prep.tsv
