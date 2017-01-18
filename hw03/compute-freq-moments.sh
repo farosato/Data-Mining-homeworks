@@ -59,18 +59,15 @@ dest_file="$DIR/`basename "$src_file" .txt`_results.txt"
 # compute items frequencies
 sort $src_file | uniq -c > $freq_file
 
-# compute 0-th frequency moment
-# (input redirection used to have the only value as output of wc)
 if (( $save_opt )); then
+    # compute 0-th frequency moment
+    # (input redirection used to have the only value as output of wc)
 	echo F0: $(wc -l < $freq_file) > $dest_file
-else
-    echo F0: $(wc -l < $freq_file)
-fi
 
-# compute 2-nd frequency moment
-if (( $save_opt )); then
+	# compute 2-nd frequency moment
 	python $DIR/compute_fk.py 2 $freq_file >> $dest_file
 else
+    echo F0: $(wc -l < $freq_file)
     python $DIR/compute_fk.py 2 $freq_file
 fi
 
