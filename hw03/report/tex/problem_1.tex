@@ -40,9 +40,10 @@ Then, we can take $X = Z^2$ as an approximation of $F_2$. To improve the \textbf
 I created a Python module (named \textit{freq\_moments\_estimation.py}) that encapsulates the algorithms described above. In particular, both of them are implement in an \textbf{online} fashion, such that as soon as a new element of the stream arrives it is possible to update the estimates and get the approximation.\\
 To check the validity of my implementations, I made a Bash script that computes frequency moments \textbf{exactly}, dropping the streaming model and given that the input consists in a single \textit{.txt} file. In particular, I used a combination of \textit{sort} and \textit{uniq} commands to get elements frequencies and then applied definition (\ref{fk}) for $k = 0$ and $k = 2$. To run the script, open a terminal and type
 \begin{lstlisting}
-$ ./compute-freq-moments.sh file_name.txt > file_name_results.txt
+$ ./compute-freq-moments.sh -s file.txt
 \end{lstlisting}
-where \textit{file\_name.txt} is the file containing the stream (one element per line). Redirecting the output to a file is suggested to easily reuse these results when evaluating the accuracy of streaming algorithms (see later).\\
+where \textit{file.txt} is the file containing the stream (one element per line).\\ 
+\textbf{Note}: executing script with "-s" option \textbf{at least once} is required to reuse results when evaluating the accuracy of streaming algorithms (see later).\\
 
 \noindent For the first test, I used the provided NASA access log dataset\cite{nasa}. First of all, I made a simple Python script to pre-process the dataset, to retain only the info about IP addresses. To run the script, open a terminal and type
 \begin{lstlisting}
