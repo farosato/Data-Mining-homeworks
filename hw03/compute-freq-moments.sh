@@ -17,35 +17,35 @@ function usage {
 
 # if mandatory argument is NOT taken, accept options
 while [ "$1" != "" ]; do
-    case $1 in
-        -s | --save )       if (( $src_file_taken )); then
-                                usage
-	                            exit 1
-                            fi
-                            save_opt=1
-                            ;;
-        -c | --clean )      if (( $src_file_taken )); then
-                                usage
-	                            exit 1
-                            fi
-                            clean_opt=1
-                            ;;
-        -h | --help )       if (( $src_file_taken )); then
-                                usage
-	                            exit 1
-                            fi
-                            usage
-	                        exit 0
-                            ;;
-        * )                 if (( $src_file_taken )); then
-                                usage
-	                            exit 1
-                            fi
-                            src_file_taken=1
-                            src_file="$1"
-                            ;;
-    esac
-    shift
+	case $1 in
+		-s | --save )       if (( $src_file_taken )); then
+								usage
+								exit 1
+							fi
+							save_opt=1
+							;;
+		-c | --clean )      if (( $src_file_taken )); then
+								usage
+								exit 1
+							fi
+							clean_opt=1
+							;;
+		-h | --help )       if (( $src_file_taken )); then
+								usage
+								exit 1
+							fi
+							usage
+							exit 0
+							;;
+		* )                 if (( $src_file_taken )); then
+								usage
+								exit 1
+							fi
+							src_file_taken=1
+							src_file="$1"
+							;;
+	esac
+	shift
 done
 
 if [[ $src_file == "" || ! $src_file == *.txt ]]; then
@@ -60,15 +60,15 @@ dest_file="$DIR/`basename "$src_file" .txt`_results.txt"
 sort $src_file | uniq -c > $freq_file
 
 if (( $save_opt )); then
-    # compute 0-th frequency moment
-    # (input redirection used to have the only value as output of wc)
+	# compute 0-th frequency moment
+	# (input redirection used to have the only value as output of wc)
 	echo F0: $(wc -l < $freq_file) > $dest_file
 
 	# compute 2-nd frequency moment
 	python $DIR/compute_fk.py 2 $freq_file >> $dest_file
 else
-    echo F0: $(wc -l < $freq_file)
-    python $DIR/compute_fk.py 2 $freq_file
+	echo F0: $(wc -l < $freq_file)
+	python $DIR/compute_fk.py 2 $freq_file
 fi
 
 # delete temp files
