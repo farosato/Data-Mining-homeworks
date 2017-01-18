@@ -2,9 +2,9 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 src_file=
-src_file_get=0
-save_opt=0
-clean_opt=0
+src_file_taken=0    # flag to check whether the mandatory argument is taken
+save_opt=0          # flag to check whether -s option is taken
+clean_opt=0         # flag to check whether -c option is taken
 
 
 function usage {
@@ -15,32 +15,33 @@ function usage {
 }
 
 
+# if mandatory argument is NOT taken, accept options
 while [ "$1" != "" ]; do
     case $1 in
-        -s | --save )       if (( $src_file_get )); then
+        -s | --save )       if (( $src_file_taken )); then
                                 usage
 	                            exit 1
                             fi
                             save_opt=1
                             ;;
-        -c | --clean )      if (( $src_file_get )); then
+        -c | --clean )      if (( $src_file_taken )); then
                                 usage
 	                            exit 1
                             fi
                             clean_opt=1
                             ;;
-        -h | --help )       if (( $src_file_get )); then
+        -h | --help )       if (( $src_file_taken )); then
                                 usage
 	                            exit 1
                             fi
                             usage
 	                        exit 0
                             ;;
-        * )                 if (( $src_file_get )); then
+        * )                 if (( $src_file_taken )); then
                                 usage
 	                            exit 1
                             fi
-                            src_file_get=1
+                            src_file_taken=1
                             src_file="$1"
                             ;;
     esac

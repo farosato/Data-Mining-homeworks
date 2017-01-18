@@ -43,7 +43,7 @@ To check the validity of my implementations, I made a Bash script that computes 
 $ ./compute-freq-moments.sh -s file.txt
 \end{lstlisting}
 where \textit{file.txt} is the file containing the stream (one element per line).\\ 
-\textbf{Note}: executing script with "-s" option \textbf{at least once} is required to reuse results when evaluating the accuracy of streaming algorithms (see later).\\
+\textbf{Note}: executing this script with "-s" option \textbf{at least once} before performing following steps is required (for the sake of reusing its results when evaluating the accuracy of streaming algorithms, see later). In that case, output is stored in \textit{file\_results.txt} (printed to screen, otherwise).\\
 
 \noindent For the first test, I used the provided NASA access log dataset\cite{nasa}. First of all, I made a simple Python script to pre-process the dataset, to retain only the info about IP addresses. To run the script, open a terminal and type
 \begin{lstlisting}
