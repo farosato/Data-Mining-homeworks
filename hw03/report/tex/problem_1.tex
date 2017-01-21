@@ -4,7 +4,7 @@
 
 In what follows, I present the implementation of the \textbf{streaming algorithms} we studied in class to estimate some useful statistics on data streams. You can find the source code in the material attached with this documentation.\medskip
 
-\noindent\textbf{Disclaimer}: to run my code, be sure to be on a Linux machine (or any other that allows you to run Bash scripts) and have Python 2.7 installed. Note that some additional Python modules are required (see following sections).
+\noindent\textbf{Disclaimer}: to run my code, be sure to be on a Linux machine (or any other that allows to run Bash scripts) and have Python 2.7 installed. Note that some additional Python modules are required (see following sections).
 
 
 \subsection{Flajolet-Martin algorithm}
@@ -14,9 +14,9 @@ The $k\text{-}th$ \textbf{frequency moment} of $X$ is defined as
 \begin{align}
 	F_k = \sum_{i = 1}^{n} m_{i}^k \label{fk}
 \end{align}
-From (\ref{fk}), we can trivially deduce that $F_0$ is equal to the number of distinct elements in the stream. \textbf{Flajolet-Martin}\cite{fm} algorithm is a scheme for approximating $F_0$ with a single pass, and a space complexity which is \textbf{logarithmic} in the maximum number of distinct elements.\\
+From (\ref{fk}), we can trivially deduce that $F_0$ is equal to the number of \textbf{distinct elements} in the stream. \textbf{Flajolet-Martin}\cite{fm} algorithm is a scheme for approximating $F_0$ with a single pass, and a space complexity which is \textbf{logarithmic} in the maximum number of distinct elements.\\
 The idea behind the algorithm is to exploit some particular properties of \textbf{hash signatures}. In particular, we want to consider a \textbf{binary} signature for each element in the stream and look at how many 0's it ends in, i.e. the so-called \textbf{tail length}. Given an hash function $h$, let $R$ be the \textbf{maximum} tail length seen so far in the stream. Then, we can estimate $F_0$ computing the value $2^R$ (see \cite{mmd}, section 4.4.2 for further details).\\
-To improve the \textbf{accuracy} of the approximation, we could combine a bunch of independent estimates, obtained using several different (random) hash functions. However, there exist some issue to take into account when combining these results. Indeed, increasing the value of $R$ by 1 corresponds to double the value of $2^R$. For instance, a single occasional outsized value of $2^R$ could hugely affect the \textbf{average}, with a corresponding loss of accuracy. Also taking the \textbf{median} of the independent estimates is not effective, since it would always be a power of 2, thus, it could be impossible to obtain a close estimate. An effective workaround is to combine the two methods:
+To improve the \textbf{accuracy} of the approximation, we could combine a bunch of independent estimates, obtained using several different (random) hash functions. However, there exist some issues to take into account when combining these results. Indeed, increasing the value of $R$ by 1 corresponds to double the value of $2^R$. For instance, a single occasional outsized value of $2^R$ could hugely affect the \textbf{average}, with a corresponding loss of accuracy. Also taking the \textbf{median} of the independent estimates is not effective, since it would always be a power of 2, thus, it could be impossible to obtain a close estimate. A good workaround is to combine the two methods:
 \begin{enumerate}
 	\item group independent estimates into smaller \textbf{sub-groups} and compute the \textbf{average} of each.
 	
@@ -37,31 +37,31 @@ Then, we can take $X = Z^2$ as an approximation of $F_2$. To improve the \textbf
 
 \subsection{Implementation}
 
-I created a Python module (named \textit{freq\_moments\_estimation.py}) that encapsulates the algorithms described above. In particular, both of them are implement in an \textbf{online} fashion, such that as soon as a new element of the stream arrives it is possible to update the estimates and get the approximation.\\
-To check the validity of my implementations, I made a Bash script that computes frequency moments \textbf{exactly}, dropping the streaming model and given that the input consists in a single \textit{.txt} file. In particular, I used a combination of \textit{sort} and \textit{uniq} commands to get elements frequencies and then applied definition (\ref{fk}) for $k = 0$ and $k = 2$. To run the script, open a terminal and type
+I created a Python module (named \textit{freq\_moments\_estimation.py}) that encapsulates the algorithms described above. In particular, both of them are implement in an \textbf{online} fashion, such that as soon as a new element of the stream arrives it is possible to update the \textbf{independent} estimates and get the approximation for the desired statistic.\\
+To check the validity of my implementations, I made a Bash script that computes \textbf{actual values} of frequency moments, dropping the streaming model and given that the input consists in a single \textit{.txt} file. In particular, I used a combination of \textit{sort} and \textit{uniq} commands to get distinct elements frequencies and then applied (\ref{fk}) for $k = 0,2$. To run the script, open a terminal and type
 \begin{lstlisting}
 $ ./compute-freq-moments.sh -s file.txt
 \end{lstlisting}
 where \textit{file.txt} is the file containing the stream (one element per line).\\ 
 \textbf{Note}: executing this script with "-s" option \textbf{at least once} before performing following steps is required (for the sake of reusing its results when evaluating the accuracy of streaming algorithms, see later). In that case, output is stored in \textit{file\_results.txt} (printed to screen, otherwise).\\
 
-\noindent For the first test, I used the provided NASA access log dataset\cite{nasa}. First of all, I made a simple Python script to pre-process the dataset, to retain only the info about IP addresses. To run the script, open a terminal and type
+\noindent For the first test, I used the provided NASA access log dataset\cite{nasa}. I made a simple Python script to pre-process the dataset, retaining only info about IP addresses. To run the script, open a terminal and type
 \begin{lstlisting}
 $ python preprocess_access_log.py
 \end{lstlisting}
-The corresponding output will be stored into a file named \textit{access\_log\_prep.txt}, that can be used as input for the Bash script to generate a file named \textit{access\_log\_prep\_results.txt}, containing the \textbf{exact values} of the frequency moments.
+The corresponding output will be stored into a file named \textit{access\_log\_prep.txt}, that can be used as input for the Bash script to generate a file named \textit{access\_log\_prep\_results.txt}, containing the actual values of the frequency moments.
 Thus, we can perform the estimates for that values, running a Python script named \textit{estimate\_access\_log\_freq\_moments.py}. Before running, open the file and set the number of \textbf{independent estimates} and the number of \textbf{estimates per group} to be used. Then, open a terminal and type
 \begin{lstlisting}
 $ python estimate_access_log_freq_moments.py
 \end{lstlisting}
-The output of this script consists in the estimates for $0\text{-}th$ and $2\text{-}nd$ frequency moments and the absolute and relative errors (with respect to actual values).\\
+The output of this script consists in the estimates for $0\text{-}th$ and $2\text{-}nd$ frequency moments and the \textbf{absolute} and \textbf{relative errors} (with respect to actual values).\\
 
-\noindent For the second test, I generated a stream consisting of messages taken from Twitter. To do that, I used \textit{tweepy}\cite{tweepy}, an easy-to-use and open source Python wrapper for \textbf{Twitter Streaming API}\cite{twitter}. The source code for this test is located in a Python script named \textit{generate\_tweets\_stream.py}. Note that to run the script Twitter \textbf{API keys} are required (in \textit{twitter\_secret\_keys\_template.txt} there are instructions to add them to the source code). See \cite{twitter} to know how to generate API keys. Then, open a terminal and type
+\noindent For the second test, I generated a stream consisting of messages taken from Twitter. To do that, I used \textit{tweepy}\cite{tweepy}, an open-source Python wrapper for \textbf{Twitter Streaming API}\cite{twitter}. The source code for this test is located in a Python script named \textit{generate\_tweets\_stream.py}. Note that to run the script Twitter \textbf{API keys} are required (in \textit{twitter\_secret\_keys\_template.txt} you can find instructions for adding them to the source code). See \cite{twitter} to know how to generate API keys. Then, open a terminal and type
 \begin{lstlisting}
 $ python generate_tweets_stream.py
 \end{lstlisting}
 Then program will output to screen the tweets that matches the given query (that can be easily adjusted in the script) and the values of frequency moments estimates (according to the parameters set in the code) as soon as a new one arrives.
-In addition, all tweets will be stored into a file named \textit{tweets.txt}. This output can be used as input for the Bash script to generate a file named \textit{tweets\_results.txt}, containing the \textbf{exact values} of the frequency moments.
+In addition, all tweets will be stored into a file named \textit{tweets.txt}. This output can be used as input for the Bash script to generate a file named \textit{tweets\_results.txt}, containing the actual values of the frequency moments.
 Thus, we can perform the estimates for that values, running a Python script named \textit{estimate\_tweets\_freq\_moments.py}. Similarly to the previous test, we can set the parameters to be used and then open a terminal and type
 \begin{lstlisting}
 $ python estimate_tweets_freq_moments.py
