@@ -6,7 +6,7 @@ import random
 MAX_SEED = 18446744073709551615L  # = 2**64-1, since xxh64 accepts only unsigned 64-bit integers as seed
 
 
-class FreqMomentsEstimator:
+class FreqMomentsEstimator(object):
     def __init__(self, est_num, group_size):
         self.est_num = est_num              # number of estimates
         self.group_size = group_size        # number of estimates in a group (only for flajolet-martin)
